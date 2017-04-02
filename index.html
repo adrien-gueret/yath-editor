@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>yath</title>
+        <link rel="stylesheet" href="./yath.css" />
+    </head>
+    <body>
+        <section data-yath-screen="welcome">
+            <header data-yath-i18n="welcome.header"></header>
+            <p data-yath-i18n="welcome.description"></p>
+            <nav>
+                <button data-yath-onclick="test" data-yath-go-to="tuto1" data-yath-i18n="welcome.continue"></button>
+            </nav>
+        </section>
+
+        <section data-yath-screen="tuto1">
+            <header data-yath-i18n="tuto1.header"></header>
+            <p data-yath-i18n="tuto1.description"></p>
+            <nav>
+               POUET
+                <!-- data-yath-onclick -->
+            </nav>
+        </section>
+
+        <script src="yath.js"></script>
+        <script src="game_sample.js"></script>
+    </body>
+</html>
