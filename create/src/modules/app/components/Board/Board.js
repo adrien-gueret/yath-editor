@@ -40,6 +40,7 @@ class Board extends React.Component {
         function onDrag(e, data) {
             screen.x = data.x;
             screen.y = data.y;
+            // TODO: dispatch Redux action
         }
 
         return (
