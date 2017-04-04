@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { PropTypes }  from 'react';
 import { connect } from 'react-redux'
 
 import AppHeader from '../AppHeader';
@@ -6,7 +6,16 @@ import Board from '../Board';
 
 import { addScreen } from 'Modules/screens/actions';
 
-function App({ screens, dispatch }) {
+const propTypes = {
+    onAddScreen: PropTypes.func.isRequired,
+    screens: PropTypes.array,
+};
+
+const defaultProps = {
+    screens: [],
+};
+
+export function App({ screens, onAddScreen }) {
     const addScreenHandler = (newScreen) => {
         const newSlug = newScreen.getSlug();
         const nameAlreadyUsed = screens.some(screen => screen.getSlug() === newSlug);
@@ -16,7 +25,7 @@ function App({ screens, dispatch }) {
             return;
         }
 
-        dispatch(addScreen(newScreen));
+        onAddScreen(newScreen);
     };
 
     return (
@@ -27,11 +36,21 @@ function App({ screens, dispatch }) {
     );
 }
 
+App.propTypes = propTypes;
+App.defaultProps = defaultProps;
+
 const mapStateToProps = (state) => {
     return {
         screens: state.screens,
     }
 };
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onAddScreen(screen) {
+            dispatch(addScreen(screen));
+        },
+    };
+};
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

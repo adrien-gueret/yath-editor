@@ -29,7 +29,7 @@ class Board extends React.Component {
             return;
         }
 
-        this.setState(() => ({ editScreen: newScreen }))
+        this.setEditScreenHandler(newScreen)();
     }
 
     setEditScreenHandler = (screen) => {
