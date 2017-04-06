@@ -16,20 +16,29 @@ function appReducer(state = INITIAL_STATE, action) {
 
         case EDIT_SCREEN_NAME:
             const currentSlug = action.screen.getSlug();
-            const newSlug = new Screen(action.newName).getSlug();
 
-            const screensWithSameSlugs = state.screens.filter(screen => screen.getSlug() === newSlug);
-            const alreadyExisted = screensWithSameSlugs.length > 0;
+            let newName = action.newName;
+            let alreadyExisted = false;
 
-            const suffixName = alreadyExisted ? '_2' : '';
-            // FIXME: this dupplicatas checking does not work well :(
+            do {
+                const newSlug = new Screen(newName).getSlug();
 
-            screens = [ ...state.screens ].map(screen => {
-                if (screen.getSlug() === currentSlug) {
-                    screen.name = action.newName + suffixName;
+                const screensWithSameSlugs = state.screens.filter(screen => screen.getSlug() === newSlug);
+                alreadyExisted = screensWithSameSlugs.length > 0;
+
+                if (alreadyExisted) {
+                    newName += '_2';
+                }
+            } while(alreadyExisted);
+
+            screens = state.screens.map(screen => {
+                const copiedScreen = screen.clone();
+
+                if (copiedScreen.getSlug() === currentSlug) {
+                    copiedScreen.name = newName;
                 }
 
-                return screen;
+                return copiedScreen;
             });
 
             return { screens };

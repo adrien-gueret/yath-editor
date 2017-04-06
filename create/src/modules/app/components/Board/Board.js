@@ -23,7 +23,10 @@ class Board extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const newScreen = nextProps.screens.filter(screen => this.props.screens.indexOf(screen) === -1)[0];
+        const currentScreensSlugs = this.props.screens.map(screen => screen.getSlug());
+        const nextScreensSlugs = nextProps.screens.map(screen => screen.getSlug());
+
+        const newScreen = nextProps.screens.filter(screen => currentScreensSlugs.indexOf(screen.getSlug()) === -1)[0];
 
         if (!newScreen) {
             return;

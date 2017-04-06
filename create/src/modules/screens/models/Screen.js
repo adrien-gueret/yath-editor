@@ -8,10 +8,15 @@ class Screen {
     }
 
     getSlug() {
-        return this.name.toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/[\s_-]+/g, '-')
-            .replace(/^-+|-+$/g, '');
+        return this.name.toLowerCase().replace(/\s/g, '-');
+    }
+
+    clone() {
+        const copiedScreen = new Screen(this.name);
+        copiedScreen.x = this.x;
+        copiedScreen.y = this.y;
+
+        return copiedScreen;
     }
 }
 

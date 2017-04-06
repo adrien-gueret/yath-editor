@@ -6970,7 +6970,16 @@ var Screen = function () {
     _createClass(Screen, [{
         key: 'getSlug',
         value: function getSlug() {
-            return this.name.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+            return this.name.toLowerCase().replace(/\s/g, '-');
+        }
+    }, {
+        key: 'clone',
+        value: function clone() {
+            var copiedScreen = new Screen(this.name);
+            copiedScreen.x = this.x;
+            copiedScreen.y = this.y;
+
+            return copiedScreen;
         }
     }]);
 
@@ -10501,22 +10510,35 @@ function appReducer() {
 
         case _actions.EDIT_SCREEN_NAME:
             var currentSlug = action.screen.getSlug();
-            var newSlug = new _Screen2.default(action.newName).getSlug();
 
-            var screensWithSameSlugs = state.screens.filter(function (screen) {
-                return screen.getSlug() === newSlug;
-            });
-            var alreadyExisted = screensWithSameSlugs.length > 0;
+            var newName = action.newName;
+            var alreadyExisted = false;
 
-            var suffixName = alreadyExisted ? '_2' : '';
-            // FIXME: this dupplicatas checking does not work well :(
+            var _loop = function _loop() {
+                var newSlug = new _Screen2.default(newName).getSlug();
 
-            screens = [].concat(_toConsumableArray(state.screens)).map(function (screen) {
-                if (screen.getSlug() === currentSlug) {
-                    screen.name = action.newName + suffixName;
+                var screensWithSameSlugs = state.screens.filter(function (screen) {
+                    return screen.getSlug() === newSlug;
+                });
+                alreadyExisted = screensWithSameSlugs.length > 0;
+
+                if (alreadyExisted) {
+                    newName += '_2';
+                }
+            };
+
+            do {
+                _loop();
+            } while (alreadyExisted);
+
+            screens = state.screens.map(function (screen) {
+                var copiedScreen = screen.clone();
+
+                if (copiedScreen.getSlug() === currentSlug) {
+                    copiedScreen.name = newName;
                 }
 
-                return screen;
+                return copiedScreen;
             });
 
             return { screens: screens };
@@ -10815,10 +10837,15 @@ var Board = function (_React$Component) {
     _createClass(Board, [{
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
-            var _this2 = this;
+            var currentScreensSlugs = this.props.screens.map(function (screen) {
+                return screen.getSlug();
+            });
+            var nextScreensSlugs = nextProps.screens.map(function (screen) {
+                return screen.getSlug();
+            });
 
             var newScreen = nextProps.screens.filter(function (screen) {
-                return _this2.props.screens.indexOf(screen) === -1;
+                return currentScreensSlugs.indexOf(screen.getSlug()) === -1;
             })[0];
 
             if (!newScreen) {
