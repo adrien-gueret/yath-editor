@@ -1,8 +1,9 @@
 class Screen {
     static DEFAULT_COORDINATE = 100;
 
-    constructor(name = '') {
+    constructor(name = '', content = '') {
         this.name = name;
+        this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;
         this.y = Screen.DEFAULT_COORDINATE;
     }
@@ -12,7 +13,7 @@ class Screen {
     }
 
     clone() {
-        const copiedScreen = new Screen(this.name);
+        const copiedScreen = new Screen(this.name, this.content);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
 

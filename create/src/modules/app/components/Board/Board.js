@@ -22,6 +22,10 @@ class Board extends React.Component {
         };
     }
 
+    onCloseScreenEditHandler = () => {
+        this.setState(() => ({ editScreen: null }));
+    };
+
     componentWillReceiveProps(nextProps) {
         const currentScreensSlugs = this.props.screens.map(screen => screen.getSlug());
         const nextScreensSlugs = nextProps.screens.map(screen => screen.getSlug());
@@ -70,7 +74,13 @@ class Board extends React.Component {
         return (
             <section className="yathBoard">
                 { this.props.screens.map(this.renderScreen) }
-                { this.state.editScreen && <ScreenEdit screen={ this.state.editScreen } /> }
+                {
+                    this.state.editScreen &&
+                    <ScreenEdit
+                        screen={ this.state.editScreen }
+                        onClose={ this.onCloseScreenEditHandler }
+                    />
+                }
             </section>
         );
     }

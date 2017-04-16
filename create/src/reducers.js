@@ -1,8 +1,8 @@
 import Screen from 'Modules/screens/models/Screen';
-import { ADD_SCREEN, EDIT_SCREEN_NAME } from 'Modules/screens/actions';
+import { ADD_SCREEN, EDIT_SCREEN_NAME, EDIT_SCREEN_CONTENT } from 'Modules/screens/actions';
 
 const INITIAL_STATE = {
-    screens: [ new Screen('First screen') ],
+    screens: [ new Screen('First screen', 'First screen content') ],
 };
 
 function appReducer(state = INITIAL_STATE, action) {
@@ -14,7 +14,7 @@ function appReducer(state = INITIAL_STATE, action) {
             return { screens };
         break;
 
-        case EDIT_SCREEN_NAME:
+        case EDIT_SCREEN_NAME: {
             const currentSlug = action.screen.getSlug();
 
             let newName = action.newName;
@@ -42,6 +42,24 @@ function appReducer(state = INITIAL_STATE, action) {
             });
 
             return { screens };
+        }
+        break;
+
+        case EDIT_SCREEN_CONTENT: {
+            const currentSlug = action.screen.getSlug();
+
+            screens = state.screens.map(screen => {
+                const copiedScreen = screen.clone();
+
+                if (copiedScreen.getSlug() === currentSlug) {
+                    copiedScreen.content = action.newContent;
+                }
+
+                return copiedScreen;
+            });
+
+            return { screens };
+        }
         break;
 
         default:
