@@ -6,6 +6,7 @@ class Screen {
         this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;
         this.y = Screen.DEFAULT_COORDINATE;
+        this.actions = [];
     }
 
     getSlug() {
@@ -16,6 +17,7 @@ class Screen {
         const copiedScreen = new Screen(this.name, this.content);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
+        copiedScreen.actions = [...this.actions];
 
         return copiedScreen;
     }

@@ -6960,6 +6960,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Screen = function () {
@@ -6973,6 +6975,7 @@ var Screen = function () {
         this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;
         this.y = Screen.DEFAULT_COORDINATE;
+        this.actions = [];
     }
 
     _createClass(Screen, [{
@@ -6986,6 +6989,7 @@ var Screen = function () {
             var copiedScreen = new Screen(this.name, this.content);
             copiedScreen.x = this.x;
             copiedScreen.y = this.y;
+            copiedScreen.actions = [].concat(_toConsumableArray(this.actions));
 
             return copiedScreen;
         }
@@ -11390,6 +11394,96 @@ var ScreenEdit = function (_React$Component) {
             });
         }
     }, {
+        key: 'renderActionsList',
+        value: function renderActionsList() {
+            return _react2.default.createElement(
+                'table',
+                null,
+                _react2.default.createElement(
+                    'thead',
+                    null,
+                    _react2.default.createElement(
+                        'tr',
+                        null,
+                        _react2.default.createElement(
+                            'th',
+                            null,
+                            'Label'
+                        ),
+                        _react2.default.createElement(
+                            'th',
+                            null,
+                            'Target screen'
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'tbody',
+                    null,
+                    _react2.default.createElement(
+                        'tr',
+                        null,
+                        _react2.default.createElement(
+                            'td',
+                            null,
+                            'Go to place 1'
+                        ),
+                        _react2.default.createElement(
+                            'td',
+                            null,
+                            'SCREEN NAME'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'tr',
+                        null,
+                        _react2.default.createElement(
+                            'td',
+                            null,
+                            'Go to place 1'
+                        ),
+                        _react2.default.createElement(
+                            'td',
+                            null,
+                            'SCREEN NAME'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'tr',
+                        null,
+                        _react2.default.createElement(
+                            'td',
+                            null,
+                            'Go to place 1'
+                        ),
+                        _react2.default.createElement(
+                            'td',
+                            null,
+                            'SCREEN NAME'
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'renderNoActions',
+        value: function renderNoActions() {
+            return _react2.default.createElement(
+                'p',
+                null,
+                'This screen has no actions yet.'
+            );
+        }
+    }, {
+        key: 'renderActions',
+        value: function renderActions() {
+            if (this.props.screen.actions.length) {
+                return this.renderActionsList();
+            }
+
+            return this.renderNoActions();
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -11420,6 +11514,12 @@ var ScreenEdit = function (_React$Component) {
                         value: this.state.screenContent
                     }),
                     _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Actions:'
+                    ),
+                    this.renderActions(),
                     _react2.default.createElement(
                         'button',
                         { onClick: this.props.onClose },
@@ -13417,7 +13517,7 @@ exports = module.exports = __webpack_require__(61)(undefined);
 
 
 // module
-exports.push([module.i, ".screenEdit-overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 30px;\n}\n.screenEdit-content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n}\n.screenEdit-content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit-content input,\n.screenEdit-content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit-content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n", ""]);
+exports.push([module.i, ".screenEdit-overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 30px;\n}\n.screenEdit-content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n  max-height: 90%;\n  overflow: auto;\n}\n.screenEdit-content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit-content input,\n.screenEdit-content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit-content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n.screenEdit-content table {\n  width: 100%;\n  margin: 5px;\n  border-collapse: collapse;\n  border: 1px solid #e3e3e3;\n}\n.screenEdit-content tr {\n  background-color: #fff;\n}\n.screenEdit-content tr:nth-child(2n) {\n  background-color: #e3e3e3;\n}\n.screenEdit-content th {\n  background-color: #000;\n  color: #fff;\n}\n.screenEdit-content td {\n  padding: 3px;\n}\n", ""]);
 
 // exports
 

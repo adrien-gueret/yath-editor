@@ -44,6 +44,45 @@ class ScreenEdit extends React.Component {
         });
     };
 
+    renderActionsList() {
+        return (
+            <table>
+                <thead>
+                <tr>
+                    <th>Label</th>
+                    <th>Target screen</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Go to place 1</td>
+                    <td>SCREEN NAME</td>
+                </tr>
+                <tr>
+                    <td>Go to place 1</td>
+                    <td>SCREEN NAME</td>
+                </tr>
+                <tr>
+                    <td>Go to place 1</td>
+                    <td>SCREEN NAME</td>
+                </tr>
+                </tbody>
+            </table>
+        );
+    }
+
+    renderNoActions() {
+        return <p>This screen has no actions yet.</p>;
+    }
+
+    renderActions() {
+        if (this.props.screen.actions.length) {
+            return this.renderActionsList();
+        }
+
+        return this.renderNoActions();
+    }
+
     render() {
         return (
             <section className="screenEdit-overlay">
@@ -62,6 +101,8 @@ class ScreenEdit extends React.Component {
                         value={ this.state.screenContent }
                     />
                     <br />
+                    <label>Actions:</label>
+                    { this.renderActions() }
                     <button onClick={ this.props.onClose }>Close</button>
                 </div>
             </section>
