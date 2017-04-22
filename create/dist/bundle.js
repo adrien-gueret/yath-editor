@@ -13417,7 +13417,7 @@ exports = module.exports = __webpack_require__(61)(undefined);
 
 
 // module
-exports.push([module.i, ".screenEdit-overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 30px;\n}\n.screenEdit-content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n}\n", ""]);
+exports.push([module.i, ".screenEdit-overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 30px;\n}\n.screenEdit-content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n}\n.screenEdit-content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit-content input,\n.screenEdit-content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit-content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n", ""]);
 
 // exports
 
