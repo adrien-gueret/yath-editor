@@ -1,11 +1,16 @@
+let screenActionLastId = 1;
+
 class ScreenAction {
     constructor(label = '', targetScreen = '') {
+        this.id = screenActionLastId++;
         this.label = label;
         this.targetScreen = targetScreen;
     }
 
     clone() {
-        return new ScreenAction(this.label, this.targetScreen);
+        const clone = new ScreenAction(this.label, this.targetScreen);
+        clone.id = this.id;
+        return clone;
     }
 }
 

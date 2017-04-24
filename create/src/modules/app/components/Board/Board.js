@@ -28,15 +28,18 @@ class Board extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const currentScreensSlugs = this.props.screens.map(screen => screen.getSlug());
-        const nextScreensSlugs = nextProps.screens.map(screen => screen.getSlug());
-
         const newScreen = nextProps.screens.filter(screen => currentScreensSlugs.indexOf(screen.getSlug()) === -1)[0];
 
-        if (!newScreen) {
-            return;
+        let editScreen = newScreen || null;
+
+        if (!newScreen && this.state.editScreen) {
+            const editScreenSlug = this.state.editScreen.getSlug();
+            editScreen = nextProps.screens.filter(screen => screen.getSlug() === editScreenSlug)[0];
         }
 
-        this.setEditScreenHandler(newScreen)();
+        if (editScreen) {
+            this.setEditScreenHandler(editScreen)();
+        }
     }
 
     setEditScreenHandler = (screen) => {

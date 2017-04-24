@@ -3,10 +3,14 @@ import './screen-edit.less';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 
-import { editScreenName, editScreenContent } from 'Modules/screens/actions';
+import { editScreenName, editScreenContent, addScreenAction, editScreenActionLabel } from 'Modules/screens/actions';
+import ScreenAction from 'Modules/screens/models/ScreenAction';
 
 class ScreenEdit extends React.Component {
     static propTypes = {
+        onAddScreenAction: PropTypes.func.isRequired,
+        onEditScreenActionLabel: PropTypes.func.isRequired,
+        onEditScreeContent: PropTypes.func.isRequired,
         onEditScreenName: PropTypes.func.isRequired,
         onClose: PropTypes.func.isRequired,
         screen: PropTypes.object.isRequired,
@@ -21,12 +25,24 @@ class ScreenEdit extends React.Component {
         };
     }
 
+    addAction = () => {
+        this.props.onAddScreenAction(this.props.screen);
+    };
+
     componentWillReceiveProps(nextProps) {
         this.setState(() => ({
             screenName: nextProps.screen.name,
             screenContent: nextProps.screen.content,
         }));
     }
+
+    getOnChangeActionLabelHandler = (action) => {
+        return (e) => {
+            const actionLabel = e.target.value;
+            console.log('getHandler', this.props.screen);
+            this.props.onEditScreenActionLabel(this.props.screen, action, actionLabel);
+        };
+    };
 
     onChangeNameHandler = (e) => {
         const screenName = e.target.value;
@@ -54,18 +70,21 @@ class ScreenEdit extends React.Component {
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Go to place 1</td>
-                    <td>SCREEN NAME</td>
-                </tr>
-                <tr>
-                    <td>Go to place 1</td>
-                    <td>SCREEN NAME</td>
-                </tr>
-                <tr>
-                    <td>Go to place 1</td>
-                    <td>SCREEN NAME</td>
-                </tr>
+                {
+                    this.props.screen.actions.map(action => (
+                        <tr key={ action.id }>
+                            <td>
+                                <input
+                                    autoFocus={ !action.label.length }
+                                    value={ action.label }
+                                    onChange={ this.getOnChangeActionLabelHandler(action) }
+                                    type="text"
+                                />
+                            </td>
+                            <td>/* TODO */</td>
+                        </tr>
+                    ))
+                }
                 </tbody>
             </table>
         );
@@ -97,12 +116,16 @@ class ScreenEdit extends React.Component {
                     <label htmlFor="screenEditContent">Screen content:</label>
                     <textarea
                         id="screenEditContent"
+                        autoFocus={ !this.state.screenContent.length }
                         onChange={ this.onChangeContentHandler }
                         value={ this.state.screenContent }
                     />
                     <br />
                     <label>Actions:</label>
-                    { this.renderActions() }
+                    <div>
+                        { this.renderActions() }
+                        <button onClick={ this.addAction }>Add action</button>
+                    </div>
                     <button onClick={ this.props.onClose }>Close</button>
                 </div>
             </section>
@@ -111,7 +134,7 @@ class ScreenEdit extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return { ...ownProps };
+    return { ...ownProps };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -122,6 +145,12 @@ const mapDispatchToProps = (dispatch) => {
         onEditScreeContent(screen, newContent) {
             dispatch(editScreenContent(screen, newContent));
         },
+        onAddScreenAction(screen) {
+            dispatch(addScreenAction(screen, new ScreenAction()));
+        },
+        onEditScreenActionLabel(screen, screenAction, newLabel) {
+            dispatch(editScreenActionLabel(screen, screenAction, newLabel));
+        }
     };
 };
 
