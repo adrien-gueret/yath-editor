@@ -3,6 +3,7 @@ export const EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
 export const EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
 export const ADD_SCREEN_ACTION = 'ADD_SCREEN_ACTION';
 export const EDTION_SCREEN_ACTION_LABEL = 'EDTION_SCREEN_ACTION_LABEL';
+export const EDTION_SCREEN_ACTION_TARGET = 'EDTION_SCREEN_ACTION_TARGET';
 
 export function addScreen(screen) {
     return { type: ADD_SCREEN, payload: { screen } };
@@ -22,4 +23,8 @@ export function addScreenAction(screen, screenAction) {
 
 export function editScreenActionLabel(screen, screenAction, newLabel) {
     return { type: EDTION_SCREEN_ACTION_LABEL, payload: { screen, screenAction, newLabel } };
+}
+
+export function editScreenActionTarget(screen, screenAction, newTarget) {
+    return { type: EDTION_SCREEN_ACTION_TARGET, payload: { screen, screenAction, newTarget } };
 }

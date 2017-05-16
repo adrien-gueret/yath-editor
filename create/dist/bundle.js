@@ -4611,11 +4611,13 @@ exports.editScreenName = editScreenName;
 exports.editScreenContent = editScreenContent;
 exports.addScreenAction = addScreenAction;
 exports.editScreenActionLabel = editScreenActionLabel;
+exports.editScreenActionTarget = editScreenActionTarget;
 var ADD_SCREEN = exports.ADD_SCREEN = 'ADD_SCREEN';
 var EDIT_SCREEN_NAME = exports.EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
 var EDIT_SCREEN_CONTENT = exports.EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
 var ADD_SCREEN_ACTION = exports.ADD_SCREEN_ACTION = 'ADD_SCREEN_ACTION';
 var EDTION_SCREEN_ACTION_LABEL = exports.EDTION_SCREEN_ACTION_LABEL = 'EDTION_SCREEN_ACTION_LABEL';
+var EDTION_SCREEN_ACTION_TARGET = exports.EDTION_SCREEN_ACTION_TARGET = 'EDTION_SCREEN_ACTION_TARGET';
 
 function addScreen(screen) {
     return { type: ADD_SCREEN, payload: { screen: screen } };
@@ -4635,6 +4637,10 @@ function addScreenAction(screen, screenAction) {
 
 function editScreenActionLabel(screen, screenAction, newLabel) {
     return { type: EDTION_SCREEN_ACTION_LABEL, payload: { screen: screen, screenAction: screenAction, newLabel: newLabel } };
+}
+
+function editScreenActionTarget(screen, screenAction, newTarget) {
+    return { type: EDTION_SCREEN_ACTION_TARGET, payload: { screen: screen, screenAction: screenAction, newTarget: newTarget } };
 }
 
 /***/ }),
@@ -11007,7 +11013,34 @@ function appReducer() {
 
                     return copiedScreen;
                 });
-                console.log(screens);
+
+                return { screens: screens };
+            }
+            break;
+
+        case _actions.EDTION_SCREEN_ACTION_TARGET:
+            {
+                var _currentSlug4 = action.payload.screen.getSlug();
+
+                screens = state.screens.map(function (screen) {
+                    var copiedScreen = screen.clone();
+
+                    if (copiedScreen.getSlug() === _currentSlug4) {
+                        var screenActions = copiedScreen.actions.map(function (screenAction) {
+                            var copiedAction = screenAction.clone();
+
+                            if (copiedAction.id === action.payload.screenAction.id) {
+                                copiedAction.targetScreen = action.payload.newTarget;
+                            }
+
+                            return copiedAction;
+                        });
+
+                        copiedScreen.actions = screenActions;
+                    }
+
+                    return copiedScreen;
+                });
 
                 return { screens: screens };
             }
@@ -11429,7 +11462,6 @@ var ScreenEdit = function (_React$Component) {
         _this.getOnChangeActionLabelHandler = function (action) {
             return function (e) {
                 var actionLabel = e.target.value;
-                console.log('getHandler', _this.props.screen);
                 _this.props.onEditScreenActionLabel(_this.props.screen, action, actionLabel);
             };
         };
@@ -11452,6 +11484,16 @@ var ScreenEdit = function (_React$Component) {
             }, function () {
                 _this.props.onEditScreeContent(_this.props.screen, screenContent);
             });
+        };
+
+        _this.getOnChangeActionTargetHandler = function (action) {
+            return function (e) {
+                var targetSlug = e.target.value;
+                var target = _this.props.otherScreens.filter(function (screen) {
+                    return screen.getSlug() === targetSlug;
+                })[0];
+                _this.props.onEditScreenActionTarget(_this.props.screen, action, target);
+            };
         };
 
         _this.state = {
@@ -11517,7 +11559,28 @@ var ScreenEdit = function (_React$Component) {
                             _react2.default.createElement(
                                 'td',
                                 null,
-                                '/* TODO */'
+                                _react2.default.createElement(
+                                    'select',
+                                    {
+                                        onChange: _this2.getOnChangeActionTargetHandler(action),
+                                        defaultValue: action.targetScreen ? action.targetScreen.getSlug() : null
+                                    },
+                                    _react2.default.createElement(
+                                        'option',
+                                        null,
+                                        '-- Select a screen --'
+                                    ),
+                                    _this2.props.otherScreens.map(function (otherScreen) {
+                                        return _react2.default.createElement(
+                                            'option',
+                                            {
+                                                key: otherScreen.getSlug(),
+                                                value: otherScreen.getSlug()
+                                            },
+                                            otherScreen.name
+                                        );
+                                    })
+                                )
                             )
                         );
                     })
@@ -11541,6 +11604,33 @@ var ScreenEdit = function (_React$Component) {
             }
 
             return this.renderNoActions();
+        }
+    }, {
+        key: 'renderActionsContainer',
+        value: function renderActionsContainer() {
+            if (!this.props.otherScreens.length) {
+                return null;
+            }
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Actions:'
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    this.renderActions(),
+                    _react2.default.createElement(
+                        'button',
+                        { onClick: this.addAction },
+                        'Add action'
+                    )
+                )
+            );
         }
     }, {
         key: 'render',
@@ -11574,21 +11664,7 @@ var ScreenEdit = function (_React$Component) {
                         value: this.state.screenContent
                     }),
                     _react2.default.createElement('br', null),
-                    _react2.default.createElement(
-                        'label',
-                        null,
-                        'Actions:'
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        null,
-                        this.renderActions(),
-                        _react2.default.createElement(
-                            'button',
-                            { onClick: this.addAction },
-                            'Add action'
-                        )
-                    ),
+                    this.renderActionsContainer(),
                     _react2.default.createElement(
                         'button',
                         { onClick: this.props.onClose },
@@ -11605,15 +11681,23 @@ var ScreenEdit = function (_React$Component) {
 ScreenEdit.propTypes = {
     onAddScreenAction: _react.PropTypes.func.isRequired,
     onEditScreenActionLabel: _react.PropTypes.func.isRequired,
+    onEditScreenActionTarget: _react.PropTypes.func.isRequired,
     onEditScreeContent: _react.PropTypes.func.isRequired,
     onEditScreenName: _react.PropTypes.func.isRequired,
     onClose: _react.PropTypes.func.isRequired,
+    otherScreens: _react.PropTypes.arrayOf(_react.PropTypes.object).isRequired,
     screen: _react.PropTypes.object.isRequired
 };
 
 
 var mapStateToProps = function mapStateToProps(state, ownProps) {
-    return _extends({}, ownProps);
+    var thisScreenSlug = ownProps.screen.getSlug();
+
+    return _extends({}, ownProps, {
+        otherScreens: state.screens.filter(function (screen) {
+            return screen.getSlug() !== thisScreenSlug;
+        })
+    });
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -11629,6 +11713,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         },
         onEditScreenActionLabel: function onEditScreenActionLabel(screen, screenAction, newLabel) {
             dispatch((0, _actions.editScreenActionLabel)(screen, screenAction, newLabel));
+        },
+        onEditScreenActionTarget: function onEditScreenActionTarget(screen, screenAction, newTarget) {
+            dispatch((0, _actions.editScreenActionTarget)(screen, screenAction, newTarget));
         }
     };
 };

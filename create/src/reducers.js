@@ -1,5 +1,12 @@
 import Screen from 'Modules/screens/models/Screen';
-import { ADD_SCREEN, EDIT_SCREEN_NAME, EDIT_SCREEN_CONTENT, ADD_SCREEN_ACTION, EDTION_SCREEN_ACTION_LABEL } from 'Modules/screens/actions';
+import {
+    ADD_SCREEN,
+    EDIT_SCREEN_NAME,
+    EDIT_SCREEN_CONTENT,
+    ADD_SCREEN_ACTION,
+    EDTION_SCREEN_ACTION_LABEL,
+    EDTION_SCREEN_ACTION_TARGET,
+} from 'Modules/screens/actions';
 
 const INITIAL_STATE = {
     screens: [ new Screen('First screen', 'First screen content') ],
@@ -101,7 +108,33 @@ function appReducer(state = INITIAL_STATE, action) {
 
                 return copiedScreen;
             });
-            console.log(screens);
+
+            return { screens };
+        }
+            break;
+
+        case EDTION_SCREEN_ACTION_TARGET: {
+            const currentSlug = action.payload.screen.getSlug();
+
+            screens = state.screens.map(screen => {
+                const copiedScreen = screen.clone();
+
+                if (copiedScreen.getSlug() === currentSlug) {
+                    const screenActions = copiedScreen.actions.map(screenAction => {
+                        const copiedAction = screenAction.clone();
+
+                        if (copiedAction.id === action.payload.screenAction.id) {
+                            copiedAction.targetScreen = action.payload.newTarget;
+                        }
+
+                        return copiedAction;
+                    });
+
+                    copiedScreen.actions = screenActions;
+                }
+
+                return copiedScreen;
+            });
 
             return { screens };
         }

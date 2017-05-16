@@ -3,16 +3,20 @@ import './screen-edit.less';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 
-import { editScreenName, editScreenContent, addScreenAction, editScreenActionLabel } from 'Modules/screens/actions';
+import {
+    editScreenName, editScreenContent, addScreenAction, editScreenActionLabel, editScreenActionTarget
+} from 'Modules/screens/actions';
 import ScreenAction from 'Modules/screens/models/ScreenAction';
 
 class ScreenEdit extends React.Component {
     static propTypes = {
         onAddScreenAction: PropTypes.func.isRequired,
         onEditScreenActionLabel: PropTypes.func.isRequired,
+        onEditScreenActionTarget: PropTypes.func.isRequired,
         onEditScreeContent: PropTypes.func.isRequired,
         onEditScreenName: PropTypes.func.isRequired,
         onClose: PropTypes.func.isRequired,
+        otherScreens: PropTypes.arrayOf(PropTypes.object).isRequired,
         screen: PropTypes.object.isRequired,
     };
 
@@ -39,7 +43,6 @@ class ScreenEdit extends React.Component {
     getOnChangeActionLabelHandler = (action) => {
         return (e) => {
             const actionLabel = e.target.value;
-            console.log('getHandler', this.props.screen);
             this.props.onEditScreenActionLabel(this.props.screen, action, actionLabel);
         };
     };
@@ -58,6 +61,14 @@ class ScreenEdit extends React.Component {
         this.setState(() => ({ screenContent }), () => {
             this.props.onEditScreeContent(this.props.screen, screenContent);
         });
+    };
+
+    getOnChangeActionTargetHandler = (action) => {
+        return (e) => {
+            const targetSlug = e.target.value;
+            const target = this.props.otherScreens.filter(screen => screen.getSlug() === targetSlug)[0];
+            this.props.onEditScreenActionTarget(this.props.screen, action, target);
+        };
     };
 
     renderActionsList() {
@@ -81,7 +92,24 @@ class ScreenEdit extends React.Component {
                                     type="text"
                                 />
                             </td>
-                            <td>/* TODO */</td>
+                            <td>
+                                <select
+                                    onChange={ this.getOnChangeActionTargetHandler(action) }
+                                    defaultValue={ action.targetScreen ? action.targetScreen.getSlug() : null }
+                                >
+                                    <option>-- Select a screen --</option>
+                                    {
+                                        this.props.otherScreens.map(otherScreen => (
+                                           <option
+                                               key={ otherScreen.getSlug() }
+                                               value={ otherScreen.getSlug() }
+                                           >
+                                               { otherScreen.name }
+                                           </option>
+                                        ))
+                                    }
+                                </select>
+                            </td>
                         </tr>
                     ))
                 }
@@ -100,6 +128,22 @@ class ScreenEdit extends React.Component {
         }
 
         return this.renderNoActions();
+    }
+
+    renderActionsContainer() {
+        if (!this.props.otherScreens.length) {
+            return null;
+        }
+
+        return (
+            <div>
+                <label>Actions:</label>
+                <div>
+                    { this.renderActions() }
+                    <button onClick={ this.addAction }>Add action</button>
+                </div>
+            </div>
+        );
     }
 
     render() {
@@ -121,11 +165,7 @@ class ScreenEdit extends React.Component {
                         value={ this.state.screenContent }
                     />
                     <br />
-                    <label>Actions:</label>
-                    <div>
-                        { this.renderActions() }
-                        <button onClick={ this.addAction }>Add action</button>
-                    </div>
+                    { this.renderActionsContainer() }
                     <button onClick={ this.props.onClose }>Close</button>
                 </div>
             </section>
@@ -134,7 +174,12 @@ class ScreenEdit extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    return { ...ownProps };
+    const thisScreenSlug = ownProps.screen.getSlug();
+
+    return {
+        ...ownProps,
+        otherScreens: state.screens.filter(screen => screen.getSlug() !== thisScreenSlug),
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -150,7 +195,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         onEditScreenActionLabel(screen, screenAction, newLabel) {
             dispatch(editScreenActionLabel(screen, screenAction, newLabel));
-        }
+        },
+        onEditScreenActionTarget(screen, screenAction, newTarget) {
+            dispatch(editScreenActionTarget(screen, screenAction, newTarget));
+        },
     };
 };
 
