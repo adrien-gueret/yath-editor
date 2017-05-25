@@ -6982,6 +6982,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var screenLastId = 1;
+
 var Screen = function () {
     function Screen() {
         var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
@@ -6989,6 +6991,7 @@ var Screen = function () {
 
         _classCallCheck(this, Screen);
 
+        this.id = screenLastId++;
         this.name = name;
         this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;
@@ -7005,11 +7008,17 @@ var Screen = function () {
         key: 'clone',
         value: function clone() {
             var copiedScreen = new Screen(this.name, this.content);
+            copiedScreen.id = this.id;
             copiedScreen.x = this.x;
             copiedScreen.y = this.y;
             copiedScreen.actions = [].concat(_toConsumableArray(this.actions));
 
             return copiedScreen;
+        }
+    }, {
+        key: 'equals',
+        value: function equals(otherScreen) {
+            return otherScreen instanceof Screen && otherScreen.id === this.id;
         }
     }]);
 
@@ -10914,12 +10923,9 @@ function appReducer() {
         case _actions.ADD_SCREEN:
             screens = [].concat(_toConsumableArray(state.screens), [action.payload.screen]);
             return { screens: screens };
-            break;
 
         case _actions.EDIT_SCREEN_NAME:
             {
-                var currentSlug = action.payload.screen.getSlug();
-
                 var newName = action.payload.newName;
                 var alreadyExisted = false;
 
@@ -10943,7 +10949,7 @@ function appReducer() {
                 screens = state.screens.map(function (screen) {
                     var copiedScreen = screen.clone();
 
-                    if (copiedScreen.getSlug() === currentSlug) {
+                    if (copiedScreen.equals(action.payload.screen)) {
                         copiedScreen.name = newName;
                     }
 
@@ -10952,16 +10958,13 @@ function appReducer() {
 
                 return { screens: screens };
             }
-            break;
 
         case _actions.EDIT_SCREEN_CONTENT:
             {
-                var _currentSlug = action.payload.screen.getSlug();
-
                 screens = state.screens.map(function (screen) {
                     var copiedScreen = screen.clone();
 
-                    if (copiedScreen.getSlug() === _currentSlug) {
+                    if (copiedScreen.equals(action.payload.screen)) {
                         copiedScreen.content = action.payload.newContent;
                     }
 
@@ -10970,16 +10973,13 @@ function appReducer() {
 
                 return { screens: screens };
             }
-            break;
 
         case _actions.ADD_SCREEN_ACTION:
             {
-                var _currentSlug2 = action.payload.screen.getSlug();
-
                 screens = state.screens.map(function (screen) {
                     var copiedScreen = screen.clone();
 
-                    if (copiedScreen.getSlug() === _currentSlug2) {
+                    if (copiedScreen.equals(action.payload.screen)) {
                         copiedScreen.actions.push(action.payload.screenAction);
                     }
 
@@ -10988,20 +10988,17 @@ function appReducer() {
 
                 return { screens: screens };
             }
-            break;
 
         case _actions.EDTION_SCREEN_ACTION_LABEL:
             {
-                var _currentSlug3 = action.payload.screen.getSlug();
-
                 screens = state.screens.map(function (screen) {
                     var copiedScreen = screen.clone();
 
-                    if (copiedScreen.getSlug() === _currentSlug3) {
+                    if (copiedScreen.equals(action.payload.screen)) {
                         var screenActions = copiedScreen.actions.map(function (screenAction) {
                             var copiedAction = screenAction.clone();
 
-                            if (copiedAction.id === action.payload.screenAction.id) {
+                            if (copiedAction.equals(action.payload.screenAction)) {
                                 copiedAction.label = action.payload.newLabel;
                             }
 
@@ -11016,20 +11013,17 @@ function appReducer() {
 
                 return { screens: screens };
             }
-            break;
 
         case _actions.EDTION_SCREEN_ACTION_TARGET:
             {
-                var _currentSlug4 = action.payload.screen.getSlug();
-
                 screens = state.screens.map(function (screen) {
                     var copiedScreen = screen.clone();
 
-                    if (copiedScreen.getSlug() === _currentSlug4) {
+                    if (copiedScreen.equals(action.payload.screen)) {
                         var screenActions = copiedScreen.actions.map(function (screenAction) {
                             var copiedAction = screenAction.clone();
 
-                            if (copiedAction.id === action.payload.screenAction.id) {
+                            if (copiedAction.equals(action.payload.screenAction)) {
                                 copiedAction.targetScreen = action.payload.newTarget;
                             }
 
@@ -11044,7 +11038,6 @@ function appReducer() {
 
                 return { screens: screens };
             }
-            break;
 
         default:
             return state;
@@ -11307,7 +11300,7 @@ var Board = function (_React$Component) {
             return _react2.default.createElement(
                 _reactDraggable2.default,
                 {
-                    key: screen.getSlug(),
+                    key: screen.id,
                     defaultPosition: screen,
                     handle: '.yathBoard__screenName',
                     onDrag: onDrag
@@ -11345,19 +11338,20 @@ var Board = function (_React$Component) {
     _createClass(Board, [{
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
-            var currentScreensSlugs = this.props.screens.map(function (screen) {
-                return screen.getSlug();
+            var _this2 = this;
+
+            var currentScreensIds = this.props.screens.map(function (screen) {
+                return screen.id;
             });
             var newScreen = nextProps.screens.filter(function (screen) {
-                return currentScreensSlugs.indexOf(screen.getSlug()) === -1;
+                return currentScreensIds.indexOf(screen.id) === -1;
             })[0];
 
             var editScreen = newScreen || null;
 
             if (!newScreen && this.state.editScreen) {
-                var editScreenSlug = this.state.editScreen.getSlug();
                 editScreen = nextProps.screens.filter(function (screen) {
-                    return screen.getSlug() === editScreenSlug;
+                    return screen.equals(_this2.state.editScreen);
                 })[0];
             }
 
@@ -11488,9 +11482,9 @@ var ScreenEdit = function (_React$Component) {
 
         _this.getOnChangeActionTargetHandler = function (action) {
             return function (e) {
-                var targetSlug = e.target.value;
+                var targetId = +e.target.value;
                 var target = _this.props.otherScreens.filter(function (screen) {
-                    return screen.getSlug() === targetSlug;
+                    return screen.id === targetId;
                 })[0];
                 _this.props.onEditScreenActionTarget(_this.props.screen, action, target);
             };
@@ -11563,7 +11557,7 @@ var ScreenEdit = function (_React$Component) {
                                     'select',
                                     {
                                         onChange: _this2.getOnChangeActionTargetHandler(action),
-                                        defaultValue: action.targetScreen ? action.targetScreen.getSlug() : null
+                                        defaultValue: action.targetScreen ? action.targetScreen.id : null
                                     },
                                     _react2.default.createElement(
                                         'option',
@@ -11574,8 +11568,8 @@ var ScreenEdit = function (_React$Component) {
                                         return _react2.default.createElement(
                                             'option',
                                             {
-                                                key: otherScreen.getSlug(),
-                                                value: otherScreen.getSlug()
+                                                key: otherScreen.id,
+                                                value: otherScreen.id
                                             },
                                             otherScreen.name
                                         );
@@ -11691,11 +11685,9 @@ ScreenEdit.propTypes = {
 
 
 var mapStateToProps = function mapStateToProps(state, ownProps) {
-    var thisScreenSlug = ownProps.screen.getSlug();
-
     return _extends({}, ownProps, {
         otherScreens: state.screens.filter(function (screen) {
-            return screen.getSlug() !== thisScreenSlug;
+            return !screen.equals(ownProps.screen);
         })
     });
 };
@@ -11776,6 +11768,11 @@ var ScreenAction = function () {
             var clone = new ScreenAction(this.label, this.targetScreen);
             clone.id = this.id;
             return clone;
+        }
+    }, {
+        key: 'equals',
+        value: function equals(otherAction) {
+            return otherAction instanceof ScreenAction && otherAction.id === this.id;
         }
     }]);
 

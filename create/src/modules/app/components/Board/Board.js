@@ -27,14 +27,13 @@ class Board extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        const currentScreensSlugs = this.props.screens.map(screen => screen.getSlug());
-        const newScreen = nextProps.screens.filter(screen => currentScreensSlugs.indexOf(screen.getSlug()) === -1)[0];
+        const currentScreensIds = this.props.screens.map(screen => screen.id);
+        const newScreen = nextProps.screens.filter(screen => currentScreensIds.indexOf(screen.id) === -1)[0];
 
         let editScreen = newScreen || null;
 
         if (!newScreen && this.state.editScreen) {
-            const editScreenSlug = this.state.editScreen.getSlug();
-            editScreen = nextProps.screens.filter(screen => screen.getSlug() === editScreenSlug)[0];
+            editScreen = nextProps.screens.filter(screen => screen.equals(this.state.editScreen))[0];
         }
 
         if (editScreen) {
@@ -55,7 +54,7 @@ class Board extends React.Component {
 
         return (
             <Draggable
-                key={ screen.getSlug() }
+                key={ screen.id }
                 defaultPosition={ screen }
                 handle=".yathBoard__screenName"
                 onDrag={ onDrag }

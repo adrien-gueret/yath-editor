@@ -19,11 +19,8 @@ function appReducer(state = INITIAL_STATE, action) {
         case ADD_SCREEN:
             screens = [ ...state.screens, action.payload.screen ];
             return { screens };
-        break;
 
         case EDIT_SCREEN_NAME: {
-            const currentSlug = action.payload.screen.getSlug();
-
             let newName = action.payload.newName;
             let alreadyExisted = false;
 
@@ -41,7 +38,7 @@ function appReducer(state = INITIAL_STATE, action) {
             screens = state.screens.map(screen => {
                 const copiedScreen = screen.clone();
 
-                if (copiedScreen.getSlug() === currentSlug) {
+                if (copiedScreen.equals(action.payload.screen)) {
                     copiedScreen.name = newName;
                 }
 
@@ -50,15 +47,12 @@ function appReducer(state = INITIAL_STATE, action) {
 
             return { screens };
         }
-        break;
 
         case EDIT_SCREEN_CONTENT: {
-            const currentSlug = action.payload.screen.getSlug();
-
             screens = state.screens.map(screen => {
                 const copiedScreen = screen.clone();
 
-                if (copiedScreen.getSlug() === currentSlug) {
+                if (copiedScreen.equals(action.payload.screen)) {
                     copiedScreen.content = action.payload.newContent;
                 }
 
@@ -67,15 +61,12 @@ function appReducer(state = INITIAL_STATE, action) {
 
             return { screens };
         }
-        break;
 
         case ADD_SCREEN_ACTION: {
-            const currentSlug = action.payload.screen.getSlug();
-
             screens = state.screens.map(screen => {
                 const copiedScreen = screen.clone();
 
-                if (copiedScreen.getSlug() === currentSlug) {
+                if (copiedScreen.equals(action.payload.screen)) {
                     copiedScreen.actions.push(action.payload.screenAction);
                 }
 
@@ -84,19 +75,16 @@ function appReducer(state = INITIAL_STATE, action) {
 
             return { screens };
         }
-        break;
 
         case EDTION_SCREEN_ACTION_LABEL: {
-            const currentSlug = action.payload.screen.getSlug();
-
             screens = state.screens.map(screen => {
                 const copiedScreen = screen.clone();
 
-                if (copiedScreen.getSlug() === currentSlug) {
+                if (copiedScreen.equals(action.payload.screen)) {
                     const screenActions = copiedScreen.actions.map(screenAction => {
                         const copiedAction = screenAction.clone();
 
-                        if (copiedAction.id === action.payload.screenAction.id) {
+                        if (copiedAction.equals(action.payload.screenAction)) {
                             copiedAction.label = action.payload.newLabel;
                         }
 
@@ -111,19 +99,16 @@ function appReducer(state = INITIAL_STATE, action) {
 
             return { screens };
         }
-            break;
 
         case EDTION_SCREEN_ACTION_TARGET: {
-            const currentSlug = action.payload.screen.getSlug();
-
             screens = state.screens.map(screen => {
                 const copiedScreen = screen.clone();
 
-                if (copiedScreen.getSlug() === currentSlug) {
+                if (copiedScreen.equals(action.payload.screen)) {
                     const screenActions = copiedScreen.actions.map(screenAction => {
                         const copiedAction = screenAction.clone();
 
-                        if (copiedAction.id === action.payload.screenAction.id) {
+                        if (copiedAction.equals(action.payload.screenAction)) {
                             copiedAction.targetScreen = action.payload.newTarget;
                         }
 
@@ -138,7 +123,6 @@ function appReducer(state = INITIAL_STATE, action) {
 
             return { screens };
         }
-            break;
 
         default:
             return state;

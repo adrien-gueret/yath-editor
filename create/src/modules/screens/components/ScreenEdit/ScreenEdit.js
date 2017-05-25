@@ -65,8 +65,8 @@ class ScreenEdit extends React.Component {
 
     getOnChangeActionTargetHandler = (action) => {
         return (e) => {
-            const targetSlug = e.target.value;
-            const target = this.props.otherScreens.filter(screen => screen.getSlug() === targetSlug)[0];
+            const targetId = +e.target.value;
+            const target = this.props.otherScreens.filter(screen => screen.id === targetId)[0];
             this.props.onEditScreenActionTarget(this.props.screen, action, target);
         };
     };
@@ -95,14 +95,14 @@ class ScreenEdit extends React.Component {
                             <td>
                                 <select
                                     onChange={ this.getOnChangeActionTargetHandler(action) }
-                                    defaultValue={ action.targetScreen ? action.targetScreen.getSlug() : null }
+                                    defaultValue={ action.targetScreen ? action.targetScreen.id : null }
                                 >
                                     <option>-- Select a screen --</option>
                                     {
                                         this.props.otherScreens.map(otherScreen => (
                                            <option
-                                               key={ otherScreen.getSlug() }
-                                               value={ otherScreen.getSlug() }
+                                               key={ otherScreen.id }
+                                               value={ otherScreen.id }
                                            >
                                                { otherScreen.name }
                                            </option>
@@ -174,11 +174,9 @@ class ScreenEdit extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const thisScreenSlug = ownProps.screen.getSlug();
-
     return {
         ...ownProps,
-        otherScreens: state.screens.filter(screen => screen.getSlug() !== thisScreenSlug),
+        otherScreens: state.screens.filter(screen => !screen.equals(ownProps.screen)),
     };
 };
 

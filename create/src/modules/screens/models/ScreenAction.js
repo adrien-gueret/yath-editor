@@ -12,6 +12,10 @@ class ScreenAction {
         clone.id = this.id;
         return clone;
     }
+
+    equals(otherAction) {
+        return otherAction instanceof ScreenAction && otherAction.id === this.id;
+    }
 }
 
 export default ScreenAction;
