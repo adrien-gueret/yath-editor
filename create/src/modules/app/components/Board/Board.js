@@ -1,8 +1,10 @@
 import './board.less';
 
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux'
 import Draggable from 'react-draggable';
 
+import screensSelectors from 'Modules/screens/selectors';
 import ScreenEdit from 'Modules/screens/components/ScreenEdit';
 
 class Board extends React.Component {
@@ -18,31 +20,27 @@ class Board extends React.Component {
         super(props);
 
         this.state = {
-            editScreen: null,
+            editScreenId: null,
         };
     }
 
     onCloseScreenEditHandler = () => {
-        this.setState(() => ({ editScreen: null }));
+        this.setState(() => ({ editScreenId: null }));
     };
 
     componentWillReceiveProps(nextProps) {
         const currentScreensIds = this.props.screens.map(screen => screen.id);
         const newScreen = nextProps.screens.filter(screen => currentScreensIds.indexOf(screen.id) === -1)[0];
 
-        let editScreen = newScreen || null;
+        const editScreenId = newScreen ? newScreen.id : this.state.editScreenId;
 
-        if (!newScreen && this.state.editScreen) {
-            editScreen = nextProps.screens.filter(screen => screen.equals(this.state.editScreen))[0];
-        }
-
-        if (editScreen) {
-            this.setEditScreenHandler(editScreen)();
+        if (editScreenId) {
+            this.setEditScreenHandler(editScreenId)();
         }
     }
 
-    setEditScreenHandler = (screen) => {
-        return () => { this.setState(() => ({ editScreen: screen })); };
+    setEditScreenHandler = (editScreenId) => {
+        return () => { this.setState(() => ({ editScreenId })); };
     };
 
     renderScreen = (screen) => {
@@ -64,7 +62,7 @@ class Board extends React.Component {
                         <span className="yathBoard__screenName">{ screen.name }</span>
                         <span
                             className="yathBoard__screenEditButton"
-                            onClick={ this.setEditScreenHandler(screen) }
+                            onClick={ this.setEditScreenHandler(screen.id) }
                         >✎</span>
                     </header>
                 </div>
@@ -77,9 +75,9 @@ class Board extends React.Component {
             <section className="yathBoard">
                 { this.props.screens.map(this.renderScreen) }
                 {
-                    this.state.editScreen &&
+                    this.state.editScreenId &&
                     <ScreenEdit
-                        screen={ this.state.editScreen }
+                        screenId={ this.state.editScreenId }
                         onClose={ this.onCloseScreenEditHandler }
                     />
                 }
@@ -88,4 +86,10 @@ class Board extends React.Component {
     }
 }
 
-export default Board;
+const mapStateToProps = (state) => {
+    return {
+        screens: screensSelectors.getAsArray(state),
+    }
+};
+
+export default connect(mapStateToProps)(Board);

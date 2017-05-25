@@ -1,23 +1,18 @@
 import './screen-edit.less';
 
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux'
-
-import {
-    editScreenName, editScreenContent, addScreenAction, editScreenActionLabel, editScreenActionTarget
-} from 'Modules/screens/actions';
-import ScreenAction from 'Modules/screens/models/ScreenAction';
 
 class ScreenEdit extends React.Component {
     static propTypes = {
-        onAddScreenAction: PropTypes.func.isRequired,
-        onEditScreenActionLabel: PropTypes.func.isRequired,
-        onEditScreenActionTarget: PropTypes.func.isRequired,
-        onEditScreeContent: PropTypes.func.isRequired,
+        onAddScreenChoice: PropTypes.func.isRequired,
+        onEditScreenChoiceLabel: PropTypes.func.isRequired,
+        onEditScreenChoiceTarget: PropTypes.func.isRequired,
+        onEditScreenContent: PropTypes.func.isRequired,
         onEditScreenName: PropTypes.func.isRequired,
         onClose: PropTypes.func.isRequired,
         otherScreens: PropTypes.arrayOf(PropTypes.object).isRequired,
         screen: PropTypes.object.isRequired,
+        screenChoices: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -29,8 +24,8 @@ class ScreenEdit extends React.Component {
         };
     }
 
-    addAction = () => {
-        this.props.onAddScreenAction(this.props.screen);
+    addChoice = () => {
+        this.props.onAddScreenChoice(this.props.screen.id);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -40,10 +35,10 @@ class ScreenEdit extends React.Component {
         }));
     }
 
-    getOnChangeActionLabelHandler = (action) => {
+    getOnChangeChoiceLabelHandler = (choiceId) => {
         return (e) => {
-            const actionLabel = e.target.value;
-            this.props.onEditScreenActionLabel(this.props.screen, action, actionLabel);
+            const label = e.target.value;
+            this.props.onEditScreenChoiceLabel(choiceId, label);
         };
     };
 
@@ -51,7 +46,7 @@ class ScreenEdit extends React.Component {
         const screenName = e.target.value;
 
         this.setState(() => ({ screenName }), () => {
-            this.props.onEditScreenName(this.props.screen, screenName);
+            this.props.onEditScreenName(this.props.screen.id, screenName);
         });
     };
 
@@ -59,19 +54,18 @@ class ScreenEdit extends React.Component {
         const screenContent = e.target.value;
 
         this.setState(() => ({ screenContent }), () => {
-            this.props.onEditScreeContent(this.props.screen, screenContent);
+            this.props.onEditScreenContent(this.props.screen.id, screenContent);
         });
     };
 
-    getOnChangeActionTargetHandler = (action) => {
+    getOnChangeChoiceTargetHandler = (choiceId) => {
         return (e) => {
             const targetId = +e.target.value;
-            const target = this.props.otherScreens.filter(screen => screen.id === targetId)[0];
-            this.props.onEditScreenActionTarget(this.props.screen, action, target);
+            this.props.onEditScreenChoiceTarget(choiceId, targetId);
         };
     };
 
-    renderActionsList() {
+    renderChoicesList() {
         return (
             <table>
                 <thead>
@@ -82,20 +76,20 @@ class ScreenEdit extends React.Component {
                 </thead>
                 <tbody>
                 {
-                    this.props.screen.actions.map(action => (
-                        <tr key={ action.id }>
+                    this.props.screenChoices.map(choice => (
+                        <tr key={ choice.id }>
                             <td>
                                 <input
-                                    autoFocus={ !action.label.length }
-                                    value={ action.label }
-                                    onChange={ this.getOnChangeActionLabelHandler(action) }
+                                    autoFocus={ !choice.label.length }
+                                    value={ choice.label }
+                                    onChange={ this.getOnChangeChoiceLabelHandler(choice.id) }
                                     type="text"
                                 />
                             </td>
                             <td>
                                 <select
-                                    onChange={ this.getOnChangeActionTargetHandler(action) }
-                                    defaultValue={ action.targetScreen ? action.targetScreen.id : null }
+                                    onChange={ this.getOnChangeChoiceTargetHandler(choice.id) }
+                                    defaultValue={ choice.targetScreenId || null }
                                 >
                                     <option>-- Select a screen --</option>
                                     {
@@ -118,29 +112,29 @@ class ScreenEdit extends React.Component {
         );
     }
 
-    renderNoActions() {
-        return <p>This screen has no actions yet.</p>;
+    renderNoChoices() {
+        return <p>This screen has no choices yet.</p>;
     }
 
-    renderActions() {
-        if (this.props.screen.actions.length) {
-            return this.renderActionsList();
+    renderChoices() {
+        if (this.props.screenChoices.length) {
+            return this.renderChoicesList();
         }
 
-        return this.renderNoActions();
+        return this.renderNoChoices();
     }
 
-    renderActionsContainer() {
+    renderChoicesContainer() {
         if (!this.props.otherScreens.length) {
             return null;
         }
 
         return (
             <div>
-                <label>Actions:</label>
+                <label>Choices:</label>
                 <div>
-                    { this.renderActions() }
-                    <button onClick={ this.addAction }>Add action</button>
+                    { this.renderChoices() }
+                    <button onClick={ this.addChoice }>Add choice</button>
                 </div>
             </div>
         );
@@ -165,7 +159,7 @@ class ScreenEdit extends React.Component {
                         value={ this.state.screenContent }
                     />
                     <br />
-                    { this.renderActionsContainer() }
+                    { this.renderChoicesContainer() }
                     <button onClick={ this.props.onClose }>Close</button>
                 </div>
             </section>
@@ -173,31 +167,4 @@ class ScreenEdit extends React.Component {
     }
 }
 
-const mapStateToProps = (state, ownProps) => {
-    return {
-        ...ownProps,
-        otherScreens: state.screens.filter(screen => !screen.equals(ownProps.screen)),
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onEditScreenName(screen, newName) {
-            dispatch(editScreenName(screen, newName));
-        },
-        onEditScreeContent(screen, newContent) {
-            dispatch(editScreenContent(screen, newContent));
-        },
-        onAddScreenAction(screen) {
-            dispatch(addScreenAction(screen, new ScreenAction()));
-        },
-        onEditScreenActionLabel(screen, screenAction, newLabel) {
-            dispatch(editScreenActionLabel(screen, screenAction, newLabel));
-        },
-        onEditScreenActionTarget(screen, screenAction, newTarget) {
-            dispatch(editScreenActionTarget(screen, screenAction, newTarget));
-        },
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ScreenEdit);
+export default ScreenEdit;

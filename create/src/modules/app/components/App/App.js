@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import AppHeader from '../AppHeader';
 import Board from '../Board';
 
+import screensSelectors from 'Modules/screens/selectors';
 import { addScreen } from 'Modules/screens/actions';
 
 const propTypes = {
@@ -31,7 +32,7 @@ export function App({ screens, onAddScreen }) {
     return (
         <div className="yathApp">
             <AppHeader onAddScreen={ addScreenHandler } />
-            <Board screens={ screens } />
+            <Board />
         </div>
     );
 }
@@ -41,7 +42,7 @@ App.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
     return {
-        screens: state.screens,
+        screens: screensSelectors.getAsArray(state),
     }
 };
 

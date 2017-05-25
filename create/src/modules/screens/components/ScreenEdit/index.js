@@ -1,3 +1,3 @@
-import ScreenEdit from './ScreenEdit';
+import ScreenEdit from './ScreenEditContainer';
 
 export default ScreenEdit;
