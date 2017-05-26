@@ -30,8 +30,6 @@ const mapStateToProps = (state) => {
 
     }, []);
 
-    console.log(arrows);
-
     return { arrows };
 };
 

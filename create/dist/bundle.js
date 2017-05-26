@@ -4675,9 +4675,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.addScreen = addScreen;
 exports.editScreenName = editScreenName;
 exports.editScreenContent = editScreenContent;
+exports.moveScreen = moveScreen;
 var ADD_SCREEN = exports.ADD_SCREEN = 'ADD_SCREEN';
 var EDIT_SCREEN_NAME = exports.EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
 var EDIT_SCREEN_CONTENT = exports.EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
+var MOVE_SCREEN = exports.MOVE_SCREEN = 'MOVE_SCREEN';
 
 function addScreen(screen) {
     return { type: ADD_SCREEN, payload: { screen: screen } };
@@ -4689,6 +4691,10 @@ function editScreenName(screenId, newName) {
 
 function editScreenContent(screenId, newContent) {
     return { type: EDIT_SCREEN_CONTENT, payload: { screenId: screenId, newContent: newContent } };
+}
+
+function moveScreen(screenId, newX, newY) {
+    return { type: MOVE_SCREEN, payload: { screenId: screenId, newX: newX, newY: newY } };
 }
 
 /***/ }),
@@ -11177,6 +11183,8 @@ var _reactDraggable = __webpack_require__(216);
 
 var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
 
+var _actions = __webpack_require__(35);
+
 var _selectors = __webpack_require__(36);
 
 var _selectors2 = _interopRequireDefault(_selectors);
@@ -11220,11 +11228,9 @@ var Board = function (_React$Component) {
         };
 
         _this.renderScreen = function (screen) {
-            function onDrag(e, data) {
-                screen.x = data.x;
-                screen.y = data.y;
-                // TODO: dispatch Redux action
-            }
+            var onDrag = function onDrag(e, data) {
+                _this.props.moveScreen(screen.id, data.x, data.y);
+            };
 
             return _react2.default.createElement(
                 _reactDraggable2.default,
@@ -11300,9 +11306,12 @@ var Board = function (_React$Component) {
 }(_react2.default.Component);
 
 Board.propTypes = {
+    moveScreen: _react.PropTypes.func,
     screens: _react.PropTypes.array
 };
 Board.defaultProps = {
+    moveScreen: function moveScreen() {},
+
     screens: []
 };
 
@@ -11313,7 +11322,15 @@ var mapStateToProps = function mapStateToProps(state) {
     };
 };
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps)(Board);
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return {
+        moveScreen: function moveScreen(screenId, newX, newY) {
+            dispatch((0, _actions.moveScreen)(screenId, newX, newY));
+        }
+    };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Board);
 
 /***/ }),
 /* 107 */
@@ -11897,6 +11914,15 @@ function screens() {
                 _newScreen2.choicesIds.push(action.payload.screenChoice.id);
 
                 return _extends({}, state, _defineProperty({}, action.payload.screenId, _newScreen2));
+            }
+
+        case _actions.MOVE_SCREEN:
+            {
+                var _newScreen3 = state[action.payload.screenId].clone();
+                _newScreen3.x = action.payload.newX;
+                _newScreen3.y = action.payload.newY;
+
+                return _extends({}, state, _defineProperty({}, action.payload.screenId, _newScreen3));
             }
 
         default:
@@ -29385,8 +29411,6 @@ var mapStateToProps = function mapStateToProps(state) {
             return !!arrow;
         })));
     }, []);
-
-    console.log(arrows);
 
     return { arrows: arrows };
 };

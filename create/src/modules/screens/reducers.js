@@ -3,6 +3,7 @@ import {
     ADD_SCREEN,
     EDIT_SCREEN_NAME,
     EDIT_SCREEN_CONTENT,
+    MOVE_SCREEN,
 } from 'Modules/screens/actions';
 
 import {
@@ -56,6 +57,17 @@ function screens(state = INITIAL_STATE, action) {
         case ADD_SCREEN_CHOICE: {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.choicesIds.push(action.payload.screenChoice.id);
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case MOVE_SCREEN: {
+            const newScreen = state[action.payload.screenId].clone();
+            newScreen.x = action.payload.newX;
+            newScreen.y = action.payload.newY;
 
             return {
                 ...state,

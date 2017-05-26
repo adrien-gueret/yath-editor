@@ -4,16 +4,20 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 import Draggable from 'react-draggable';
 
+import { moveScreen } from 'Modules/screens/actions';
+
 import screensSelectors from 'Modules/screens/selectors';
 import ScreenEdit from 'Modules/screens/components/ScreenEdit';
 import ArrowsBoard from '../ArrowsBoard';
 
 class Board extends React.Component {
     static propTypes = {
+        moveScreen: PropTypes.func,
         screens: PropTypes.array,
     };
 
     static defaultProps = {
+        moveScreen() {},
         screens: [],
     };
 
@@ -45,11 +49,9 @@ class Board extends React.Component {
     };
 
     renderScreen = (screen) => {
-        function onDrag(e, data) {
-            screen.x = data.x;
-            screen.y = data.y;
-            // TODO: dispatch Redux action
-        }
+        const onDrag = (e, data) => {
+            this.props.moveScreen(screen.id, data.x, data.y);
+        };
 
         return (
             <Draggable
@@ -88,10 +90,14 @@ class Board extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        screens: screensSelectors.getAsArray(state),
-    }
-};
+const mapStateToProps = (state) => ({
+    screens: screensSelectors.getAsArray(state),
+});
 
-export default connect(mapStateToProps)(Board);
+const mapDispatchToProps = (dispatch) => ({
+    moveScreen(screenId, newX, newY) {
+        dispatch(moveScreen(screenId, newX, newY));
+    }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

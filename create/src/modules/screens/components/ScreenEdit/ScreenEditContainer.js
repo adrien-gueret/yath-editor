@@ -26,25 +26,23 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onEditScreenName(screenId, newName) {
-            dispatch(editScreenName(screenId, newName));
-        },
-        onEditScreenContent(screenId, newContent) {
-            dispatch(editScreenContent(screenId, newContent));
-        },
-        onAddScreenChoice(screenId) {
-            dispatch(addScreenChoice(screenId, new ScreenChoice()));
-        },
-        onEditScreenChoiceLabel(screenChoiceId, newLabel) {
-            dispatch(editScreenChoiceLabel(screenChoiceId, newLabel));
-        },
-        onEditScreenChoiceTarget(screenChoiceId, newTargetId) {
-            dispatch(editScreenChoiceTarget(screenChoiceId, newTargetId));
-        },
-    };
-};
+const mapDispatchToProps = (dispatch) => ({
+    onEditScreenName(screenId, newName) {
+        dispatch(editScreenName(screenId, newName));
+    },
+    onEditScreenContent(screenId, newContent) {
+        dispatch(editScreenContent(screenId, newContent));
+    },
+    onAddScreenChoice(screenId) {
+        dispatch(addScreenChoice(screenId, new ScreenChoice()));
+    },
+    onEditScreenChoiceLabel(screenChoiceId, newLabel) {
+        dispatch(editScreenChoiceLabel(screenChoiceId, newLabel));
+    },
+    onEditScreenChoiceTarget(screenChoiceId, newTargetId) {
+        dispatch(editScreenChoiceTarget(screenChoiceId, newTargetId));
+    },
+});
 
 const ScreenEditContainer = connect(mapStateToProps, mapDispatchToProps)(ScreenEdit);
 ScreenEditContainer.propTypes = propTypes;
