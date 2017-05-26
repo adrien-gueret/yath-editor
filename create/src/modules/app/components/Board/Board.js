@@ -6,6 +6,7 @@ import Draggable from 'react-draggable';
 
 import screensSelectors from 'Modules/screens/selectors';
 import ScreenEdit from 'Modules/screens/components/ScreenEdit';
+import ArrowsBoard from '../ArrowsBoard';
 
 class Board extends React.Component {
     static propTypes = {
@@ -81,6 +82,7 @@ class Board extends React.Component {
                         onClose={ this.onCloseScreenEditHandler }
                     />
                 }
+                <ArrowsBoard />
             </section>
         );
     }
