@@ -2,12 +2,10 @@ import './board.less';
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import Draggable from 'react-draggable';
-
-import { moveScreen } from 'Modules/screens/actions';
 
 import screensSelectors from 'Modules/screens/selectors';
 import ScreenEdit from 'Modules/screens/components/ScreenEdit';
+import Screen from 'Modules/screens/components/Screen';
 import ArrowsBoard from '../ArrowsBoard';
 
 class Board extends React.Component {
@@ -48,36 +46,14 @@ class Board extends React.Component {
         return () => { this.setState(() => ({ editScreenId })); };
     };
 
-    renderScreen = (screen) => {
-        const onDrag = (e, data) => {
-            this.props.moveScreen(screen.id, data.x, data.y);
-        };
-
-        return (
-            <Draggable
-                key={ screen.id }
-                bounds={{ left: 0, top: 0 }}
-                defaultPosition={ screen }
-                handle=".yathBoard__screenName"
-                onDrag={ onDrag }
-            >
-                <div className="yathBoard__screen">
-                    <header className="yathBoard__screenHeader">
-                        <span className="yathBoard__screenName">{ screen.name }</span>
-                        <span
-                            className="yathBoard__screenEditButton"
-                            onClick={ this.setEditScreenHandler(screen.id) }
-                        >✎</span>
-                    </header>
-                </div>
-            </Draggable>
-        );
-    };
-
     render() {
         return (
             <section className="yathBoard">
-                { this.props.screens.map(this.renderScreen) }
+                {
+                    this.props.screens.map(screen =>  (
+                        <Screen onEdit={ this.setEditScreenHandler } key={ screen.id } screenId={screen.id} />
+                    ))
+                }
                 {
                     this.state.editScreenId &&
                     <ScreenEdit
@@ -95,10 +71,4 @@ const mapStateToProps = (state) => ({
     screens: screensSelectors.getAsArray(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    moveScreen(screenId, newX, newY) {
-        dispatch(moveScreen(screenId, newX, newY));
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Board);
+export default connect(mapStateToProps)(Board);

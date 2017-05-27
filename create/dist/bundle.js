@@ -11353,12 +11353,6 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(21);
 
-var _reactDraggable = __webpack_require__(220);
-
-var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
-
-var _actions = __webpack_require__(27);
-
 var _selectors = __webpack_require__(28);
 
 var _selectors2 = _interopRequireDefault(_selectors);
@@ -11366,6 +11360,10 @@ var _selectors2 = _interopRequireDefault(_selectors);
 var _ScreenEdit = __webpack_require__(116);
 
 var _ScreenEdit2 = _interopRequireDefault(_ScreenEdit);
+
+var _Screen = __webpack_require__(254);
+
+var _Screen2 = _interopRequireDefault(_Screen);
 
 var _ArrowsBoard = __webpack_require__(109);
 
@@ -11401,44 +11399,6 @@ var Board = function (_React$Component) {
             };
         };
 
-        _this.renderScreen = function (screen) {
-            var onDrag = function onDrag(e, data) {
-                _this.props.moveScreen(screen.id, data.x, data.y);
-            };
-
-            return _react2.default.createElement(
-                _reactDraggable2.default,
-                {
-                    key: screen.id,
-                    bounds: { left: 0, top: 0 },
-                    defaultPosition: screen,
-                    handle: '.yathBoard__screenName',
-                    onDrag: onDrag
-                },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'yathBoard__screen' },
-                    _react2.default.createElement(
-                        'header',
-                        { className: 'yathBoard__screenHeader' },
-                        _react2.default.createElement(
-                            'span',
-                            { className: 'yathBoard__screenName' },
-                            screen.name
-                        ),
-                        _react2.default.createElement(
-                            'span',
-                            {
-                                className: 'yathBoard__screenEditButton',
-                                onClick: _this.setEditScreenHandler(screen.id)
-                            },
-                            '\u270E'
-                        )
-                    )
-                )
-            );
-        };
-
         _this.state = {
             editScreenId: null
         };
@@ -11464,10 +11424,14 @@ var Board = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
             return _react2.default.createElement(
                 'section',
                 { className: 'yathBoard' },
-                this.props.screens.map(this.renderScreen),
+                this.props.screens.map(function (screen) {
+                    return _react2.default.createElement(_Screen2.default, { onEdit: _this2.setEditScreenHandler, key: screen.id, screenId: screen.id });
+                }),
                 this.state.editScreenId && _react2.default.createElement(_ScreenEdit2.default, {
                     screenId: this.state.editScreenId,
                     onClose: this.onCloseScreenEditHandler
@@ -11497,15 +11461,7 @@ var mapStateToProps = function mapStateToProps(state) {
     };
 };
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        moveScreen: function moveScreen(screenId, newX, newY) {
-            dispatch((0, _actions.moveScreen)(screenId, newX, newY));
-        }
-    };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Board);
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(Board);
 
 /***/ }),
 /* 111 */
@@ -14020,7 +13976,7 @@ exports = module.exports = __webpack_require__(37)(undefined);
 
 
 // module
-exports.push([module.i, ".yathBoard {\n  display: block;\n  margin: 0;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 50px;\n  overflow: auto;\n  background: #e3e3e3;\n}\n.yathBoard__screen {\n  display: block;\n  position: absolute;\n}\n.yathBoard__screenHeader {\n  font-size: 1.2rem;\n  font-family: monospace;\n}\n.yathBoard__screenName {\n  font-weight: bold;\n  color: #fff;\n  background-color: #333;\n  padding: 5px;\n  cursor: move;\n}\n.yathBoard__screenEditButton {\n  cursor: pointer;\n  background-color: #fff;\n  color: #333;\n  padding: 4px;\n  border: 1px solid #333;\n}\n.yathBoard__screenEditButton:hover {\n  color: #fff;\n  background-color: #333;\n  border-color: #fff;\n}\n", ""]);
+exports.push([module.i, ".yathBoard {\n  display: block;\n  margin: 0;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 50px;\n  overflow: auto;\n  background: #e3e3e3;\n}\n", ""]);
 
 // exports
 
@@ -29420,6 +29376,222 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+/* 252 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+__webpack_require__(256);
+
+var _react = __webpack_require__(9);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDraggable = __webpack_require__(220);
+
+var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Screen = function (_React$Component) {
+    _inherits(Screen, _React$Component);
+
+    function Screen() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, Screen);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Screen.__proto__ || Object.getPrototypeOf(Screen)).call.apply(_ref, [this].concat(args))), _this), _this.dragHandler = function (e, data) {
+            _this.props.moveScreen(_this.props.screen.id, data.x, data.y);
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(Screen, [{
+        key: 'render',
+        value: function render() {
+            var screen = this.props.screen;
+
+
+            return _react2.default.createElement(
+                _reactDraggable2.default,
+                {
+                    bounds: { left: 0, top: 0 },
+                    defaultPosition: screen,
+                    handle: '.yathScreen__name',
+                    onDrag: this.dragHandler
+                },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'yathScreen' },
+                    _react2.default.createElement(
+                        'header',
+                        { className: 'yathScreen__header' },
+                        _react2.default.createElement(
+                            'span',
+                            { className: 'yathScreen__name' },
+                            screen.name
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            {
+                                className: 'yathScreen__editButton',
+                                onClick: this.props.onEdit(screen.id)
+                            },
+                            '\u270E'
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Screen;
+}(_react2.default.Component);
+
+Screen.propTypes = {
+    onEdit: _react.PropTypes.func.isRequired,
+    moveScreen: _react.PropTypes.func.isRequired,
+    screen: _react.PropTypes.shape({
+        id: _react.PropTypes.number,
+        name: _react.PropTypes.string,
+        x: _react.PropTypes.number,
+        y: _react.PropTypes.number
+    }).isRequired
+};
+exports.default = Screen;
+
+/***/ }),
+/* 253 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(9);
+
+var _reactRedux = __webpack_require__(21);
+
+var _Screen = __webpack_require__(252);
+
+var _Screen2 = _interopRequireDefault(_Screen);
+
+var _actions = __webpack_require__(27);
+
+var _selectors = __webpack_require__(28);
+
+var _selectors2 = _interopRequireDefault(_selectors);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var propTypes = {
+    onEdit: _react.PropTypes.func.isRequired,
+    screenId: _react.PropTypes.number.isRequired
+};
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    var screen = _selectors2.default.getById(state, ownProps.screenId);
+
+    return _extends({}, ownProps, { screen: screen });
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return {
+        moveScreen: function moveScreen(screenId, newX, newY) {
+            dispatch((0, _actions.moveScreen)(screenId, newX, newY));
+        }
+    };
+};
+
+var ScreenContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Screen2.default);
+ScreenContainer.propTypes = propTypes;
+
+exports.default = ScreenContainer;
+
+/***/ }),
+/* 254 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _ScreenContainer = __webpack_require__(253);
+
+var _ScreenContainer2 = _interopRequireDefault(_ScreenContainer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _ScreenContainer2.default;
+
+/***/ }),
+/* 255 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(37)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".yathScreen {\n  display: block;\n  position: absolute;\n}\n.yathScreen__header {\n  font-size: 1.2rem;\n  font-family: monospace;\n}\n.yathScreen__name {\n  font-weight: bold;\n  color: #fff;\n  background-color: #333;\n  padding: 5px;\n  cursor: move;\n}\n.yathScreen__editButton {\n  cursor: pointer;\n  background-color: #fff;\n  color: #333;\n  padding: 4px;\n  border: 1px solid #333;\n}\n.yathScreen__editButton:hover {\n  color: #fff;\n  background-color: #333;\n  border-color: #fff;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 256 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(255);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(61)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/less-loader/dist/index.js!./screen.less", function() {
+			var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/less-loader/dist/index.js!./screen.less");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);
