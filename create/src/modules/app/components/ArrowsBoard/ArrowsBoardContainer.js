@@ -11,6 +11,7 @@ const mapStateToProps = (state) => {
     const arrows = screens.reduce((allArrows, screen) => {
         const start = { x: screen.x, y: screen.y };
         const choices = screensChoicesSelectors.getByIds(state, screen.choicesIds);
+
         const newArrows = choices.map(choice => {
           const targetScreen = screensSelectors.getById(state, choice.targetScreenId);
 

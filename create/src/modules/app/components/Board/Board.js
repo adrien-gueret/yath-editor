@@ -56,6 +56,7 @@ class Board extends React.Component {
         return (
             <Draggable
                 key={ screen.id }
+                bounds={{ left: 0, top: 0 }}
                 defaultPosition={ screen }
                 handle=".yathBoard__screenName"
                 onDrag={ onDrag }
