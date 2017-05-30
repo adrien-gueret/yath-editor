@@ -9,6 +9,8 @@ class Screen {
         this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;
         this.y = Screen.DEFAULT_COORDINATE;
+        this.width = 0;
+        this.height = 0;
         this.choicesIds = [];
     }
 
@@ -20,6 +22,8 @@ class Screen {
         const copiedScreen = new Screen(this.name, this.content, this.id);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
+        copiedScreen.width = this.width;
+        copiedScreen.height = this.height;
         copiedScreen.choicesIds = [...this.choicesIds];
 
         return copiedScreen;

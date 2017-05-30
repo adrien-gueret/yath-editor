@@ -2,6 +2,7 @@ export const ADD_SCREEN = 'ADD_SCREEN';
 export const EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
 export const EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
 export const MOVE_SCREEN = 'MOVE_SCREEN';
+export const RESIZE_SCREEN = 'RESIZE_SCREEN';
 
 export function addScreen(screen) {
     return { type: ADD_SCREEN, payload: { screen } };
@@ -17,4 +18,8 @@ export function editScreenContent(screenId, newContent) {
 
 export function moveScreen(screenId, newX, newY) {
     return { type: MOVE_SCREEN, payload: { screenId, newX, newY } };
+}
+
+export function resizeScreen(screenId, newWidth, newHeight) {
+    return { type: RESIZE_SCREEN, payload: { screenId, newWidth, newHeight } };
 }

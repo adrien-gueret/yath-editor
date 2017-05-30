@@ -24,7 +24,7 @@ function ArrowsBoard ({ arrows }) {
     return (
         <svg width="100%" height="100%" className="arrowsBoard">
             <defs>
-                <marker id="arrow" markerWidth="13" markerHeight="13" refX="2" refY="6" orient="auto">
+                <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6" orient="auto">
                     <path d="M2,1 L2,10 L10,6 L2,2" className="arrowsBoard__arrowMarker" />
                 </marker>
             </defs>

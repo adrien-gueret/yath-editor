@@ -4,6 +4,7 @@ import {
     EDIT_SCREEN_NAME,
     EDIT_SCREEN_CONTENT,
     MOVE_SCREEN,
+    RESIZE_SCREEN,
 } from 'Modules/screens/actions';
 
 import {
@@ -68,6 +69,17 @@ function screens(state = INITIAL_STATE, action) {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.x = action.payload.newX;
             newScreen.y = action.payload.newY;
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case RESIZE_SCREEN: {
+            const newScreen = state[action.payload.screenId].clone();
+            newScreen.width = parseInt(action.payload.newWidth, 10);
+            newScreen.height = parseInt(action.payload.newHeight, 10);
 
             return {
                 ...state,

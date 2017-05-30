@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import Screen from './Screen';
 
-import { moveScreen } from 'Modules/screens/actions';
+import { moveScreen, resizeScreen } from 'Modules/screens/actions';
 
 import screensSelectors from 'Modules/screens/selectors';
 
@@ -21,6 +21,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => ({
     moveScreen(screenId, newX, newY) {
         dispatch(moveScreen(screenId, newX, newY));
+    },
+    resizeScreen(screenId, newWidth, newHeight) {
+        dispatch(resizeScreen(screenId, newWidth, newHeight));
     },
 });
 

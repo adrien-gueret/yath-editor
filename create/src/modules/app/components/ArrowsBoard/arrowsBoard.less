@@ -1,14 +1,17 @@
 .arrowsBoard {
-  @arrowsColor: #000;
+  position: absolute;
+  pointer-events: none;
+  z-index: 100;
 
   &__arrowMarker {
-    fill: @arrowsColor;
+    fill: #1e1e1e;
+    stroke: white;
   }
 
   &__arrow {
-    stroke: @arrowsColor;
-    stroke-width: 1px;
-    fill: none;
+    stroke: rgba(0, 0, 0, .4);
+    fill: blue;
+    stroke-width: 2px;
     marker-end: url(#arrow);
   }
 }
