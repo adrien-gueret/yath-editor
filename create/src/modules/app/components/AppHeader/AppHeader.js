@@ -1,3 +1,5 @@
+import './appHeader.less';
+
 import React, { PropTypes } from 'react';
 
 import Screen from 'Modules/screens/models/Screen';
@@ -16,7 +18,12 @@ function AppHeader({ onAddScreen }) {
     }
 
     return (
-        <button onClick={ onAddScreenClickHandler }>+</button>
+        <header className="appHeader">
+            <button onClick={ onAddScreenClickHandler } className="appHeader__button appHeader__button--addScreen">🔨</button>
+            <button disabled className="appHeader__button appHeader__button--save">💾</button>
+            <span className="appHeader__tooltip appHeader__tooltip--addScreen">Add screen</span>
+            <span className="appHeader__tooltip appHeader__tooltip--save">Save</span>
+        </header>
     );
 }
 

@@ -134,7 +134,11 @@ class ScreenEdit extends React.Component {
                 <label>Choices:</label>
                 <div>
                     { this.renderChoices() }
-                    <button onClick={ this.addChoice }>Add choice</button>
+                    <button
+                        onClick={ this.addChoice }
+                        title="Add choice"
+                        className="screenEdit__addChoice"
+                    >🏃</button>
                 </div>
             </div>
         );
@@ -142,8 +146,8 @@ class ScreenEdit extends React.Component {
 
     render() {
         return (
-            <section className="screenEdit-overlay">
-                <div className="screenEdit-content">
+            <section className="screenEdit__overlay">
+                <div className="screenEdit__content">
                     <label htmlFor="screenEditName">Screen name:</label>
                     <input
                         id="screenEditName"
@@ -160,7 +164,11 @@ class ScreenEdit extends React.Component {
                     />
                     <br />
                     { this.renderChoicesContainer() }
-                    <button onClick={ this.props.onClose }>Close</button>
+                    <button
+                        onClick={ this.props.onClose }
+                        title="Submit"
+                        className="screenEdit__submit"
+                    >✔️</button>
                 </div>
             </section>
         );

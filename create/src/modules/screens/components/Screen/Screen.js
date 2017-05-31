@@ -51,7 +51,7 @@ class Screen extends React.Component {
 
         return (
             <Draggable
-                bounds={{ left: 0, top: 0 }}
+                bounds="parent"
                 defaultPosition={ screen }
                 handle=".yathScreen__name"
                 onDrag={ this.dragHandler }
@@ -62,7 +62,7 @@ class Screen extends React.Component {
                         <span
                             className="yathScreen__editButton"
                             onClick={ this.props.onEdit(screen.id) }
-                        >✎</span>
+                        >✏️</span>
                     </header>
                 </div>
             </Draggable>

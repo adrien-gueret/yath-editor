@@ -1,16 +1,16 @@
 .screenEdit {
-  &-overlay {
+  &__overlay {
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, .8);
-    padding: 30px;
+    padding: 80px;
     z-index: 1000;
   }
 
-  &-content {
+  &__content {
     width: 40%;
     margin: auto;
     padding: 20px;
@@ -64,5 +64,14 @@
       padding: 3px;
       text-align: center;
     }
+  }
+
+  &__submit {
+    font-size: 1.3rem;
+    float: right;
+  }
+
+  &__addChoice {
+    font-size: 1.2rem;
   }
 }
