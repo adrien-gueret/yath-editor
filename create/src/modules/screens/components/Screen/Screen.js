@@ -14,6 +14,11 @@ class Screen extends React.Component {
             x: PropTypes.number,
             y: PropTypes.number,
         }).isRequired,
+        hasChoiceWithoutTarget: PropTypes.bool,
+    };
+
+    static defaultProps = {
+        hasChoiceWithoutTarget: false,
     };
 
     constructor(props) {
@@ -47,7 +52,8 @@ class Screen extends React.Component {
     };
 
     render() {
-        const { screen } = this.props;
+        const { screen, hasChoiceWithoutTarget } = this.props;
+        const className = `yathScreen ${hasChoiceWithoutTarget ? 'yathScreen--error' : ''}`;
 
         return (
             <Draggable
@@ -56,7 +62,11 @@ class Screen extends React.Component {
                 handle=".yathScreen__name"
                 onDrag={ this.dragHandler }
             >
-                <div className="yathScreen" ref={this.setDomElement}>
+                <div
+                    className={className}
+                    ref={this.setDomElement}
+                    title={hasChoiceWithoutTarget ? 'This screen has some choices without targets' : null}
+                >
                     <header className="yathScreen__header">
                         <span className="yathScreen__name">{ screen.name }</span>
                         <span

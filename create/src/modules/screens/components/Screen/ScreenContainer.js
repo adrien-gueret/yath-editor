@@ -15,7 +15,11 @@ const propTypes = {
 const mapStateToProps = (state, ownProps) => {
     const screen = screensSelectors.getById(state, ownProps.screenId);
 
-    return { ...ownProps, screen };
+    return {
+        ...ownProps,
+        screen,
+        hasChoiceWithoutTarget: screensSelectors.hasChoiceWithoutTarget(state, ownProps.screenId),
+    };
 };
 
 const mapDispatchToProps = (dispatch) => ({

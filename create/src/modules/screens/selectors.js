@@ -1,3 +1,5 @@
+import choicesSelectors from 'Modules/screensChoices/selectors';
+
 function get(state) {
     return state.screens;
 }
@@ -16,9 +18,21 @@ function getAllExceptOne(state, screenId) {
     return getAsArray(state).filter(screen => screen.id !== screenId);
 }
 
+function hasChoiceWithoutTarget(state, screenId) {
+    const screen = getById(state, screenId);
+
+    if (!screen) {
+        return false;
+    }
+
+    const choices = choicesSelectors.getByIds(state, screen.choicesIds);
+    return choices.some(choice => !choice.targetScreenId);
+}
+
 export default {
     get,
     getAsArray,
     getAllExceptOne,
     getById,
+    hasChoiceWithoutTarget,
 };
