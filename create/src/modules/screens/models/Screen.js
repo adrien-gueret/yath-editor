@@ -1,5 +1,7 @@
 let screenLastId = 1;
 
+// TODO: check node-uuid
+
 class Screen {
     static DEFAULT_COORDINATE = 100;
 

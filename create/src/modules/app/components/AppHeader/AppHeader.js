@@ -1,14 +1,21 @@
 import './appHeader.less';
 
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux'
 
 import Screen from 'Modules/screens/models/Screen';
+import downloadJson from 'Modules/download';
 
 const propTypes = {
     onAddScreen: PropTypes.func.isRequired,
+    appState: PropTypes.object,
 };
 
-function AppHeader({ onAddScreen }) {
+const defaultProps = {
+    appState: {},
+};
+
+function AppHeader({ onAddScreen, appState }) {
     function onAddScreenClickHandler() {
         const screenName = prompt('Screen name?');
 
@@ -17,10 +24,14 @@ function AppHeader({ onAddScreen }) {
         }
     }
 
+    function save() {
+        downloadJson('yath', appState);
+    }
+
     return (
         <header className="appHeader">
             <button onClick={ onAddScreenClickHandler } className="appHeader__button appHeader__button--addScreen">🔨</button>
-            <button disabled className="appHeader__button appHeader__button--save">💾</button>
+            <button onClick={ save } className="appHeader__button appHeader__button--save">💾</button>
             <span className="appHeader__tooltip appHeader__tooltip--addScreen">Add screen</span>
             <span className="appHeader__tooltip appHeader__tooltip--save">Save</span>
         </header>
@@ -28,5 +39,12 @@ function AppHeader({ onAddScreen }) {
 }
 
 AppHeader.propTypes = propTypes;
+AppHeader.defaultProps = defaultProps;
 
-export default AppHeader;
+const mapStateToProps = (state) => {
+    return {
+        appState: state,
+    }
+};
+
+export default connect(mapStateToProps)(AppHeader);
