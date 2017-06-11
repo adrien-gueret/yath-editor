@@ -8,7 +8,7 @@ class Screen {
         this.name = name;
         this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;
-        this.y = Screen.DEFAULT_COORDINATE;
+        this.y = Screen.DEFAULT_COORDINATE + document.body.scrollTop;
         this.width = 0;
         this.height = 0;
         this.choicesIds = [];
