@@ -1,6 +1,7 @@
 import Screen from 'Modules/screens/models/Screen';
 import {
     ADD_SCREEN,
+    DELETE_SCREEN,
     EDIT_SCREEN_NAME,
     EDIT_SCREEN_CONTENT,
     MOVE_SCREEN,
@@ -22,6 +23,19 @@ function screens(state = INITIAL_STATE, action) {
                 ...state,
                 [action.payload.screen.id]: action.payload.screen,
             };
+
+        case DELETE_SCREEN: {
+            const screenToDelete = state[action.payload.screenId];
+
+            if (!screenToDelete) {
+                return state;
+            }
+
+            const newScreens = { ...state };
+            delete newScreens[screenToDelete.id];
+
+            return newScreens;
+        }
 
         case EDIT_SCREEN_NAME: {
             let newName = action.payload.newName;

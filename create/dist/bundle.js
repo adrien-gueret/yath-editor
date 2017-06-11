@@ -3284,6 +3284,53 @@ function updateLink(linkElement, options, obj) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.addScreen = addScreen;
+exports.editScreenName = editScreenName;
+exports.editScreenContent = editScreenContent;
+exports.moveScreen = moveScreen;
+exports.resizeScreen = resizeScreen;
+exports.deleteScreen = deleteScreen;
+var ADD_SCREEN = exports.ADD_SCREEN = 'ADD_SCREEN';
+var EDIT_SCREEN_NAME = exports.EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
+var EDIT_SCREEN_CONTENT = exports.EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
+var MOVE_SCREEN = exports.MOVE_SCREEN = 'MOVE_SCREEN';
+var RESIZE_SCREEN = exports.RESIZE_SCREEN = 'RESIZE_SCREEN';
+var DELETE_SCREEN = exports.DELETE_SCREEN = 'DELETE_SCREEN';
+
+function addScreen(screen) {
+    return { type: ADD_SCREEN, payload: { screen: screen } };
+}
+
+function editScreenName(screenId, newName) {
+    return { type: EDIT_SCREEN_NAME, payload: { screenId: screenId, newName: newName } };
+}
+
+function editScreenContent(screenId, newContent) {
+    return { type: EDIT_SCREEN_CONTENT, payload: { screenId: screenId, newContent: newContent } };
+}
+
+function moveScreen(screenId, newX, newY) {
+    return { type: MOVE_SCREEN, payload: { screenId: screenId, newX: newX, newY: newY } };
+}
+
+function resizeScreen(screenId, newWidth, newHeight) {
+    return { type: RESIZE_SCREEN, payload: { screenId: screenId, newWidth: newWidth, newHeight: newHeight } };
+}
+
+function deleteScreen(screenId) {
+    return { type: DELETE_SCREEN, payload: { screenId: screenId } };
+}
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _selectors = __webpack_require__(39);
 
@@ -3335,7 +3382,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3361,7 +3408,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3645,7 +3692,7 @@ module.exports = EventPluginHub;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3661,7 +3708,7 @@ module.exports = EventPluginHub;
 
 
 
-var EventPluginHub = __webpack_require__(26);
+var EventPluginHub = __webpack_require__(27);
 var EventPluginUtils = __webpack_require__(44);
 
 var accumulateInto = __webpack_require__(83);
@@ -3785,7 +3832,7 @@ module.exports = EventPropagators;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3838,7 +3885,7 @@ var ReactInstanceMap = {
 module.exports = ReactInstanceMap;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3900,47 +3947,6 @@ function SyntheticUIEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeEve
 SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.addScreen = addScreen;
-exports.editScreenName = editScreenName;
-exports.editScreenContent = editScreenContent;
-exports.moveScreen = moveScreen;
-exports.resizeScreen = resizeScreen;
-var ADD_SCREEN = exports.ADD_SCREEN = 'ADD_SCREEN';
-var EDIT_SCREEN_NAME = exports.EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
-var EDIT_SCREEN_CONTENT = exports.EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
-var MOVE_SCREEN = exports.MOVE_SCREEN = 'MOVE_SCREEN';
-var RESIZE_SCREEN = exports.RESIZE_SCREEN = 'RESIZE_SCREEN';
-
-function addScreen(screen) {
-    return { type: ADD_SCREEN, payload: { screen: screen } };
-}
-
-function editScreenName(screenId, newName) {
-    return { type: EDIT_SCREEN_NAME, payload: { screenId: screenId, newName: newName } };
-}
-
-function editScreenContent(screenId, newContent) {
-    return { type: EDIT_SCREEN_CONTENT, payload: { screenId: screenId, newContent: newContent } };
-}
-
-function moveScreen(screenId, newX, newY) {
-    return { type: MOVE_SCREEN, payload: { screenId: screenId, newX: newX, newY: newY } };
-}
-
-function resizeScreen(screenId, newWidth, newHeight) {
-    return { type: RESIZE_SCREEN, payload: { screenId: screenId, newWidth: newWidth, newHeight: newHeight } };
-}
 
 /***/ }),
 /* 31 */
@@ -4553,7 +4559,7 @@ module.exports = ReactBrowserEventEmitter;
 
 
 
-var SyntheticUIEvent = __webpack_require__(29);
+var SyntheticUIEvent = __webpack_require__(30);
 var ViewportMetrics = __webpack_require__(82);
 
 var getEventModifierState = __webpack_require__(52);
@@ -5123,14 +5129,20 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.addScreenChoice = addScreenChoice;
+exports.deleteScreenChoice = deleteScreenChoice;
 exports.editScreenChoiceLabel = editScreenChoiceLabel;
 exports.editScreenChoiceTarget = editScreenChoiceTarget;
 var ADD_SCREEN_CHOICE = exports.ADD_SCREEN_CHOICE = 'ADD_SCREEN_CHOICE';
+var DELETE_SCREEN_CHOICE = exports.DELETE_SCREEN_CHOICE = 'DELETE_SCREEN_CHOICE';
 var EDIT_SCREEN_CHOICE_LABEL = exports.EDIT_SCREEN_CHOICE_LABEL = 'EDIT_SCREEN_CHOICE_LABEL';
 var EDIT_SCREEN_CHOICE_TARGET = exports.EDIT_SCREEN_CHOICE_TARGET = 'EDIT_SCREEN_CHOICE_TARGET';
 
 function addScreenChoice(screenId, screenChoice) {
     return { type: ADD_SCREEN_CHOICE, payload: { screenId: screenId, screenChoice: screenChoice } };
+}
+
+function deleteScreenChoice(screenChoiceId) {
+    return { type: DELETE_SCREEN_CHOICE, payload: { screenChoiceId: screenChoiceId } };
 }
 
 function editScreenChoiceLabel(screenChoiceId, newLabel) {
@@ -6162,7 +6174,7 @@ module.exports = ReactErrorUtils;
 var _prodInvariant = __webpack_require__(3);
 
 var ReactCurrentOwner = __webpack_require__(12);
-var ReactInstanceMap = __webpack_require__(28);
+var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(9);
 var ReactUpdates = __webpack_require__(11);
 
@@ -7104,7 +7116,7 @@ var _prodInvariant = __webpack_require__(17);
 var ReactNoopUpdateQueue = __webpack_require__(59);
 
 var canDefineProperty = __webpack_require__(61);
-var emptyObject = __webpack_require__(25);
+var emptyObject = __webpack_require__(26);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -8739,14 +8751,14 @@ var ReactDOMComponentTree = __webpack_require__(5);
 var ReactDOMContainerInfo = __webpack_require__(171);
 var ReactDOMFeatureFlags = __webpack_require__(173);
 var ReactFeatureFlags = __webpack_require__(76);
-var ReactInstanceMap = __webpack_require__(28);
+var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(9);
 var ReactMarkupChecksum = __webpack_require__(193);
 var ReactReconciler = __webpack_require__(21);
 var ReactUpdateQueue = __webpack_require__(49);
 var ReactUpdates = __webpack_require__(11);
 
-var emptyObject = __webpack_require__(25);
+var emptyObject = __webpack_require__(26);
 var instantiateReactComponent = __webpack_require__(87);
 var invariant = __webpack_require__(1);
 var setInnerHTML = __webpack_require__(36);
@@ -11178,11 +11190,11 @@ var _Board = __webpack_require__(111);
 
 var _Board2 = _interopRequireDefault(_Board);
 
-var _selectors = __webpack_require__(24);
+var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
-var _actions = __webpack_require__(30);
+var _actions = __webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11320,7 +11332,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _reactRedux = __webpack_require__(18);
 
-var _selectors = __webpack_require__(24);
+var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
@@ -11436,7 +11448,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(18);
 
-var _selectors = __webpack_require__(24);
+var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
@@ -11494,13 +11506,16 @@ var Board = function (_React$Component) {
             var currentScreensIds = this.props.screens.map(function (screen) {
                 return screen.id;
             });
+            var newScreensIds = nextProps.screens.map(function (screen) {
+                return screen.id;
+            });
             var newScreen = nextProps.screens.filter(function (screen) {
                 return currentScreensIds.indexOf(screen.id) === -1;
             })[0];
 
             var editScreenId = newScreen ? newScreen.id : this.state.editScreenId;
 
-            if (editScreenId) {
+            if (editScreenId && newScreensIds.indexOf(editScreenId) >= 0) {
                 this.setEditScreenHandler(editScreenId)();
             }
         }
@@ -11694,6 +11709,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _actions = __webpack_require__(38);
 
+var _actions2 = __webpack_require__(24);
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function screensChoices() {
@@ -11704,6 +11721,20 @@ function screensChoices() {
         case _actions.ADD_SCREEN_CHOICE:
             {
                 return _extends({}, state, _defineProperty({}, action.payload.screenChoice.id, action.payload.screenChoice));
+            }
+
+        case _actions.DELETE_SCREEN_CHOICE:
+            {
+                var screenChoiceToDelete = state[action.payload.screenChoiceId];
+
+                if (!screenChoiceToDelete) {
+                    return state;
+                }
+
+                var newScreensChoices = _extends({}, state);
+                delete newScreensChoices[screenChoiceToDelete.id];
+
+                return newScreensChoices;
             }
 
         case _actions.EDIT_SCREEN_CHOICE_LABEL:
@@ -11720,6 +11751,18 @@ function screensChoices() {
                 _newScreenChoice.targetScreenId = action.payload.newTargetId;
 
                 return _extends({}, state, _defineProperty({}, action.payload.screenChoiceId, _newScreenChoice));
+            }
+
+        case _actions2.DELETE_SCREEN:
+            {
+                var screenId = action.payload.screenId;
+
+                return Object.keys(state).reduce(function (allChoices, choiceId) {
+                    var choice = state[choiceId].clone();
+                    choice.targetScreenId = choice.targetScreenId === screenId ? null : choice.targetScreenId;
+
+                    return _extends({}, allChoices, _defineProperty({}, choiceId, choice));
+                }, {});
             }
 
         default:
@@ -11800,6 +11843,18 @@ var ScreenEdit = function (_React$Component) {
                 var targetId = +e.target.value;
                 _this.props.onEditScreenChoiceTarget(choiceId, targetId);
             };
+        };
+
+        _this.onDeleteHandler = function () {
+            if (!confirm('Do you really want to delete this screen?')) {
+                return;
+            }
+
+            _this.props.screen.choicesIds.forEach(function (choiceId) {
+                return _this.props.onDeleteScreenChoice(choiceId);
+            });
+            _this.props.onDeleteScreen(_this.props.screen.id);
+            _this.props.onClose();
         };
 
         _this.state = {
@@ -11976,13 +12031,26 @@ var ScreenEdit = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     this.renderChoicesContainer(),
                     _react2.default.createElement(
-                        'button',
-                        {
-                            onClick: this.props.onClose,
-                            title: 'Submit',
-                            className: 'screenEdit__submit'
-                        },
-                        '\u2714\uFE0F'
+                        'footer',
+                        { className: 'screenEdit__footer' },
+                        _react2.default.createElement(
+                            'button',
+                            {
+                                onClick: this.onDeleteHandler,
+                                title: 'Delete',
+                                className: 'screenEdit__delete'
+                            },
+                            '\uD83D\uDCA3'
+                        ),
+                        _react2.default.createElement(
+                            'button',
+                            {
+                                onClick: this.props.onClose,
+                                title: 'Submit',
+                                className: 'screenEdit__submit'
+                            },
+                            '\u2714\uFE0F'
+                        )
                     )
                 )
             );
@@ -11994,6 +12062,8 @@ var ScreenEdit = function (_React$Component) {
 
 ScreenEdit.propTypes = {
     onAddScreenChoice: _react.PropTypes.func.isRequired,
+    onDeleteScreenChoice: _react.PropTypes.func.isRequired,
+    onDeleteScreen: _react.PropTypes.func.isRequired,
     onEditScreenChoiceLabel: _react.PropTypes.func.isRequired,
     onEditScreenChoiceTarget: _react.PropTypes.func.isRequired,
     onEditScreenContent: _react.PropTypes.func.isRequired,
@@ -12026,11 +12096,11 @@ var _ScreenEdit = __webpack_require__(115);
 
 var _ScreenEdit2 = _interopRequireDefault(_ScreenEdit);
 
-var _actions = __webpack_require__(30);
+var _actions = __webpack_require__(24);
 
 var _actions2 = __webpack_require__(38);
 
-var _selectors = __webpack_require__(24);
+var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
@@ -12075,6 +12145,12 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         },
         onEditScreenChoiceTarget: function onEditScreenChoiceTarget(screenChoiceId, newTargetId) {
             dispatch((0, _actions2.editScreenChoiceTarget)(screenChoiceId, newTargetId));
+        },
+        onDeleteScreen: function onDeleteScreen(screenId) {
+            dispatch((0, _actions.deleteScreen)(screenId));
+        },
+        onDeleteScreenChoice: function onDeleteScreenChoice(screenChoiceId) {
+            dispatch((0, _actions2.deleteScreenChoice)(screenChoiceId));
         }
     };
 };
@@ -12261,9 +12337,9 @@ var _Screen = __webpack_require__(118);
 
 var _Screen2 = _interopRequireDefault(_Screen);
 
-var _actions = __webpack_require__(30);
+var _actions = __webpack_require__(24);
 
-var _selectors = __webpack_require__(24);
+var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
@@ -12335,7 +12411,7 @@ var _Screen = __webpack_require__(65);
 
 var _Screen2 = _interopRequireDefault(_Screen);
 
-var _actions = __webpack_require__(30);
+var _actions = __webpack_require__(24);
 
 var _actions2 = __webpack_require__(38);
 
@@ -12354,6 +12430,20 @@ function screens() {
     switch (action.type) {
         case _actions.ADD_SCREEN:
             return _extends({}, state, _defineProperty({}, action.payload.screen.id, action.payload.screen));
+
+        case _actions.DELETE_SCREEN:
+            {
+                var screenToDelete = state[action.payload.screenId];
+
+                if (!screenToDelete) {
+                    return state;
+                }
+
+                var newScreens = _extends({}, state);
+                delete newScreens[screenToDelete.id];
+
+                return newScreens;
+            }
 
         case _actions.EDIT_SCREEN_NAME:
             {
@@ -14405,7 +14495,7 @@ exports = module.exports = __webpack_require__(19)(undefined);
 
 
 // module
-exports.push([module.i, ".screenEdit__overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 80px;\n  z-index: 1000;\n}\n.screenEdit__content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n  max-height: 90%;\n  overflow: auto;\n}\n.screenEdit__content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit__content input,\n.screenEdit__content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit__content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n.screenEdit__content table {\n  width: 100%;\n  margin: 5px;\n  border-collapse: collapse;\n  border: 1px solid #e3e3e3;\n}\n.screenEdit__content tr {\n  background-color: #fff;\n}\n.screenEdit__content tr:nth-child(2n) {\n  background-color: #e3e3e3;\n}\n.screenEdit__content th {\n  background-color: #000;\n  color: #fff;\n}\n.screenEdit__content td {\n  padding: 3px;\n  text-align: center;\n}\n.screenEdit__submit {\n  font-size: 1.3rem;\n  float: right;\n}\n.screenEdit__addChoice {\n  font-size: 1.2rem;\n}\n", ""]);
+exports.push([module.i, ".screenEdit__overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 80px;\n  z-index: 1000;\n}\n.screenEdit__content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n  max-height: 90%;\n  overflow: auto;\n}\n.screenEdit__content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit__content input,\n.screenEdit__content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit__content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n.screenEdit__content table {\n  width: 100%;\n  margin: 5px;\n  border-collapse: collapse;\n  border: 1px solid #e3e3e3;\n}\n.screenEdit__content tr {\n  background-color: #fff;\n}\n.screenEdit__content tr:nth-child(2n) {\n  background-color: #e3e3e3;\n}\n.screenEdit__content th {\n  background-color: #000;\n  color: #fff;\n}\n.screenEdit__content td {\n  padding: 3px;\n  text-align: center;\n}\n.screenEdit__footer {\n  margin-top: 10px;\n  padding-top: 10px;\n  border-top: 1px solid #e3e3e3;\n}\n.screenEdit__submit,\n.screenEdit__delete {\n  font-size: 1.3rem;\n  float: right;\n}\n.screenEdit__delete {\n  float: left;\n}\n.screenEdit__addChoice {\n  font-size: 1.2rem;\n}\n", ""]);
 
 // exports
 
@@ -15727,7 +15817,7 @@ module.exports = AutoFocusUtils;
 
 
 
-var EventPropagators = __webpack_require__(27);
+var EventPropagators = __webpack_require__(28);
 var ExecutionEnvironment = __webpack_require__(6);
 var FallbackCompositionState = __webpack_require__(164);
 var SyntheticCompositionEvent = __webpack_require__(207);
@@ -16332,8 +16422,8 @@ module.exports = CSSPropertyOperations;
 
 
 
-var EventPluginHub = __webpack_require__(26);
-var EventPropagators = __webpack_require__(27);
+var EventPluginHub = __webpack_require__(27);
+var EventPropagators = __webpack_require__(28);
 var ExecutionEnvironment = __webpack_require__(6);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
@@ -16743,7 +16833,7 @@ module.exports = DefaultEventPluginOrder;
 
 
 
-var EventPropagators = __webpack_require__(27);
+var EventPropagators = __webpack_require__(28);
 var ReactDOMComponentTree = __webpack_require__(5);
 var SyntheticMouseEvent = __webpack_require__(33);
 
@@ -17367,7 +17457,7 @@ var React = __webpack_require__(22);
 var ReactComponentEnvironment = __webpack_require__(47);
 var ReactCurrentOwner = __webpack_require__(12);
 var ReactErrorUtils = __webpack_require__(48);
-var ReactInstanceMap = __webpack_require__(28);
+var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(9);
 var ReactNodeTypes = __webpack_require__(80);
 var ReactReconciler = __webpack_require__(21);
@@ -17376,7 +17466,7 @@ if (process.env.NODE_ENV !== 'production') {
   var checkReactTypeSpec = __webpack_require__(216);
 }
 
-var emptyObject = __webpack_require__(25);
+var emptyObject = __webpack_require__(26);
 var invariant = __webpack_require__(1);
 var shallowEqual = __webpack_require__(40);
 var shouldUpdateReactComponent = __webpack_require__(55);
@@ -18396,7 +18486,7 @@ var DOMLazyTree = __webpack_require__(20);
 var DOMNamespaces = __webpack_require__(43);
 var DOMProperty = __webpack_require__(14);
 var DOMPropertyOperations = __webpack_require__(72);
-var EventPluginHub = __webpack_require__(26);
+var EventPluginHub = __webpack_require__(27);
 var EventPluginRegistry = __webpack_require__(31);
 var ReactBrowserEventEmitter = __webpack_require__(32);
 var ReactDOMComponentFlags = __webpack_require__(73);
@@ -21489,7 +21579,7 @@ module.exports = REACT_ELEMENT_TYPE;
 
 
 
-var EventPluginHub = __webpack_require__(26);
+var EventPluginHub = __webpack_require__(27);
 
 function runEventQueueInBatch(events) {
   EventPluginHub.enqueueEvents(events);
@@ -21727,7 +21817,7 @@ module.exports = ReactHostOperationHistoryHook;
 
 
 var DOMProperty = __webpack_require__(14);
-var EventPluginHub = __webpack_require__(26);
+var EventPluginHub = __webpack_require__(27);
 var EventPluginUtils = __webpack_require__(44);
 var ReactComponentEnvironment = __webpack_require__(47);
 var ReactEmptyComponent = __webpack_require__(75);
@@ -21866,7 +21956,7 @@ module.exports = ReactMarkupChecksum;
 var _prodInvariant = __webpack_require__(3);
 
 var ReactComponentEnvironment = __webpack_require__(47);
-var ReactInstanceMap = __webpack_require__(28);
+var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(9);
 
 var ReactCurrentOwner = __webpack_require__(12);
@@ -23295,7 +23385,7 @@ module.exports = SVGDOMPropertyConfig;
 
 
 
-var EventPropagators = __webpack_require__(27);
+var EventPropagators = __webpack_require__(28);
 var ExecutionEnvironment = __webpack_require__(6);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInputSelection = __webpack_require__(78);
@@ -23495,7 +23585,7 @@ module.exports = SelectEventPlugin;
 var _prodInvariant = __webpack_require__(3);
 
 var EventListener = __webpack_require__(66);
-var EventPropagators = __webpack_require__(27);
+var EventPropagators = __webpack_require__(28);
 var ReactDOMComponentTree = __webpack_require__(5);
 var SyntheticAnimationEvent = __webpack_require__(205);
 var SyntheticClipboardEvent = __webpack_require__(206);
@@ -23506,7 +23596,7 @@ var SyntheticMouseEvent = __webpack_require__(33);
 var SyntheticDragEvent = __webpack_require__(208);
 var SyntheticTouchEvent = __webpack_require__(212);
 var SyntheticTransitionEvent = __webpack_require__(213);
-var SyntheticUIEvent = __webpack_require__(29);
+var SyntheticUIEvent = __webpack_require__(30);
 var SyntheticWheelEvent = __webpack_require__(214);
 
 var emptyFunction = __webpack_require__(10);
@@ -23894,7 +23984,7 @@ module.exports = SyntheticDragEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(29);
+var SyntheticUIEvent = __webpack_require__(30);
 
 /**
  * @interface FocusEvent
@@ -23977,7 +24067,7 @@ module.exports = SyntheticInputEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(29);
+var SyntheticUIEvent = __webpack_require__(30);
 
 var getEventCharCode = __webpack_require__(51);
 var getEventKey = __webpack_require__(220);
@@ -24066,7 +24156,7 @@ module.exports = SyntheticKeyboardEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(29);
+var SyntheticUIEvent = __webpack_require__(30);
 
 var getEventModifierState = __webpack_require__(52);
 
@@ -24450,7 +24540,7 @@ var _prodInvariant = __webpack_require__(3);
 
 var ReactCurrentOwner = __webpack_require__(12);
 var ReactDOMComponentTree = __webpack_require__(5);
-var ReactInstanceMap = __webpack_require__(28);
+var ReactInstanceMap = __webpack_require__(29);
 
 var getHostComponentFromComposite = __webpack_require__(85);
 var invariant = __webpack_require__(1);
@@ -27584,7 +27674,7 @@ var ReactElement = __webpack_require__(16);
 var ReactPropTypeLocationNames = __webpack_require__(60);
 var ReactNoopUpdateQueue = __webpack_require__(59);
 
-var emptyObject = __webpack_require__(25);
+var emptyObject = __webpack_require__(26);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -28920,7 +29010,7 @@ var _assign = __webpack_require__(4);
 var ReactComponent = __webpack_require__(58);
 var ReactNoopUpdateQueue = __webpack_require__(59);
 
-var emptyObject = __webpack_require__(25);
+var emptyObject = __webpack_require__(26);
 
 /**
  * Base class helpers for the updating state of a component.

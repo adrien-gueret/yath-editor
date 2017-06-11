@@ -33,11 +33,12 @@ class Board extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const currentScreensIds = this.props.screens.map(screen => screen.id);
+        const newScreensIds = nextProps.screens.map(screen => screen.id);
         const newScreen = nextProps.screens.filter(screen => currentScreensIds.indexOf(screen.id) === -1)[0];
 
         const editScreenId = newScreen ? newScreen.id : this.state.editScreenId;
 
-        if (editScreenId) {
+        if (editScreenId && newScreensIds.indexOf(editScreenId) >= 0) {
             this.setEditScreenHandler(editScreenId)();
         }
     }

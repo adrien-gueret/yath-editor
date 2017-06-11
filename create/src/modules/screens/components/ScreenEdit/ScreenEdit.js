@@ -5,6 +5,8 @@ import React, { PropTypes } from 'react';
 class ScreenEdit extends React.Component {
     static propTypes = {
         onAddScreenChoice: PropTypes.func.isRequired,
+        onDeleteScreenChoice: PropTypes.func.isRequired,
+        onDeleteScreen: PropTypes.func.isRequired,
         onEditScreenChoiceLabel: PropTypes.func.isRequired,
         onEditScreenChoiceTarget: PropTypes.func.isRequired,
         onEditScreenContent: PropTypes.func.isRequired,
@@ -63,6 +65,16 @@ class ScreenEdit extends React.Component {
             const targetId = +e.target.value;
             this.props.onEditScreenChoiceTarget(choiceId, targetId);
         };
+    };
+
+    onDeleteHandler = () => {
+        if (!confirm('Do you really want to delete this screen?')) {
+            return;
+        }
+
+        this.props.screen.choicesIds.forEach(choiceId => this.props.onDeleteScreenChoice(choiceId));
+        this.props.onDeleteScreen(this.props.screen.id);
+        this.props.onClose();
     };
 
     renderChoicesList() {
@@ -164,11 +176,19 @@ class ScreenEdit extends React.Component {
                     />
                     <br />
                     { this.renderChoicesContainer() }
-                    <button
-                        onClick={ this.props.onClose }
-                        title="Submit"
-                        className="screenEdit__submit"
-                    >✔️</button>
+
+                    <footer className="screenEdit__footer">
+                        <button
+                            onClick={ this.onDeleteHandler }
+                            title="Delete"
+                            className="screenEdit__delete"
+                        >💣</button>
+                        <button
+                            onClick={ this.props.onClose }
+                            title="Submit"
+                            className="screenEdit__submit"
+                        >✔️</button>
+                    </footer>
                 </div>
             </section>
         );

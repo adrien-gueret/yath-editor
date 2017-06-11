@@ -3,8 +3,13 @@ import { connect } from 'react-redux'
 
 import ScreenEdit from './ScreenEdit';
 
-import { editScreenName, editScreenContent } from 'Modules/screens/actions';
-import { addScreenChoice, editScreenChoiceLabel, editScreenChoiceTarget } from 'Modules/screensChoices/actions';
+import { deleteScreen, editScreenName, editScreenContent } from 'Modules/screens/actions';
+import {
+    addScreenChoice,
+    deleteScreenChoice,
+    editScreenChoiceLabel,
+    editScreenChoiceTarget
+} from 'Modules/screensChoices/actions';
 
 import screensSelectors from 'Modules/screens/selectors';
 import screensChoicesSelectors from 'Modules/screensChoices/selectors';
@@ -41,6 +46,12 @@ const mapDispatchToProps = (dispatch) => ({
     },
     onEditScreenChoiceTarget(screenChoiceId, newTargetId) {
         dispatch(editScreenChoiceTarget(screenChoiceId, newTargetId));
+    },
+    onDeleteScreen(screenId) {
+        dispatch(deleteScreen(screenId));
+    },
+    onDeleteScreenChoice(screenChoiceId) {
+        dispatch(deleteScreenChoice(screenChoiceId));
     },
 });
 
