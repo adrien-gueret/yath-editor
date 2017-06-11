@@ -11818,6 +11818,16 @@ var ScreenEdit = function (_React$Component) {
             };
         };
 
+        _this.getOnDeleteChoiceHandler = function (choiceId) {
+            return function () {
+                if (!confirm('Do you really want to delete this choice?')) {
+                    return;
+                }
+
+                _this.props.onDeleteScreenChoice(choiceId);
+            };
+        };
+
         _this.onChangeNameHandler = function (e) {
             var screenName = e.target.value;
 
@@ -11897,6 +11907,11 @@ var ScreenEdit = function (_React$Component) {
                             'th',
                             null,
                             'Target screen'
+                        ),
+                        _react2.default.createElement(
+                            'th',
+                            null,
+                            'Delete'
                         )
                     )
                 ),
@@ -11941,6 +11956,18 @@ var ScreenEdit = function (_React$Component) {
                                             otherScreen.name
                                         );
                                     })
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                _react2.default.createElement(
+                                    'button',
+                                    {
+                                        onClick: _this2.getOnDeleteChoiceHandler(choice.id),
+                                        title: 'Delete this choice'
+                                    },
+                                    '\uD83D\uDCA3'
                                 )
                             )
                         );
@@ -12037,7 +12064,7 @@ var ScreenEdit = function (_React$Component) {
                             'button',
                             {
                                 onClick: this.onDeleteHandler,
-                                title: 'Delete',
+                                title: 'Delete screen',
                                 className: 'screenEdit__delete'
                             },
                             '\uD83D\uDCA3'

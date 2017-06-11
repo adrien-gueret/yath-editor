@@ -44,6 +44,16 @@ class ScreenEdit extends React.Component {
         };
     };
 
+    getOnDeleteChoiceHandler = (choiceId) => {
+        return () => {
+            if (!confirm('Do you really want to delete this choice?')) {
+                return;
+            }
+
+            this.props.onDeleteScreenChoice(choiceId);
+        };
+    };
+
     onChangeNameHandler = (e) => {
         const screenName = e.target.value;
 
@@ -84,6 +94,7 @@ class ScreenEdit extends React.Component {
                 <tr>
                     <th>Label</th>
                     <th>Target screen</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -115,6 +126,12 @@ class ScreenEdit extends React.Component {
                                         ))
                                     }
                                 </select>
+                            </td>
+                            <td>
+                                <button
+                                    onClick={ this.getOnDeleteChoiceHandler(choice.id) }
+                                    title="Delete this choice"
+                                >💣</button>
                             </td>
                         </tr>
                     ))
@@ -180,7 +197,7 @@ class ScreenEdit extends React.Component {
                     <footer className="screenEdit__footer">
                         <button
                             onClick={ this.onDeleteHandler }
-                            title="Delete"
+                            title="Delete screen"
                             className="screenEdit__delete"
                         >💣</button>
                         <button
