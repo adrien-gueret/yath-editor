@@ -50,7 +50,6 @@ class Board extends React.Component {
     render() {
         return (
             <section className="yathBoard">
-                <ArrowsBoard />
                 {
                     this.props.screens.map(screen =>  (
                         <Screen onEdit={ this.setEditScreenHandler } key={ screen.id } screenId={screen.id} />
@@ -63,6 +62,7 @@ class Board extends React.Component {
                         onClose={ this.onCloseScreenEditHandler }
                     />
                 }
+                <ArrowsBoard />
             </section>
         );
     }

@@ -1,8 +1,8 @@
-let screenChoiceLastId = 1;
+import uuid from 'uuid/v1';
 
 class ScreenChoice {
-    constructor(label = '', targetScreenId = 0, id = null) {
-        this.id = id || screenChoiceLastId++;
+    constructor(label = '', targetScreenId = null, id = null) {
+        this.id = id || uuid();
         this.label = label;
         this.targetScreenId = targetScreenId;
     }

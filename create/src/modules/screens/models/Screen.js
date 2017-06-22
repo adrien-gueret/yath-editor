@@ -1,12 +1,21 @@
-let screenLastId = 1;
-
-// TODO: check node-uuid
+import uuid from 'uuid/v1';
 
 class Screen {
     static DEFAULT_COORDINATE = 100;
 
+    static createFromJSON(json) {
+        const screen = new Screen(json.name, json.content, json.id);
+        screen.x = json.x;
+        screen.y = json.y;
+        screen.width = json.width;
+        screen.height = json.height;
+        screen.choicesIds = [...json.choicesIds];
+
+        return screen;
+    }
+
     constructor(name = '', content = '', id = null) {
-        this.id = id || screenLastId++;
+        this.id = id || uuid();
         this.name = name;
         this.content = content;
         this.x = Screen.DEFAULT_COORDINATE;

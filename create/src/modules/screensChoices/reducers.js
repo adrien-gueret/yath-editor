@@ -1,8 +1,10 @@
+import ScreenChoice from 'Modules/screensChoices/models/ScreenChoice';
 import {
     ADD_SCREEN_CHOICE,
     DELETE_SCREEN_CHOICE,
     EDIT_SCREEN_CHOICE_LABEL,
     EDIT_SCREEN_CHOICE_TARGET,
+    LOAD_SCREENS_CHOICES,
 } from 'Modules/screensChoices/actions';
 
 import {
@@ -63,6 +65,18 @@ function screensChoices(state = {}, action) {
                     [choiceId]: choice,
                 };
             }, {});
+        }
+
+        case LOAD_SCREENS_CHOICES: {
+            return Object.keys(action.payload.screensChoicesData)
+                .map(screenChoiceId => {
+                    const {label, targetScreenId} = action.payload.screensChoicesData[screenChoiceId];
+                    return new ScreenChoice(label, targetScreenId, screenChoiceId);
+                })
+                .reduce((newState, screenChoice) => ({
+                    ...newState,
+                    [screenChoice.id]: screenChoice,
+                }), {});
         }
 
         default:

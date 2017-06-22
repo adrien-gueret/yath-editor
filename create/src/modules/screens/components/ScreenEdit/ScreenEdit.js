@@ -72,7 +72,7 @@ class ScreenEdit extends React.Component {
 
     getOnChangeChoiceTargetHandler = (choiceId) => {
         return (e) => {
-            const targetId = +e.target.value;
+            const targetId = e.target.value;
             this.props.onEditScreenChoiceTarget(choiceId, targetId);
         };
     };

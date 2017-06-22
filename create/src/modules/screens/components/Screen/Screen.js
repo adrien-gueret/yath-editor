@@ -9,7 +9,7 @@ class Screen extends React.Component {
         moveScreen: PropTypes.func.isRequired,
         resizeScreen: PropTypes.func.isRequired,
         screen: PropTypes.shape({
-            id: PropTypes.number,
+            id: PropTypes.string,
             name: PropTypes.string,
             x: PropTypes.number,
             y: PropTypes.number,

@@ -4,6 +4,7 @@ import {
     DELETE_SCREEN,
     EDIT_SCREEN_NAME,
     EDIT_SCREEN_CONTENT,
+    LOAD_SCREENS,
     MOVE_SCREEN,
     RESIZE_SCREEN,
 } from 'Modules/screens/actions';
@@ -13,7 +14,7 @@ import {
 } from 'Modules/screensChoices/actions';
 
 const INITIAL_STATE = {
-    1: new Screen('First screen', 'First screen content'),
+    azert: new Screen('First screen', 'First screen content', 'azert'),
 };
 
 function screens(state = INITIAL_STATE, action) {
@@ -99,6 +100,15 @@ function screens(state = INITIAL_STATE, action) {
                 ...state,
                 [action.payload.screenId]: newScreen,
             };
+        }
+
+        case LOAD_SCREENS: {
+            return Object.keys(action.payload.screensData)
+                    .map(screenId => Screen.createFromJSON(action.payload.screensData[screenId]))
+                    .reduce((newState, screen) => ({
+                        ...newState,
+                        [screen.id]: screen,
+                    }), {});
         }
 
         default:

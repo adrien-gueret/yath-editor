@@ -17,7 +17,7 @@ import ScreenChoice from 'Modules/screensChoices/models/ScreenChoice';
 
 const propTypes = {
     onClose: PropTypes.func.isRequired,
-    screenId: PropTypes.number.isRequired,
+    screenId: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {

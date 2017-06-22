@@ -36,9 +36,24 @@
       .displayTooltip(save);
     }
 
+    &--load {
+      .displayTooltip(load);
+
+      padding: 0;
+      display: flex;
+
+      > label {
+        padding: 1px 6px;
+      }
+    }
+
     &[disabled] {
       cursor: not-allowed;
       opacity: .4;
     }
+  }
+  
+  &__loadFile {
+    display: none;
   }
 }

@@ -9,7 +9,7 @@ import screensSelectors from 'Modules/screens/selectors';
 
 const propTypes = {
     onEdit: PropTypes.func.isRequired,
-    screenId: PropTypes.number.isRequired,
+    screenId: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
