@@ -1,8 +1,8 @@
-import { PropTypes } from 'react';
 import { connect } from 'react-redux'
 
 import ScreenEdit from './ScreenEdit';
 
+import { unsetEditScreen } from 'Modules/app/actions';
 import { deleteScreen, editScreenName, editScreenContent } from 'Modules/screens/actions';
 import {
     addScreenChoice,
@@ -11,27 +11,26 @@ import {
     editScreenChoiceTarget
 } from 'Modules/screensChoices/actions';
 
+import editScreenSelectors from 'Modules/app/selectors';
 import screensSelectors from 'Modules/screens/selectors';
 import screensChoicesSelectors from 'Modules/screensChoices/selectors';
 import ScreenChoice from 'Modules/screensChoices/models/ScreenChoice';
 
-const propTypes = {
-    onClose: PropTypes.func.isRequired,
-    screenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-};
-
-const mapStateToProps = (state, ownProps) => {
-    const screen = screensSelectors.getById(state, ownProps.screenId);
+const mapStateToProps = (state) => {
+    const screenId = editScreenSelectors.get(state);
+    const screen = screensSelectors.getById(state, screenId);
 
     return {
-        ...ownProps,
         screen,
         screenChoices: screen ? screensChoicesSelectors.getByIds(state, screen.choicesIds) : [],
-        otherScreens: screensSelectors.getAllExceptOne(state, ownProps.screenId),
+        otherScreens: screensSelectors.getAllExceptOne(state, screenId),
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
+    onClose() {
+        dispatch(unsetEditScreen());
+    },
     onEditScreenName(screenId, newName) {
         dispatch(editScreenName(screenId, newName));
     },
@@ -56,6 +55,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const ScreenEditContainer = connect(mapStateToProps, mapDispatchToProps)(ScreenEdit);
-ScreenEditContainer.propTypes = propTypes;
 
 export default ScreenEditContainer;

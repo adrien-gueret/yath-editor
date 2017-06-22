@@ -32,7 +32,6 @@ export function deleteScreen(screenId) {
 }
 
 export function deleteAllScreens() {
-    console.log('delete');
     return { type: DELETE_ALL_SCREENS };
 }
 

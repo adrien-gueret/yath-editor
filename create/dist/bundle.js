@@ -2556,7 +2556,6 @@ function deleteScreen(screenId) {
 }
 
 function deleteAllScreens() {
-    console.log('delete');
     return { type: DELETE_ALL_SCREENS };
 }
 
@@ -11218,19 +11217,24 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(39);
 
-var _reducers = __webpack_require__(123);
+var _reducers = __webpack_require__(267);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _reducers3 = __webpack_require__(116);
+var _reducers3 = __webpack_require__(123);
 
 var _reducers4 = _interopRequireDefault(_reducers3);
+
+var _reducers5 = __webpack_require__(116);
+
+var _reducers6 = _interopRequireDefault(_reducers5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = (0, _redux.combineReducers)({
-    screens: _reducers2.default,
-    screensChoices: _reducers4.default
+    editScreenId: _reducers2.default,
+    screens: _reducers4.default,
+    screensChoices: _reducers6.default
 });
 
 /***/ }),
@@ -11501,6 +11505,8 @@ var _selectors2 = _interopRequireDefault(_selectors);
 
 var _actions = __webpack_require__(19);
 
+var _actions2 = __webpack_require__(266);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var propTypes = {
@@ -11551,6 +11557,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     return {
         onAddScreen: function onAddScreen(screen) {
             dispatch((0, _actions.addScreen)(screen));
+            dispatch((0, _actions2.setEditScreen)(screen.id));
         }
     };
 };
@@ -11757,6 +11764,10 @@ var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
+var _selectors3 = __webpack_require__(268);
+
+var _selectors4 = _interopRequireDefault(_selectors3);
+
 var _ScreenEdit = __webpack_require__(119);
 
 var _ScreenEdit2 = _interopRequireDefault(_ScreenEdit);
@@ -11780,65 +11791,22 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Board = function (_React$Component) {
     _inherits(Board, _React$Component);
 
-    function Board(props) {
+    function Board() {
         _classCallCheck(this, Board);
 
-        var _this = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
-
-        _this.onCloseScreenEditHandler = function () {
-            _this.setState(function () {
-                return { editScreenId: null };
-            });
-        };
-
-        _this.setEditScreenHandler = function (editScreenId) {
-            return function () {
-                _this.setState(function () {
-                    return { editScreenId: editScreenId };
-                });
-            };
-        };
-
-        _this.state = {
-            editScreenId: null
-        };
-        return _this;
+        return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
     }
 
     _createClass(Board, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            var currentScreensIds = this.props.screens.map(function (screen) {
-                return screen.id;
-            });
-            var newScreensIds = nextProps.screens.map(function (screen) {
-                return screen.id;
-            });
-            var newScreen = nextProps.screens.filter(function (screen) {
-                return currentScreensIds.indexOf(screen.id) === -1;
-            })[0];
-
-            var editScreenId = newScreen ? newScreen.id : this.state.editScreenId;
-
-            if (editScreenId && newScreensIds.indexOf(editScreenId) >= 0) {
-                this.setEditScreenHandler(editScreenId)();
-            }
-        }
-    }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
-
             return _react2.default.createElement(
                 'section',
                 { className: 'yathBoard' },
                 this.props.screens.map(function (screen) {
-                    return _react2.default.createElement(_Screen2.default, { onEdit: _this2.setEditScreenHandler, key: screen.id, screenId: screen.id });
+                    return _react2.default.createElement(_Screen2.default, { key: screen.id, screenId: screen.id });
                 }),
-                this.state.editScreenId && _react2.default.createElement(_ScreenEdit2.default, {
-                    screenId: this.state.editScreenId,
-                    onClose: this.onCloseScreenEditHandler
-                }),
+                this.props.editScreenId && _react2.default.createElement(_ScreenEdit2.default, null),
                 _react2.default.createElement(_ArrowsBoard2.default, null)
             );
         }
@@ -11849,17 +11817,20 @@ var Board = function (_React$Component) {
 
 Board.propTypes = {
     moveScreen: _react.PropTypes.func,
-    screens: _react.PropTypes.array
+    screens: _react.PropTypes.array,
+    editScreenId: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number])
 };
 Board.defaultProps = {
     moveScreen: function moveScreen() {},
 
-    screens: []
+    screens: [],
+    editScreenId: null
 };
 
 
 var mapStateToProps = function mapStateToProps(state) {
     return {
+        editScreenId: _selectors4.default.get(state),
         screens: _selectors2.default.getAsArray(state)
     };
 };
@@ -12424,27 +12395,29 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = __webpack_require__(7);
-
 var _reactRedux = __webpack_require__(15);
 
 var _ScreenEdit = __webpack_require__(117);
 
 var _ScreenEdit2 = _interopRequireDefault(_ScreenEdit);
 
-var _actions = __webpack_require__(19);
+var _actions = __webpack_require__(266);
 
-var _actions2 = __webpack_require__(31);
+var _actions2 = __webpack_require__(19);
 
-var _selectors = __webpack_require__(25);
+var _actions3 = __webpack_require__(31);
+
+var _selectors = __webpack_require__(268);
 
 var _selectors2 = _interopRequireDefault(_selectors);
 
-var _selectors3 = __webpack_require__(40);
+var _selectors3 = __webpack_require__(25);
 
 var _selectors4 = _interopRequireDefault(_selectors3);
+
+var _selectors5 = __webpack_require__(40);
+
+var _selectors6 = _interopRequireDefault(_selectors5);
 
 var _ScreenChoice = __webpack_require__(65);
 
@@ -12452,49 +12425,47 @@ var _ScreenChoice2 = _interopRequireDefault(_ScreenChoice);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var propTypes = {
-    onClose: _react.PropTypes.func.isRequired,
-    screenId: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]).isRequired
-};
+var mapStateToProps = function mapStateToProps(state) {
+    var screenId = _selectors2.default.get(state);
+    var screen = _selectors4.default.getById(state, screenId);
 
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    var screen = _selectors2.default.getById(state, ownProps.screenId);
-
-    return _extends({}, ownProps, {
+    return {
         screen: screen,
-        screenChoices: screen ? _selectors4.default.getByIds(state, screen.choicesIds) : [],
-        otherScreens: _selectors2.default.getAllExceptOne(state, ownProps.screenId)
-    });
+        screenChoices: screen ? _selectors6.default.getByIds(state, screen.choicesIds) : [],
+        otherScreens: _selectors4.default.getAllExceptOne(state, screenId)
+    };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     return {
+        onClose: function onClose() {
+            dispatch((0, _actions.unsetEditScreen)());
+        },
         onEditScreenName: function onEditScreenName(screenId, newName) {
-            dispatch((0, _actions.editScreenName)(screenId, newName));
+            dispatch((0, _actions2.editScreenName)(screenId, newName));
         },
         onEditScreenContent: function onEditScreenContent(screenId, newContent) {
-            dispatch((0, _actions.editScreenContent)(screenId, newContent));
+            dispatch((0, _actions2.editScreenContent)(screenId, newContent));
         },
         onAddScreenChoice: function onAddScreenChoice(screenId) {
-            dispatch((0, _actions2.addScreenChoice)(screenId, new _ScreenChoice2.default()));
+            dispatch((0, _actions3.addScreenChoice)(screenId, new _ScreenChoice2.default()));
         },
         onEditScreenChoiceLabel: function onEditScreenChoiceLabel(screenChoiceId, newLabel) {
-            dispatch((0, _actions2.editScreenChoiceLabel)(screenChoiceId, newLabel));
+            dispatch((0, _actions3.editScreenChoiceLabel)(screenChoiceId, newLabel));
         },
         onEditScreenChoiceTarget: function onEditScreenChoiceTarget(screenChoiceId, newTargetId) {
-            dispatch((0, _actions2.editScreenChoiceTarget)(screenChoiceId, newTargetId));
+            dispatch((0, _actions3.editScreenChoiceTarget)(screenChoiceId, newTargetId));
         },
         onDeleteScreen: function onDeleteScreen(screenId) {
-            dispatch((0, _actions.deleteScreen)(screenId));
+            dispatch((0, _actions2.deleteScreen)(screenId));
         },
         onDeleteScreenChoice: function onDeleteScreenChoice(screenChoiceId) {
-            dispatch((0, _actions2.deleteScreenChoice)(screenChoiceId));
+            dispatch((0, _actions3.deleteScreenChoice)(screenChoiceId));
         }
     };
 };
 
 var ScreenEditContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_ScreenEdit2.default);
-ScreenEditContainer.propTypes = propTypes;
 
 exports.default = ScreenEditContainer;
 
@@ -12564,6 +12535,10 @@ var Screen = function (_React$Component) {
             _this.domElement = domElement;
         };
 
+        _this.editClickHandler = function () {
+            _this.props.onEdit(_this.props.screen.id);
+        };
+
         _this.domElement = null;
         return _this;
     }
@@ -12624,7 +12599,7 @@ var Screen = function (_React$Component) {
                             'span',
                             {
                                 className: 'yathScreen__editButton',
-                                onClick: this.props.onEdit(screen.id)
+                                onClick: this.editClickHandler
                             },
                             '\u270F\uFE0F'
                         )
@@ -12677,6 +12652,8 @@ var _Screen2 = _interopRequireDefault(_Screen);
 
 var _actions = __webpack_require__(19);
 
+var _actions2 = __webpack_require__(266);
+
 var _selectors = __webpack_require__(25);
 
 var _selectors2 = _interopRequireDefault(_selectors);
@@ -12684,7 +12661,6 @@ var _selectors2 = _interopRequireDefault(_selectors);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var propTypes = {
-    onEdit: _react.PropTypes.func.isRequired,
     screenId: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]).isRequired
 };
 
@@ -12699,6 +12675,9 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     return {
+        onEdit: function onEdit(screenId) {
+            dispatch((0, _actions2.setEditScreen)(screenId));
+        },
         moveScreen: function moveScreen(screenId, newX, newY) {
             dispatch((0, _actions.moveScreen)(screenId, newX, newY));
         },
@@ -30392,6 +30371,82 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+/* 266 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setEditScreen = setEditScreen;
+exports.unsetEditScreen = unsetEditScreen;
+var SET_EDIT_SCREEN = exports.SET_EDIT_SCREEN = 'SET_EDITED_SCREEN';
+var UNSET_EDIT_SCREEN = exports.UNSET_EDIT_SCREEN = 'UNSET_EDIT_SCREEN';
+
+function setEditScreen(screenId) {
+    return { type: SET_EDIT_SCREEN, payload: { screenId: screenId } };
+}
+
+function unsetEditScreen() {
+    return { type: UNSET_EDIT_SCREEN };
+}
+
+/***/ }),
+/* 267 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _actions = __webpack_require__(266);
+
+function editScreenId() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var action = arguments[1];
+
+    switch (action.type) {
+        case _actions.SET_EDIT_SCREEN:
+            {
+                return action.payload.screenId;
+            }
+
+        case _actions.UNSET_EDIT_SCREEN:
+            {
+                return null;
+            }
+
+        default:
+            return state;
+    }
+}
+
+exports.default = editScreenId;
+
+/***/ }),
+/* 268 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function get(state) {
+    return state.editScreenId;
+}
+
+exports.default = {
+    get: get
+};
 
 /***/ })
 /******/ ]);

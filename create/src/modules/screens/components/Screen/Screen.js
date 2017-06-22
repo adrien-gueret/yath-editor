@@ -51,6 +51,10 @@ class Screen extends React.Component {
       this.domElement = domElement;
     };
 
+    editClickHandler = () => {
+        this.props.onEdit(this.props.screen.id);
+    };
+
     render() {
         const { screen, hasChoiceWithoutTarget } = this.props;
         const className = `yathScreen ${hasChoiceWithoutTarget ? 'yathScreen--error' : ''}`;
@@ -71,7 +75,7 @@ class Screen extends React.Component {
                         <span className="yathScreen__name">{ screen.name }</span>
                         <span
                             className="yathScreen__editButton"
-                            onClick={ this.props.onEdit(screen.id) }
+                            onClick={ this.editClickHandler }
                         >✏️</span>
                     </header>
                 </div>

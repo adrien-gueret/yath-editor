@@ -8,6 +8,7 @@ import Board from '../Board';
 
 import screensSelectors from 'Modules/screens/selectors';
 import { addScreen } from 'Modules/screens/actions';
+import { setEditScreen } from 'Modules/app/actions';
 
 const propTypes = {
     onAddScreen: PropTypes.func.isRequired,
@@ -52,6 +53,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onAddScreen(screen) {
             dispatch(addScreen(screen));
+            dispatch(setEditScreen(screen.id));
         },
     };
 };
