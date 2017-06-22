@@ -18,7 +18,7 @@ class Screen {
         this.id = id || uuid();
         this.name = name;
         this.content = content;
-        this.x = Screen.DEFAULT_COORDINATE;
+        this.x = Screen.DEFAULT_COORDINATE + document.body.scrollLeft;
         this.y = Screen.DEFAULT_COORDINATE + document.body.scrollTop;
         this.width = 0;
         this.height = 0;
