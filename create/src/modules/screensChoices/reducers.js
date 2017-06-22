@@ -2,6 +2,7 @@ import ScreenChoice from 'Modules/screensChoices/models/ScreenChoice';
 import {
     ADD_SCREEN_CHOICE,
     DELETE_SCREEN_CHOICE,
+    DELETE_ALL_SCREEN_CHOICES,
     EDIT_SCREEN_CHOICE_LABEL,
     EDIT_SCREEN_CHOICE_TARGET,
     LOAD_SCREENS_CHOICES,
@@ -31,6 +32,10 @@ function screensChoices(state = {}, action) {
             delete newScreensChoices[screenChoiceToDelete.id];
 
             return newScreensChoices;
+        }
+
+        case DELETE_ALL_SCREEN_CHOICES: {
+            return {};
         }
 
         case EDIT_SCREEN_CHOICE_LABEL: {

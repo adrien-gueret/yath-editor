@@ -1,5 +1,6 @@
 export const ADD_SCREEN_CHOICE = 'ADD_SCREEN_CHOICE';
 export const DELETE_SCREEN_CHOICE = 'DELETE_SCREEN_CHOICE';
+export const DELETE_ALL_SCREEN_CHOICES = 'DELETE_ALL_SCREEN_CHOICES';
 export const EDIT_SCREEN_CHOICE_LABEL = 'EDIT_SCREEN_CHOICE_LABEL';
 export const EDIT_SCREEN_CHOICE_TARGET = 'EDIT_SCREEN_CHOICE_TARGET';
 export const LOAD_SCREENS_CHOICES = 'LOAD_SCREENS_CHOICES';
@@ -10,6 +11,10 @@ export function addScreenChoice(screenId, screenChoice) {
 
 export function deleteScreenChoice(screenChoiceId) {
     return { type: DELETE_SCREEN_CHOICE, payload: { screenChoiceId } };
+}
+
+export function deleteAllScreenChoices() {
+    return { type: DELETE_ALL_SCREEN_CHOICES };
 }
 
 export function editScreenChoiceLabel(screenChoiceId, newLabel) {

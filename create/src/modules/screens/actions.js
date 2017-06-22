@@ -4,6 +4,7 @@ export const EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
 export const MOVE_SCREEN = 'MOVE_SCREEN';
 export const RESIZE_SCREEN = 'RESIZE_SCREEN';
 export const DELETE_SCREEN = 'DELETE_SCREEN';
+export const DELETE_ALL_SCREENS = 'DELETE_ALL_SCREENS';
 export const LOAD_SCREENS = 'LOAD_SCREENS';
 
 export function addScreen(screen) {
@@ -28,6 +29,11 @@ export function resizeScreen(screenId, newWidth, newHeight) {
 
 export function deleteScreen(screenId) {
     return { type: DELETE_SCREEN, payload: { screenId } };
+}
+
+export function deleteAllScreens() {
+    console.log('delete');
+    return { type: DELETE_ALL_SCREENS };
 }
 
 export function loadScreens(screensData) {

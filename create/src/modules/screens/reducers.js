@@ -2,6 +2,7 @@ import Screen from 'Modules/screens/models/Screen';
 import {
     ADD_SCREEN,
     DELETE_SCREEN,
+    DELETE_ALL_SCREENS,
     EDIT_SCREEN_NAME,
     EDIT_SCREEN_CONTENT,
     LOAD_SCREENS,
@@ -13,9 +14,7 @@ import {
     ADD_SCREEN_CHOICE,
 } from 'Modules/screensChoices/actions';
 
-const INITIAL_STATE = {
-    azert: new Screen('First screen', 'First screen content', 'azert'),
-};
+const INITIAL_STATE = {};
 
 function screens(state = INITIAL_STATE, action) {
     switch (action.type) {
@@ -36,6 +35,10 @@ function screens(state = INITIAL_STATE, action) {
             delete newScreens[screenToDelete.id];
 
             return newScreens;
+        }
+
+        case DELETE_ALL_SCREENS: {
+            return {};
         }
 
         case EDIT_SCREEN_NAME: {

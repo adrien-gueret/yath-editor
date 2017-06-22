@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 import Screen from 'Modules/screens/models/Screen';
 import downloadJson from 'Modules/download';
 
-import { loadScreens } from 'Modules/screens/actions';
-import { loadScreensChoices } from 'Modules/screensChoices/actions';
+import { deleteAllScreens, loadScreens } from 'Modules/screens/actions';
+import { deleteAllScreenChoices, loadScreensChoices } from 'Modules/screensChoices/actions';
 
 const propTypes = {
     loadState: PropTypes.func.isRequired,
@@ -27,6 +27,7 @@ class AppHeader extends React.Component {
     }
 
     loadFile = (loadEvent) => {
+        this.loadInput.value = '';
         try {
             const newStoreState = JSON.parse(loadEvent.target.result);
             this.props.loadState(newStoreState);
@@ -93,6 +94,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     loadState(newState) {
+        dispatch(deleteAllScreens());
+        dispatch(deleteAllScreenChoices());
         dispatch(loadScreensChoices(newState.screensChoices));
         dispatch(loadScreens(newState.screens));
     },
