@@ -39,6 +39,16 @@ class Screen {
 
         return copiedScreen;
     }
+
+    toHTML(allChoices) {
+        const navigation = this.choicesIds.map(choiceId => allChoices[choiceId].toHTML()).join('');
+        return `
+         <section data-yath-screen="${this.id}">
+            <p>${this.content}</p>
+            <nav>${navigation}</nav>
+        </section>
+        `;
+    }
 }
 
 export default Screen;

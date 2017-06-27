@@ -6,12 +6,16 @@ import { connect } from 'react-redux'
 import Screen from 'Modules/screens/models/Screen';
 import downloadJson from 'Modules/download';
 
+import appSelectors from 'Modules/app/selectors';
+
 import { deleteAllScreens, loadScreens } from 'Modules/screens/actions';
 import { deleteAllScreenChoices, loadScreensChoices } from 'Modules/screensChoices/actions';
+import { testGame } from 'Modules/app/actions';
 
 const propTypes = {
-    loadState: PropTypes.func.isRequired,
     onAddScreen: PropTypes.func.isRequired,
+    loadState: PropTypes.func.isRequired,
+    testGame: PropTypes.func.isRequired,
     appState: PropTypes.object,
 };
 
@@ -66,6 +70,11 @@ class AppHeader extends React.Component {
             downloadJson('yath', appState);
         }
 
+        const testGame = () => {
+            // TODO: prevent testing when no screens
+            this.props.testGame();
+        };
+
         return (
             <header className="appHeader">
                 <button onClick={ onAddScreenClickHandler } className="appHeader__button appHeader__button--addScreen">🔨</button>
@@ -73,9 +82,11 @@ class AppHeader extends React.Component {
                 <button className="appHeader__button appHeader__button--load">
                     <label htmlFor="appHeader__loadFile">📤</label>
                 </button>
+                <button onClick={ testGame } className="appHeader__button appHeader__button--test">🚩</button>
                 <span className="appHeader__tooltip appHeader__tooltip--addScreen">Add screen</span>
                 <span className="appHeader__tooltip appHeader__tooltip--save">Save</span>
                 <span className="appHeader__tooltip appHeader__tooltip--load">Load</span>
+                <span className="appHeader__tooltip appHeader__tooltip--test">Test game</span>
 
                 <input ref={this.setLoadInput} id="appHeader__loadFile" className="appHeader__loadFile" type="file" />
             </header>
@@ -88,7 +99,7 @@ AppHeader.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
     return {
-        appState: state,
+        appState: appSelectors.getExportableState(state),
     }
 };
 
@@ -99,6 +110,9 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(loadScreensChoices(newState.screensChoices));
         dispatch(loadScreens(newState.screens));
     },
+    testGame() {
+        dispatch(testGame());
+    }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppHeader);

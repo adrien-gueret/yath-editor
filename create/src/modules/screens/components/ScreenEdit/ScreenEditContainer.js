@@ -11,13 +11,13 @@ import {
     editScreenChoiceTarget
 } from 'Modules/screensChoices/actions';
 
-import editScreenSelectors from 'Modules/app/selectors';
+import appSelectors from 'Modules/app/selectors';
 import screensSelectors from 'Modules/screens/selectors';
 import screensChoicesSelectors from 'Modules/screensChoices/selectors';
 import ScreenChoice from 'Modules/screensChoices/models/ScreenChoice';
 
 const mapStateToProps = (state) => {
-    const screenId = editScreenSelectors.get(state);
+    const screenId = appSelectors.getEditScreenId(state);
     const screen = screensSelectors.getById(state, screenId);
 
     return {

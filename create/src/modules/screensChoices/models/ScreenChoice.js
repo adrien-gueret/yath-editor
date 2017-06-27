@@ -10,6 +10,10 @@ class ScreenChoice {
     clone() {
         return new ScreenChoice(this.label, this.targetScreenId, this.id);
     }
+
+    toHTML() {
+        return `<button data-yath-go-to="${this.targetScreenId}">${this.label}</button>`;
+    }
 }
 
 export default ScreenChoice;

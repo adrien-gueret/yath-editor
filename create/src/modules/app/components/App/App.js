@@ -6,20 +6,25 @@ import { connect } from 'react-redux'
 import AppHeader from '../AppHeader';
 import Board from '../Board';
 
+import appSelectors from 'Modules/app/selectors';
 import screensSelectors from 'Modules/screens/selectors';
 import { addScreen } from 'Modules/screens/actions';
 import { setEditScreen } from 'Modules/app/actions';
 
+import GameTest from 'Modules/game/components/GameTest';
+
 const propTypes = {
     onAddScreen: PropTypes.func.isRequired,
+    isGameTesting: PropTypes.bool,
     screens: PropTypes.array,
 };
 
 const defaultProps = {
+    isGameTesting: false,
     screens: [],
 };
 
-export function App({ screens, onAddScreen }) {
+export function App({ isGameTesting, screens, onAddScreen }) {
     const addScreenHandler = (newScreen) => {
         const newSlug = newScreen.getSlug();
         const nameAlreadyUsed = screens.some(screen => screen.getSlug() === newSlug);
@@ -36,6 +41,7 @@ export function App({ screens, onAddScreen }) {
         <div className="yathApp">
             <AppHeader onAddScreen={ addScreenHandler } />
             <Board />
+            { isGameTesting && <GameTest /> }
         </div>
     );
 }
@@ -45,6 +51,7 @@ App.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
     return {
+        isGameTesting: appSelectors.isGameTesting(state),
         screens: screensSelectors.getAsArray(state),
     }
 };

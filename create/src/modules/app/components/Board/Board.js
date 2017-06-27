@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 
 import screensSelectors from 'Modules/screens/selectors';
-import editScreenSelectors from 'Modules/app/selectors';
+import appSelectors from 'Modules/app/selectors';
 import ScreenEdit from 'Modules/screens/components/ScreenEdit';
 import Screen from 'Modules/screens/components/Screen';
 import ArrowsBoard from '../ArrowsBoard';
@@ -38,7 +38,7 @@ class Board extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    editScreenId: editScreenSelectors.get(state),
+    editScreenId: appSelectors.getEditScreenId(state),
     screens: screensSelectors.getAsArray(state),
 });
 
