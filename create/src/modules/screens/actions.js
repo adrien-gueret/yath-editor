@@ -1,6 +1,7 @@
 export const ADD_SCREEN = 'ADD_SCREEN';
 export const EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
 export const EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
+export const SET_START_SCREEN = 'SET_START_SCREEN';
 export const MOVE_SCREEN = 'MOVE_SCREEN';
 export const RESIZE_SCREEN = 'RESIZE_SCREEN';
 export const DELETE_SCREEN = 'DELETE_SCREEN';
@@ -17,6 +18,10 @@ export function editScreenName(screenId, newName) {
 
 export function editScreenContent(screenId, newContent) {
     return { type: EDIT_SCREEN_CONTENT, payload: { screenId, newContent } };
+}
+
+export function setStartScreen(screenId) {
+    return { type: SET_START_SCREEN, payload: { screenId } };
 }
 
 export function moveScreen(screenId, newX, newY) {

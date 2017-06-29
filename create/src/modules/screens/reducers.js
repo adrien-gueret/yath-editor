@@ -5,6 +5,7 @@ import {
     DELETE_ALL_SCREENS,
     EDIT_SCREEN_NAME,
     EDIT_SCREEN_CONTENT,
+    SET_START_SCREEN,
     LOAD_SCREENS,
     MOVE_SCREEN,
     RESIZE_SCREEN,
@@ -14,7 +15,13 @@ import {
     ADD_SCREEN_CHOICE,
 } from 'Modules/screensChoices/actions';
 
-const INITIAL_STATE = {};
+const startScreen = new Screen('Start screen', '', true);
+startScreen.x = 200;
+startScreen.y = 200;
+
+const INITIAL_STATE = {
+    [startScreen.id]: startScreen,
+};
 
 function screens(state = INITIAL_STATE, action) {
     switch (action.type) {
@@ -71,6 +78,19 @@ function screens(state = INITIAL_STATE, action) {
                 ...state,
                 [action.payload.screenId]: newScreen,
             };
+        }
+
+        case SET_START_SCREEN: {
+            return Object.keys(state)
+                .reduce((newState, screenId) => {
+                    const clonedScreen = state[screenId].clone();
+                    clonedScreen.isStart = clonedScreen.id === action.payload.screenId;
+
+                    return {
+                        ...newState,
+                        [clonedScreen.id]: clonedScreen,
+                    };
+                }, {});
         }
 
         case ADD_SCREEN_CHOICE: {

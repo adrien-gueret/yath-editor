@@ -13,11 +13,13 @@ class GameTest extends React.Component {
         finishTestGame: PropTypes.func.isRequired,
         screens: PropTypes.arrayOf(PropTypes.object),
         screensChoices: PropTypes.object,
+        startScreen: PropTypes.object,
     };
 
     static defaultProps = {
         screens: [],
         screensChoices: {},
+        startScreen: null,
     };
 
     onIframeReady = (iframe) => {
@@ -33,8 +35,7 @@ class GameTest extends React.Component {
         iframe.contentDocument.body.innerHTML = iframeContent;
 
         const myGame = new window.yath.Game(null, null, iframe.contentDocument.body);
-        // TODO: have a notion of "start screen"
-        myGame.goToScreen(this.props.screens[0].id);
+        myGame.goToScreen(this.props.startScreen.id);
     };
 
     render() {
@@ -51,6 +52,7 @@ class GameTest extends React.Component {
 
 const mapStateToProps = (state) => ({
     screens: screensSelectors.getAsArray(state),
+    startScreen: screensSelectors.getStart(state),
     screensChoices: screensChoicesSelectors.get(state),
 });
 

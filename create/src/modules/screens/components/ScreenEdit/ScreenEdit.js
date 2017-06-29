@@ -11,6 +11,7 @@ class ScreenEdit extends React.Component {
         onEditScreenChoiceTarget: PropTypes.func.isRequired,
         onEditScreenContent: PropTypes.func.isRequired,
         onEditScreenName: PropTypes.func.isRequired,
+        onSetScreenAsStart: PropTypes.func.isRequired,
         onClose: PropTypes.func.isRequired,
         otherScreens: PropTypes.arrayOf(PropTypes.object).isRequired,
         screen: PropTypes.object.isRequired,
@@ -85,6 +86,10 @@ class ScreenEdit extends React.Component {
         this.props.screen.choicesIds.forEach(choiceId => this.props.onDeleteScreenChoice(choiceId));
         this.props.onDeleteScreen(this.props.screen.id);
         this.props.onClose();
+    };
+
+    onSetStartHandler = () => {
+        this.props.onSetScreenAsStart(this.props.screen.id);
     };
 
     renderChoicesList() {
@@ -173,6 +178,29 @@ class ScreenEdit extends React.Component {
         );
     }
 
+    renderActionsButton() {
+        if (this.props.screen.isStart) {
+            return (
+                <span className="screenEdit__notDeletable">This screen is the start one and can't be delete.</span>
+            );
+        }
+
+        return [
+            <button
+                key="delete"
+                onClick={ this.onDeleteHandler }
+                title="Delete screen"
+                className="screenEdit__delete"
+            >💣</button>,
+            <button
+                key="start"
+                onClick={ this.onSetStartHandler }
+                title="Mark as start screen"
+                className="screenEdit__start"
+            >🏁</button>
+        ];
+    }
+
     render() {
         return (
             <section className="screenEdit__overlay">
@@ -195,11 +223,7 @@ class ScreenEdit extends React.Component {
                     { this.renderChoicesContainer() }
 
                     <footer className="screenEdit__footer">
-                        <button
-                            onClick={ this.onDeleteHandler }
-                            title="Delete screen"
-                            className="screenEdit__delete"
-                        >💣</button>
+                        { this.renderActionsButton() }
                         <button
                             onClick={ this.props.onClose }
                             title="Submit"

@@ -2930,6 +2930,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.addScreen = addScreen;
 exports.editScreenName = editScreenName;
 exports.editScreenContent = editScreenContent;
+exports.setStartScreen = setStartScreen;
 exports.moveScreen = moveScreen;
 exports.resizeScreen = resizeScreen;
 exports.deleteScreen = deleteScreen;
@@ -2938,6 +2939,7 @@ exports.loadScreens = loadScreens;
 var ADD_SCREEN = exports.ADD_SCREEN = 'ADD_SCREEN';
 var EDIT_SCREEN_NAME = exports.EDIT_SCREEN_NAME = 'EDIT_SCREEN_NAME';
 var EDIT_SCREEN_CONTENT = exports.EDIT_SCREEN_CONTENT = 'EDIT_SCREEN_CONTENT';
+var SET_START_SCREEN = exports.SET_START_SCREEN = 'SET_START_SCREEN';
 var MOVE_SCREEN = exports.MOVE_SCREEN = 'MOVE_SCREEN';
 var RESIZE_SCREEN = exports.RESIZE_SCREEN = 'RESIZE_SCREEN';
 var DELETE_SCREEN = exports.DELETE_SCREEN = 'DELETE_SCREEN';
@@ -2954,6 +2956,10 @@ function editScreenName(screenId, newName) {
 
 function editScreenContent(screenId, newContent) {
     return { type: EDIT_SCREEN_CONTENT, payload: { screenId: screenId, newContent: newContent } };
+}
+
+function setStartScreen(screenId) {
+    return { type: SET_START_SCREEN, payload: { screenId: screenId } };
 }
 
 function moveScreen(screenId, newX, newY) {
@@ -3028,12 +3034,21 @@ function hasChoiceWithoutTarget(state, screenId) {
     });
 }
 
+function getStart(state) {
+    var screens = getAsArray(state);
+    var startScreen = screens.filter(function (screen) {
+        return screen.isStart;
+    });
+    return startScreen[0] || null;
+}
+
 exports.default = {
     get: get,
     getAsArray: getAsArray,
     getAllExceptOne: getAllExceptOne,
     getById: getById,
-    hasChoiceWithoutTarget: hasChoiceWithoutTarget
+    hasChoiceWithoutTarget: hasChoiceWithoutTarget,
+    getStart: getStart
 };
 
 /***/ }),
@@ -7638,7 +7653,7 @@ var Screen = function () {
     _createClass(Screen, null, [{
         key: 'createFromJSON',
         value: function createFromJSON(json) {
-            var screen = new Screen(json.name, json.content, json.id);
+            var screen = new Screen(json.name, json.content, json.isStart, json.id);
             screen.x = json.x;
             screen.y = json.y;
             screen.width = json.width;
@@ -7652,7 +7667,8 @@ var Screen = function () {
     function Screen() {
         var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
         var content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-        var id = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+        var isStart = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var id = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
         _classCallCheck(this, Screen);
 
@@ -7663,6 +7679,7 @@ var Screen = function () {
         this.y = Screen.DEFAULT_COORDINATE + document.body.scrollTop;
         this.width = 0;
         this.height = 0;
+        this.isStart = isStart;
         this.choicesIds = [];
     }
 
@@ -7674,7 +7691,7 @@ var Screen = function () {
     }, {
         key: 'clone',
         value: function clone() {
-            var copiedScreen = new Screen(this.name, this.content, this.id);
+            var copiedScreen = new Screen(this.name, this.content, this.isStart, this.id);
             copiedScreen.x = this.x;
             copiedScreen.y = this.y;
             copiedScreen.width = this.width;
@@ -12127,7 +12144,7 @@ var GameTest = function (_React$Component) {
             iframe.contentDocument.body.innerHTML = iframeContent;
 
             var myGame = new window.yath.Game(null, null, iframe.contentDocument.body);
-            myGame.goToScreen(_this.props.screens[0].id);
+            myGame.goToScreen(_this.props.startScreen.id);
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -12157,17 +12174,20 @@ var GameTest = function (_React$Component) {
 GameTest.propTypes = {
     finishTestGame: _react.PropTypes.func.isRequired,
     screens: _react.PropTypes.arrayOf(_react.PropTypes.object),
-    screensChoices: _react.PropTypes.object
+    screensChoices: _react.PropTypes.object,
+    startScreen: _react.PropTypes.object
 };
 GameTest.defaultProps = {
     screens: [],
-    screensChoices: {}
+    screensChoices: {},
+    startScreen: null
 };
 
 
 var mapStateToProps = function mapStateToProps(state) {
     return {
         screens: _selectors2.default.getAsArray(state),
+        startScreen: _selectors2.default.getStart(state),
         screensChoices: _selectors4.default.get(state)
     };
 };
@@ -12470,6 +12490,10 @@ var ScreenEdit = function (_React$Component) {
             _this.props.onClose();
         };
 
+        _this.onSetStartHandler = function () {
+            _this.props.onSetScreenAsStart(_this.props.screen.id);
+        };
+
         _this.state = {
             screenName: _this.props.screen.name,
             screenContent: _this.props.screen.content
@@ -12628,6 +12652,37 @@ var ScreenEdit = function (_React$Component) {
             );
         }
     }, {
+        key: 'renderActionsButton',
+        value: function renderActionsButton() {
+            if (this.props.screen.isStart) {
+                return _react2.default.createElement(
+                    'span',
+                    { className: 'screenEdit__notDeletable' },
+                    'This screen is the start one and can\'t be delete.'
+                );
+            }
+
+            return [_react2.default.createElement(
+                'button',
+                {
+                    key: 'delete',
+                    onClick: this.onDeleteHandler,
+                    title: 'Delete screen',
+                    className: 'screenEdit__delete'
+                },
+                '\uD83D\uDCA3'
+            ), _react2.default.createElement(
+                'button',
+                {
+                    key: 'start',
+                    onClick: this.onSetStartHandler,
+                    title: 'Mark as start screen',
+                    className: 'screenEdit__start'
+                },
+                '\uD83C\uDFC1'
+            )];
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -12663,15 +12718,7 @@ var ScreenEdit = function (_React$Component) {
                     _react2.default.createElement(
                         'footer',
                         { className: 'screenEdit__footer' },
-                        _react2.default.createElement(
-                            'button',
-                            {
-                                onClick: this.onDeleteHandler,
-                                title: 'Delete screen',
-                                className: 'screenEdit__delete'
-                            },
-                            '\uD83D\uDCA3'
-                        ),
+                        this.renderActionsButton(),
                         _react2.default.createElement(
                             'button',
                             {
@@ -12698,6 +12745,7 @@ ScreenEdit.propTypes = {
     onEditScreenChoiceTarget: _react.PropTypes.func.isRequired,
     onEditScreenContent: _react.PropTypes.func.isRequired,
     onEditScreenName: _react.PropTypes.func.isRequired,
+    onSetScreenAsStart: _react.PropTypes.func.isRequired,
     onClose: _react.PropTypes.func.isRequired,
     otherScreens: _react.PropTypes.arrayOf(_react.PropTypes.object).isRequired,
     screen: _react.PropTypes.object.isRequired,
@@ -12782,6 +12830,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         },
         onDeleteScreenChoice: function onDeleteScreenChoice(screenChoiceId) {
             dispatch((0, _actions3.deleteScreenChoice)(screenChoiceId));
+        },
+        onSetScreenAsStart: function onSetScreenAsStart(screenId) {
+            dispatch((0, _actions2.setStartScreen)(screenId));
         }
     };
 };
@@ -12891,7 +12942,9 @@ var Screen = function (_React$Component) {
                 screen = _props.screen,
                 hasChoiceWithoutTarget = _props.hasChoiceWithoutTarget;
 
-            var className = 'yathScreen ' + (hasChoiceWithoutTarget ? 'yathScreen--error' : '');
+            var className = 'yathScreen';
+            var classError = hasChoiceWithoutTarget ? 'yathScreen--error' : '';
+            var classStart = screen.isStart ? 'yathScreen--start' : '';
 
             return _react2.default.createElement(
                 _reactDraggable2.default,
@@ -12904,7 +12957,7 @@ var Screen = function (_React$Component) {
                 _react2.default.createElement(
                     'div',
                     {
-                        className: className,
+                        className: className + ' ' + classError + ' ' + classStart,
                         ref: this.setDomElement,
                         title: hasChoiceWithoutTarget ? 'This screen has some choices without targets' : null
                     },
@@ -13057,7 +13110,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var INITIAL_STATE = {};
+var startScreen = new _Screen2.default('Start screen', '', true);
+startScreen.x = 200;
+startScreen.y = 200;
+
+var INITIAL_STATE = _defineProperty({}, startScreen.id, startScreen);
 
 function screens() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_STATE;
@@ -13118,6 +13175,16 @@ function screens() {
                 _newScreen.content = action.payload.newContent;
 
                 return _extends({}, state, _defineProperty({}, action.payload.screenId, _newScreen));
+            }
+
+        case _actions.SET_START_SCREEN:
+            {
+                return Object.keys(state).reduce(function (newState, screenId) {
+                    var clonedScreen = state[screenId].clone();
+                    clonedScreen.isStart = clonedScreen.id === action.payload.screenId;
+
+                    return _extends({}, newState, _defineProperty({}, clonedScreen.id, clonedScreen));
+                }, {});
             }
 
         case _actions2.ADD_SCREEN_CHOICE:
@@ -15159,7 +15226,7 @@ exports = module.exports = __webpack_require__(16)(undefined);
 
 
 // module
-exports.push([module.i, ".screenEdit__overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 80px;\n  z-index: 1000;\n}\n.screenEdit__content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n  max-height: 90%;\n  overflow: auto;\n}\n.screenEdit__content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit__content input,\n.screenEdit__content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit__content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n.screenEdit__content table {\n  width: 100%;\n  margin: 5px;\n  border-collapse: collapse;\n  border: 1px solid #e3e3e3;\n}\n.screenEdit__content tr {\n  background-color: #fff;\n}\n.screenEdit__content tr:nth-child(2n) {\n  background-color: #e3e3e3;\n}\n.screenEdit__content th {\n  background-color: #000;\n  color: #fff;\n}\n.screenEdit__content td {\n  padding: 3px;\n  text-align: center;\n}\n.screenEdit__footer {\n  margin-top: 10px;\n  padding-top: 10px;\n  border-top: 1px solid #e3e3e3;\n}\n.screenEdit__submit,\n.screenEdit__delete {\n  font-size: 1.3rem;\n  float: right;\n}\n.screenEdit__delete {\n  float: left;\n}\n.screenEdit__addChoice {\n  font-size: 1.2rem;\n}\n", ""]);
+exports.push([module.i, ".screenEdit__overlay {\n  position: fixed;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.8);\n  padding: 80px;\n  z-index: 1000;\n}\n.screenEdit__content {\n  width: 40%;\n  margin: auto;\n  padding: 20px;\n  background: #fff;\n  border-radius: 5px;\n  max-height: 90%;\n  overflow: auto;\n}\n.screenEdit__content label {\n  font-weight: bold;\n  display: block;\n  margin: 2px;\n}\n.screenEdit__content input,\n.screenEdit__content textarea {\n  font-family: monospace;\n  display: block;\n  width: 100%;\n  padding: 5px;\n  border: 1px solid #e3e3e3;\n  border-radius: 2px;\n  box-sizing: border-box;\n}\n.screenEdit__content textarea {\n  min-height: 150px;\n  resize: vertical;\n}\n.screenEdit__content table {\n  width: 100%;\n  margin: 5px;\n  border-collapse: collapse;\n  border: 1px solid #e3e3e3;\n}\n.screenEdit__content tr {\n  background-color: #fff;\n}\n.screenEdit__content tr:nth-child(2n) {\n  background-color: #e3e3e3;\n}\n.screenEdit__content th {\n  background-color: #000;\n  color: #fff;\n}\n.screenEdit__content td {\n  padding: 3px;\n  text-align: center;\n}\n.screenEdit__footer {\n  margin-top: 10px;\n  padding-top: 10px;\n  border-top: 1px solid #e3e3e3;\n}\n.screenEdit__submit,\n.screenEdit__delete,\n.screenEdit__start {\n  font-size: 1.3rem;\n  float: right;\n}\n.screenEdit__delete,\n.screenEdit__start {\n  float: left;\n  margin-right: 10px;\n}\n.screenEdit__addChoice {\n  font-size: 1.2rem;\n}\n.screenEdit__notDeletable {\n  font-size: .8rem;\n  color: #333;\n  padding-top: 10px;\n}\n", ""]);
 
 // exports
 
@@ -15173,7 +15240,7 @@ exports = module.exports = __webpack_require__(16)(undefined);
 
 
 // module
-exports.push([module.i, ".yathScreen {\n  display: block;\n  position: absolute;\n  z-index: 10;\n  left: 0;\n  top: 0;\n}\n.yathScreen--error {\n  box-shadow: 2px 2px 40px 5px red;\n}\n.yathScreen__header {\n  font-size: 1.2rem;\n  font-family: monospace;\n}\n.yathScreen__name {\n  font-weight: bold;\n  color: #fff;\n  background-color: #333;\n  padding: 5px;\n  cursor: move;\n}\n.yathScreen__editButton {\n  cursor: default;\n  background-color: #fff;\n  color: #333;\n  padding: 4px;\n  border: 1px solid #333;\n}\n.yathScreen__editButton:hover {\n  color: #fff;\n  background-color: #333;\n  border-color: #fff;\n}\n", ""]);
+exports.push([module.i, ".yathScreen {\n  display: block;\n  position: absolute;\n  z-index: 10;\n  left: 0;\n  top: 0;\n}\n.yathScreen--start:before {\n  content: '\\1F3C1';\n  display: inline-block;\n  position: absolute;\n  bottom: 20px;\n}\n.yathScreen--error {\n  box-shadow: 2px 2px 40px 5px red;\n}\n.yathScreen__header {\n  font-size: 1.2rem;\n  font-family: monospace;\n}\n.yathScreen__name {\n  font-weight: bold;\n  color: #fff;\n  background-color: #333;\n  padding: 5px;\n  cursor: move;\n}\n.yathScreen__editButton {\n  cursor: default;\n  background-color: #fff;\n  color: #333;\n  padding: 4px;\n  border: 1px solid #333;\n}\n.yathScreen__editButton:hover {\n  color: #fff;\n  background-color: #333;\n  border-color: #fff;\n}\n", ""]);
 
 // exports
 

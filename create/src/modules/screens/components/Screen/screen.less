@@ -5,6 +5,15 @@
   left: 0;
   top: 0;
 
+  &--start {
+    &:before {
+      content: '🏁';
+      display: inline-block;
+      position: absolute;
+      bottom: 20px;
+    }
+  }
+
   &--error {
     box-shadow: 2px 2px 40px 5px red;
   }

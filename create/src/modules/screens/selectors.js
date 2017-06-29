@@ -29,10 +29,18 @@ function hasChoiceWithoutTarget(state, screenId) {
     return choices.some(choice => !choice.targetScreenId);
 }
 
+function getStart(state) {
+    const screens = getAsArray(state);
+    const startScreen = screens.filter(screen => screen.isStart);
+    return startScreen[0] || null;
+}
+
+
 export default {
     get,
     getAsArray,
     getAllExceptOne,
     getById,
     hasChoiceWithoutTarget,
+    getStart,
 };

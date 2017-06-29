@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ScreenEdit from './ScreenEdit';
 
 import { unsetEditScreen } from 'Modules/app/actions';
-import { deleteScreen, editScreenName, editScreenContent } from 'Modules/screens/actions';
+import { deleteScreen, editScreenName, editScreenContent, setStartScreen } from 'Modules/screens/actions';
 import {
     addScreenChoice,
     deleteScreenChoice,
@@ -52,6 +52,9 @@ const mapDispatchToProps = (dispatch) => ({
     onDeleteScreenChoice(screenChoiceId) {
         dispatch(deleteScreenChoice(screenChoiceId));
     },
+    onSetScreenAsStart(screenId) {
+        dispatch(setStartScreen(screenId));
+    }
 });
 
 const ScreenEditContainer = connect(mapStateToProps, mapDispatchToProps)(ScreenEdit);

@@ -71,7 +71,6 @@ class AppHeader extends React.Component {
         }
 
         const testGame = () => {
-            // TODO: prevent testing when no screens
             this.props.testGame();
         };
 

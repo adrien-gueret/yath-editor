@@ -57,7 +57,9 @@ class Screen extends React.Component {
 
     render() {
         const { screen, hasChoiceWithoutTarget } = this.props;
-        const className = `yathScreen ${hasChoiceWithoutTarget ? 'yathScreen--error' : ''}`;
+        const className = 'yathScreen';
+        const classError = hasChoiceWithoutTarget ? 'yathScreen--error' : '';
+        const classStart = screen.isStart ? 'yathScreen--start' : '';
 
         return (
             <Draggable
@@ -67,7 +69,7 @@ class Screen extends React.Component {
                 onDrag={ this.dragHandler }
             >
                 <div
-                    className={className}
+                    className={`${className} ${classError} ${classStart}`}
                     ref={this.setDomElement}
                     title={hasChoiceWithoutTarget ? 'This screen has some choices without targets' : null}
                 >
