@@ -1,7 +1,15 @@
-export default function downloadJson(filename, jsonObject) {
+export function downloadJson(filename, jsonObject) {
+    download(`${filename}.json`, JSON.stringify(jsonObject), 'application/json');
+}
+
+export function downloadHtml(filename, htmlContent) {
+    download(`${filename}.html`, htmlContent, 'text/html');
+}
+
+function download(filename, fileContent, dataType) {
     const link = document.createElement('a');
-    link.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(jsonObject)));
-    link.setAttribute('download', `${filename}.json`);
+    link.setAttribute('href', `data:${dataType};charset=utf-8,${encodeURIComponent(fileContent)}`);
+    link.setAttribute('download', filename);
 
     link.style.display = 'none';
     document.body.appendChild(link);

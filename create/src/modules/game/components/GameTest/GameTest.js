@@ -8,6 +8,8 @@ import screensChoicesSelectors from 'Modules/screensChoices/selectors';
 
 import { finishTestGame } from 'Modules/app/actions';
 
+import { getHtmlGame, getStartGameScript, fetchYathCSS, fetchYathJS } from '../../services';
+
 class GameTest extends React.Component {
     static propTypes = {
         finishTestGame: PropTypes.func.isRequired,
@@ -26,16 +28,29 @@ class GameTest extends React.Component {
         if (!iframe) {
             return;
         }
-        const linkStyle = document.createElement('link');
-        linkStyle.setAttribute('rel', 'stylesheet');
-        linkStyle.setAttribute('href', 'https://rawgit.com/adrien-gueret/yath/master/yath.css');
-        iframe.contentDocument.head.appendChild(linkStyle);
 
-        const iframeContent = this.props.screens.map(screen => screen.toHTML(this.props.screensChoices)).join('');
-        iframe.contentDocument.body.innerHTML = iframeContent;
+        Promise.all([
+            fetchYathCSS(),
+            fetchYathJS(),
+        ]).then((responses) => {
+            const [cssContent, jsContent] = responses;
 
-        const myGame = new window.yath.Game(null, null, iframe.contentDocument.body);
-        myGame.goToScreen(this.props.startScreen.id);
+            const yathStyle = document.createElement('style');
+            yathStyle.appendChild(document.createTextNode(cssContent));
+            iframe.contentDocument.head.appendChild(yathStyle);
+
+            const yathScript = document.createElement('script');
+            yathScript.appendChild(document.createTextNode(jsContent));
+            iframe.contentDocument.head.appendChild(yathScript);
+
+            iframe.contentDocument.body.innerHTML = getHtmlGame(this.props.screens, this.props.screensChoices);
+
+            const gameContent = getStartGameScript(this.props.startScreen.id);
+            const gameScript = document.createElement('script');
+            gameScript.appendChild(document.createTextNode(gameContent));
+
+            iframe.contentDocument.body.appendChild(gameScript);
+        });
     };
 
     render() {
