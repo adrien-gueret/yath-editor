@@ -8,7 +8,7 @@ import screensChoicesSelectors from 'Modules/screensChoices/selectors';
 
 import { finishTestGame } from 'Modules/app/actions';
 
-import { getHtmlGame, getStartGameScript, fetchYathCSS, fetchYathJS } from '../../services';
+import { getScreensHtml, getStartGameScript, fetchYathCSS, fetchYathJS } from '../../services';
 
 class GameTest extends React.Component {
     static propTypes = {
@@ -43,7 +43,7 @@ class GameTest extends React.Component {
             yathScript.appendChild(document.createTextNode(jsContent));
             iframe.contentDocument.head.appendChild(yathScript);
 
-            iframe.contentDocument.body.innerHTML = getHtmlGame(this.props.screens, this.props.screensChoices);
+            iframe.contentDocument.body.innerHTML = getScreensHtml(this.props.screens, this.props.screensChoices);
 
             const gameContent = getStartGameScript(this.props.startScreen.id);
             const gameScript = document.createElement('script');

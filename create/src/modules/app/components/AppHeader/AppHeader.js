@@ -4,13 +4,16 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 
 import Screen from 'Modules/screens/models/Screen';
-import downloadJson from 'Modules/download';
+import { downloadJson, downloadHtml } from 'Modules/download';
 
 import appSelectors from 'Modules/app/selectors';
+import screensSelectors from 'Modules/screens/selectors';
+import screensChoicesSelectors from 'Modules/screensChoices/selectors';
 
 import { deleteAllScreens, loadScreens } from 'Modules/screens/actions';
 import { deleteAllScreenChoices, loadScreensChoices } from 'Modules/screensChoices/actions';
 import { testGame } from 'Modules/app/actions';
+import { getFullHtml } from 'Modules/game/services';
 
 const propTypes = {
     onAddScreen: PropTypes.func.isRequired,
@@ -70,6 +73,16 @@ class AppHeader extends React.Component {
             downloadJson('yath', appState);
         }
 
+        function downloadGame() {
+            const screens = screensSelectors.getAsArray(appState);
+            const screensChoices = screensChoicesSelectors.get(appState);
+            const startScreen = screensSelectors.getStart(appState);
+
+            getFullHtml(screens, screensChoices, startScreen).then((html) => {
+                downloadHtml('yath', html);
+            });
+        }
+
         const testGame = () => {
             this.props.testGame();
         };
@@ -81,10 +94,12 @@ class AppHeader extends React.Component {
                 <button className="appHeader__button appHeader__button--load">
                     <label htmlFor="appHeader__loadFile">📤</label>
                 </button>
+                <button onClick={ downloadGame } className="appHeader__button appHeader__button--download">🌍</button>
                 <button onClick={ testGame } className="appHeader__button appHeader__button--test">🚩</button>
                 <span className="appHeader__tooltip appHeader__tooltip--addScreen">Add screen</span>
-                <span className="appHeader__tooltip appHeader__tooltip--save">Save</span>
-                <span className="appHeader__tooltip appHeader__tooltip--load">Load</span>
+                <span className="appHeader__tooltip appHeader__tooltip--save">Download save file</span>
+                <span className="appHeader__tooltip appHeader__tooltip--download">Download HTML game</span>
+                <span className="appHeader__tooltip appHeader__tooltip--load">Load save file</span>
                 <span className="appHeader__tooltip appHeader__tooltip--test">Test game</span>
 
                 <input ref={this.setLoadInput} id="appHeader__loadFile" className="appHeader__loadFile" type="file" />
