@@ -7594,7 +7594,11 @@ exports.fetchYathJS = fetchYathJS;
 exports.getStartGameScript = getStartGameScript;
 exports.getFullHtml = getFullHtml;
 function fetchYath(type) {
-    return window.fetch('https://raw.githubusercontent.com/adrien-gueret/yath/master/yath.' + type).then(function (response) {
+    var minified = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    var fileName = 'yath.' + (minified ? 'min.' : '') + type;
+
+    return window.fetch('https://raw.githubusercontent.com/adrien-gueret/yath/master/' + fileName).then(function (response) {
         return response.text();
     });
 }
@@ -7606,7 +7610,7 @@ function getScreensHtml(screens, screensChoices) {
 }
 
 function fetchYathCSS() {
-    return fetchYath('css');
+    return fetchYath('css', true);
 }
 
 function fetchYathJS() {

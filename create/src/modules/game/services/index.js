@@ -1,5 +1,7 @@
-function fetchYath(type) {
-    return window.fetch(`https://raw.githubusercontent.com/adrien-gueret/yath/master/yath.${type}`)
+function fetchYath(type, minified = false) {
+    const fileName = `yath.${minified ? 'min.' : ''}${type}`;
+
+    return window.fetch(`https://raw.githubusercontent.com/adrien-gueret/yath/master/${fileName}`)
         .then(response => response.text());
 }
 
@@ -8,7 +10,7 @@ export function getScreensHtml(screens, screensChoices) {
 }
 
 export function fetchYathCSS() {
-    return fetchYath('css');
+    return fetchYath('css', true);
 }
 
 export function fetchYathJS() {
