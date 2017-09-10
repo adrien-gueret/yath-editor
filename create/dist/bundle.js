@@ -7594,9 +7594,7 @@ exports.fetchYathJS = fetchYathJS;
 exports.getStartGameScript = getStartGameScript;
 exports.getFullHtml = getFullHtml;
 function fetchYath(type) {
-    var minified = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-    var fileName = 'yath.' + (minified ? 'min.' : '') + type;
+    var fileName = 'yath.min.' + type;
 
     return window.fetch('https://raw.githubusercontent.com/adrien-gueret/yath/master/' + fileName).then(function (response) {
         return response.text();
@@ -7610,7 +7608,7 @@ function getScreensHtml(screens, screensChoices) {
 }
 
 function fetchYathCSS() {
-    return fetchYath('css', true);
+    return fetchYath('css');
 }
 
 function fetchYathJS() {

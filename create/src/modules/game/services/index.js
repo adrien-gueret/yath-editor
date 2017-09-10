@@ -1,5 +1,5 @@
-function fetchYath(type, minified = false) {
-    const fileName = `yath.${minified ? 'min.' : ''}${type}`;
+function fetchYath(type) {
+    const fileName = `yath.min.${type}`;
 
     return window.fetch(`https://raw.githubusercontent.com/adrien-gueret/yath/master/${fileName}`)
         .then(response => response.text());
@@ -10,7 +10,7 @@ export function getScreensHtml(screens, screensChoices) {
 }
 
 export function fetchYathCSS() {
-    return fetchYath('css', true);
+    return fetchYath('css');
 }
 
 export function fetchYathJS() {
