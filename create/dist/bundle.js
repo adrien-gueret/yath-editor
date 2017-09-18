@@ -7763,7 +7763,7 @@ var Screen = function () {
             var navigation = this.choicesIds.map(function (choiceId) {
                 return allChoices[choiceId].toHTML();
             }).join('');
-            return '\n         <section data-yath-screen="' + this.id + '">\n            <p>' + this.content + '</p>\n            <nav>' + navigation + '</nav>\n        </section>\n        ';
+            return '\n         <section data-yath-screen="' + this.id + '">\n            <div>' + this.content + '</div>\n            <nav>' + navigation + '</nav>\n        </section>\n        ';
         }
     }]);
 

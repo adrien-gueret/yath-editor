@@ -45,7 +45,7 @@ class Screen {
         const navigation = this.choicesIds.map(choiceId => allChoices[choiceId].toHTML()).join('');
         return `
          <section data-yath-screen="${this.id}">
-            <p>${this.content}</p>
+            <div>${this.content}</div>
             <nav>${navigation}</nav>
         </section>
         `;
