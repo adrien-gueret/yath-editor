@@ -7616,7 +7616,7 @@ function fetchYathJS() {
 }
 
 function getStartGameScript(startScreenId) {
-    return 'const g = new yath.Game(null, null, document.body);g.goToScreen(' + startScreenId + ');';
+    return 'const g = new yath.Game(null, null, document.body);g.goToScreen(\'' + startScreenId + '\');';
 }
 
 function getFullHtml(screens, screensChoices, startScreen) {
