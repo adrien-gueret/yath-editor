@@ -26,6 +26,10 @@ class Screen {
         this.choicesIds = [];
     }
 
+    getNl2BrContent() {
+        return this.content.replace(/\n/g, '<br/>');
+    }
+
     getSlug() {
         return this.name.toLowerCase().replace(/\s/g, '-');
     }
@@ -45,7 +49,7 @@ class Screen {
         const navigation = this.choicesIds.map(choiceId => allChoices[choiceId].toHTML()).join('');
         return `
          <section data-yath-screen="${this.id}">
-            <div>${this.content}</div>
+            <div>${this.getNl2BrContent()}</div>
             <nav>${navigation}</nav>
         </section>
         `;
