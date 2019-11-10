@@ -1,8 +1,8 @@
 import uuid from 'uuid/v1';
 
-class Screen {
-    static DEFAULT_COORDINATE = 100;
+const DEFAULT_COORDINATE = 100;
 
+class Screen {
     static createFromJSON(json) {
         const screen = new Screen(json.name, json.content, json.isStart, json.id);
         screen.x = json.x;
@@ -18,8 +18,8 @@ class Screen {
         this.id = id || uuid();
         this.name = name;
         this.content = content;
-        this.x = Screen.DEFAULT_COORDINATE + document.body.scrollLeft;
-        this.y = Screen.DEFAULT_COORDINATE + document.body.scrollTop;
+        this.x = DEFAULT_COORDINATE + document.body.scrollLeft;
+        this.y = DEFAULT_COORDINATE + document.body.scrollTop;
         this.width = 0;
         this.height = 0;
         this.isStart = isStart;
