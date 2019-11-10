@@ -1,6 +1,7 @@
 import './screen.less';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'proptypes';
 import Draggable from 'react-draggable';
 
 class Screen extends React.Component {

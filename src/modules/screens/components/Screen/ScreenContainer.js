@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'proptypes';
 import { connect } from 'react-redux'
 
 import Screen from './Screen';

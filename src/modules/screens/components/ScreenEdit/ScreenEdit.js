@@ -1,6 +1,7 @@
 import './screen-edit.less';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'proptypes';
 
 class ScreenEdit extends React.Component {
     static propTypes = {

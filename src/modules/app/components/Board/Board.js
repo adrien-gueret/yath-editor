@@ -1,6 +1,7 @@
 import './board.less';
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'proptypes';
 import { connect } from 'react-redux'
 
 import screensSelectors from 'Modules/screens/selectors';
