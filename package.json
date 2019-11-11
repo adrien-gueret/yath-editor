@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "parcel index.html",
-    "build:prod": "parcel build index.html --no-cache --public-url ./"
+    "build:prod": "parcel build index.html --no-cache --public-url ./",
+    "push": "./tasks/push.sh"
   },
   "dependencies": {
     "proptypes": "^1.1.0",
