@@ -1,90 +1,63 @@
 import './screen.less';
 
-import React from 'react';
-import PropTypes from 'proptypes';
+import React, { useRef, useEffect, useCallback } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
-class Screen extends React.Component {
-    static propTypes = {
-        onEdit: PropTypes.func.isRequired,
-        moveScreen: PropTypes.func.isRequired,
-        resizeScreen: PropTypes.func.isRequired,
-        screen: PropTypes.shape({
-            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            name: PropTypes.string,
-            x: PropTypes.number,
-            y: PropTypes.number,
-        }).isRequired,
-        hasChoiceWithoutTarget: PropTypes.bool,
-    };
+import screensSelectors from 'Modules/screens/selectors';
+import { moveScreen, resizeScreen as resizeScreenAction } from 'Modules/screens/actions';
+import { setEditScreen } from 'Modules/app/actions';
 
-    static defaultProps = {
-        hasChoiceWithoutTarget: false,
-    };
+function Screen({ screenId }) {
+    const domElement = useRef(null);
+    const dispatch = useDispatch();
+    const screen = useSelector(state => screensSelectors.getById(state, screenId), shallowEqual);
+    const hasChoiceWithoutTarget = useSelector(state => screensSelectors.hasChoiceWithoutTarget(state, screenId));
 
-    constructor(props) {
-        super(props);
-        this.domElement = null;
-    }
+    const resizeScreen = useCallback((newWidth, newHeight) => (
+        dispatch(resizeScreenAction(screenId, newWidth, newHeight))
+    ), [dispatch, screenId]);
 
-    componentDidMount() {
-        this.resizeScreen();
-    }
+    const editScreen = useCallback(() => dispatch(setEditScreen(screenId)), [dispatch, screenId]);
+    const dragScreen = useCallback((e, data) => {
+        dispatch(moveScreen(screenId, data.x, data.y));
+    }, [dispatch, screenId]);
 
-    componentDidUpdate(prevProps) {
-       if(prevProps.screen.name !== this.props.screen.name) {
-           this.resizeScreen();
-       }
-    }
-
-    dragHandler = (e, data) => {
-        this.props.moveScreen(this.props.screen.id, data.x, data.y);
-    };
-
-    resizeScreen() {
-        if (this.domElement) {
-            const style = window.getComputedStyle(this.domElement);
-            this.props.resizeScreen(this.props.screen.id, style.width, style.height);
+    useEffect(() => {
+        if (!domElement.current) {
+            return;
         }
-    }
+        
+        const style = window.getComputedStyle(domElement.current);
+        resizeScreen(style.width, style.height);
+    }, [domElement.current, resizeScreen]);
 
-    setDomElement = (domElement) => {
-      this.domElement = domElement;
-    };
+    const className = 'yathScreen';
+    const classError = hasChoiceWithoutTarget ? 'yathScreen--error' : '';
+    const classStart = screen.isStart ? 'yathScreen--start' : '';
 
-    editClickHandler = () => {
-        this.props.onEdit(this.props.screen.id);
-    };
-
-    render() {
-        const { screen, hasChoiceWithoutTarget } = this.props;
-        const className = 'yathScreen';
-        const classError = hasChoiceWithoutTarget ? 'yathScreen--error' : '';
-        const classStart = screen.isStart ? 'yathScreen--start' : '';
-
-        return (
-            <Draggable
-                bounds="parent"
-                defaultPosition={ screen }
-                handle=".yathScreen__name"
-                onDrag={ this.dragHandler }
+    return (
+        <Draggable
+            bounds="parent"
+            defaultPosition={screen}
+            handle=".yathScreen__name"
+            onDrag={dragScreen}
+        >
+            <div
+                className={`${className} ${classError} ${classStart}`}
+                ref={domElement}
+                title={hasChoiceWithoutTarget ? 'This screen has some choices without targets' : null}
             >
-                <div
-                    className={`${className} ${classError} ${classStart}`}
-                    ref={this.setDomElement}
-                    title={hasChoiceWithoutTarget ? 'This screen has some choices without targets' : null}
-                >
-                    <header className="yathScreen__header">
-                        <span className="yathScreen__name">{ screen.name }</span>
-                        <span
-                            className="yathScreen__editButton"
-                            onClick={ this.editClickHandler }
-                        >✏️</span>
-                    </header>
-                </div>
-            </Draggable>
-        );
-    }
+                <header className="yathScreen__header">
+                    <span className="yathScreen__name">{ screen.name }</span>
+                    <span
+                        className="yathScreen__editButton"
+                        onClick={editScreen}
+                    >✏️</span>
+                </header>
+            </div>
+        </Draggable>
+    );
 }
 
 export default Screen;
