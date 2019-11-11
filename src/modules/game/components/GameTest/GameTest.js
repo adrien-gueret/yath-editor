@@ -5,7 +5,7 @@ import PropTypes from 'proptypes';
 import { connect } from 'react-redux'
 
 import { selectors as screenSelectors } from 'Modules/screens';
-import screensChoicesSelectors from 'Modules/screensChoices/selectors';
+import { selectors as screensChoicesSelectors } from 'Modules/screensChoices';
 
 import actions from '../../actions';
 
@@ -69,7 +69,7 @@ class GameTest extends React.Component {
 const mapStateToProps = (state) => ({
     screens: screenSelectors.list.getAsArray(state),
     startScreen: screenSelectors.list.getStart(state),
-    screensChoices: screensChoicesSelectors.get(state),
+    screensChoices: screensChoicesSelectors.list.get(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

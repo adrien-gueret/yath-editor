@@ -1,5 +1,5 @@
 function get(state) {
-    return state.screensChoices;
+    return state.screensChoices.list;
 }
 
 function getByIds(state, choicesIds) {

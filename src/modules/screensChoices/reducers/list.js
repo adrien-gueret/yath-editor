@@ -1,27 +1,18 @@
-import ScreenChoice from 'Modules/screensChoices/models/ScreenChoice';
-import {
-    ADD_SCREEN_CHOICE,
-    DELETE_SCREEN_CHOICE,
-    DELETE_ALL_SCREEN_CHOICES,
-    EDIT_SCREEN_CHOICE_LABEL,
-    EDIT_SCREEN_CHOICE_TARGET,
-    LOAD_SCREENS_CHOICES,
-} from 'Modules/screensChoices/actions';
+import { actionTypes as screenActionTypes } from 'Modules/screens';
 
-import {
-    DELETE_SCREEN,
-} from 'Modules/screens/actions';
+import actionTypes from '../actions/types';
+import ScreenChoiceModel from '../models/ScreenChoice';
 
-function screensChoices(state = {}, action) {
+export default function list(state = {}, action) {
     switch (action.type) {
-        case ADD_SCREEN_CHOICE: {
+        case actionTypes.ADD_SCREEN_CHOICE: {
             return {
                 ...state,
                 [action.payload.screenChoice.id]: action.payload.screenChoice,
             };
         }
 
-        case DELETE_SCREEN_CHOICE: {
+        case actionTypes.DELETE_SCREEN_CHOICE: {
             const screenChoiceToDelete = state[action.payload.screenChoiceId];
 
             if (!screenChoiceToDelete) {
@@ -34,11 +25,11 @@ function screensChoices(state = {}, action) {
             return newScreensChoices;
         }
 
-        case DELETE_ALL_SCREEN_CHOICES: {
+        case actionTypes.DELETE_ALL_SCREEN_CHOICES: {
             return {};
         }
 
-        case EDIT_SCREEN_CHOICE_LABEL: {
+        case actionTypes.EDIT_SCREEN_CHOICE_LABEL: {
             const newScreenChoice = state[action.payload.screenChoiceId].clone();
             newScreenChoice.label = action.payload.newLabel;
 
@@ -48,7 +39,7 @@ function screensChoices(state = {}, action) {
             };
         }
 
-        case EDIT_SCREEN_CHOICE_TARGET: {
+        case actionTypes.EDIT_SCREEN_CHOICE_TARGET: {
             const newScreenChoice = state[action.payload.screenChoiceId].clone();
             newScreenChoice.targetScreenId = action.payload.newTargetId;
 
@@ -58,7 +49,19 @@ function screensChoices(state = {}, action) {
             };
         }
 
-        case DELETE_SCREEN: {
+        case actionTypes.LOAD_SCREENS_CHOICES: {
+            return Object.keys(action.payload.screensChoicesData.list)
+                .map(screenChoiceId => {
+                    const {label, targetScreenId} = action.payload.screensChoicesData.list[screenChoiceId];
+                    return new ScreenChoiceModel(label, targetScreenId, screenChoiceId);
+                })
+                .reduce((newState, screenChoice) => ({
+                    ...newState,
+                    [screenChoice.id]: screenChoice,
+                }), {});
+        }
+
+        case screenActionTypes.DELETE_SCREEN: {
             const screenId = action.payload.screenId;
 
             return Object.keys(state).reduce((allChoices, choiceId) => {
@@ -72,21 +75,7 @@ function screensChoices(state = {}, action) {
             }, {});
         }
 
-        case LOAD_SCREENS_CHOICES: {
-            return Object.keys(action.payload.screensChoicesData)
-                .map(screenChoiceId => {
-                    const {label, targetScreenId} = action.payload.screensChoicesData[screenChoiceId];
-                    return new ScreenChoice(label, targetScreenId, screenChoiceId);
-                })
-                .reduce((newState, screenChoice) => ({
-                    ...newState,
-                    [screenChoice.id]: screenChoice,
-                }), {});
-        }
-
         default:
             return state;
     }
 }
-
-export default screensChoices;

@@ -1,5 +1,5 @@
 import { geometry } from 'Modules/maths';
-import choicesSelectors from 'Modules/screensChoices/selectors';
+import { selectors as screensChoicesSelectors } from 'Modules/screensChoices';
 
 function get(state) {
     return state.screens.list;
@@ -26,7 +26,7 @@ function hasChoiceWithoutTarget(state, screenId) {
         return false;
     }
 
-    const choices = choicesSelectors.getByIds(state, screen.choicesIds);
+    const choices = screensChoicesSelectors.list.getByIds(state, screen.choicesIds);
     return choices.some(choice => !choice.targetScreenId);
 }
 
@@ -42,7 +42,7 @@ function getArrows(state) {
     return screens.reduce((allArrows, screen) => {
         const start = { x: screen.x + screen.width/2, y: screen.y + screen.height/2 };
 
-        const choices = choicesSelectors.getByIds(state, screen.choicesIds);
+        const choices = screensChoicesSelectors.list.getByIds(state, screen.choicesIds);
 
         const newArrows = choices.map(choice => {
             const targetScreen = getById(state, choice.targetScreenId);

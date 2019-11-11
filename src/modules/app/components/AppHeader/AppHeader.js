@@ -12,8 +12,7 @@ import {
     actions as screenActions
 } from 'Modules/screens';
 
-import screensChoicesSelectors from 'Modules/screensChoices/selectors';
-import { deleteAllScreenChoices, loadScreensChoices } from 'Modules/screensChoices/actions';
+import { selectors as screensChoicesSelectors, actions as screensChoicesActions } from 'Modules/screensChoices';
 
 import selectors from '../../selectors';
 
@@ -28,8 +27,8 @@ function AppHeader({ onAddScreen }) {
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
     const loadState = useCallback((newState) => {
         dispatch(screenActions.deleteAllScreens());
-        dispatch(deleteAllScreenChoices());
-        dispatch(loadScreensChoices(newState.screensChoices));
+        dispatch(screensChoicesActions.deleteAllScreenChoices());
+        dispatch(screensChoicesActions.loadScreensChoices(newState.screensChoices));
         dispatch(screenActions.loadScreens(newState.screens));
     }, [dispatch]);
 
@@ -78,7 +77,7 @@ function AppHeader({ onAddScreen }) {
 
     function downloadGame() {
         const screens = screensSelectors.list.getAsArray(appState);
-        const screensChoices = screensChoicesSelectors.get(appState);
+        const screensChoices = screensChoicesSelectors.list.get(appState);
         const startScreen = screensSelectors.list.getStart(appState);
 
         getFullHtml(screens, screensChoices, startScreen).then((html) => {
