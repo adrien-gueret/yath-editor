@@ -1,6 +1,8 @@
 import { geometry } from 'Modules/maths';
 import { selectors as screensChoicesSelectors } from 'Modules/screensChoices';
 
+import editedScreenId from './editedScreenId';
+
 function get(state) {
     return state.screens.list;
 }
@@ -13,6 +15,10 @@ function getAsArray(state) {
 function getById(state, screenId) {
     const screens = get(state);
     return screens[screenId] || null;
+}
+
+function getEditedScreen(state) {
+    return getById(state, editedScreenId.get(state));
 }
 
 function getAllExceptOne(state, screenId) {
@@ -98,4 +104,5 @@ export default {
     hasChoiceWithoutTarget,
     getStart,
     getArrows,
+    getEditedScreen,
 };
