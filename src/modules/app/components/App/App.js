@@ -1,8 +1,7 @@
 import './app.less';
 
-import React from 'react';
-import PropTypes from 'proptypes';
-import { connect } from 'react-redux'
+import React, { useCallback } from 'react';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 
 import AppHeader from '../AppHeader';
 import Board from '../Board';
@@ -14,19 +13,12 @@ import { setEditScreen } from 'Modules/app/actions';
 
 import GameTest from 'Modules/game/components/GameTest';
 
-const propTypes = {
-    onAddScreen: PropTypes.func.isRequired,
-    isGameTesting: PropTypes.bool,
-    screens: PropTypes.array,
-};
+export function App() {
+    const isGameTesting = useSelector(appSelectors.isGameTesting);
+    const screens = useSelector(screensSelectors.getAsArray, shallowEqual);
+    const dispatch = useDispatch();
 
-const defaultProps = {
-    isGameTesting: false,
-    screens: [],
-};
-
-export function App({ isGameTesting, screens, onAddScreen }) {
-    const addScreenHandler = (newScreen) => {
+    const addScreenHandler = useCallback((newScreen) => {
         const newSlug = newScreen.getSlug();
         const nameAlreadyUsed = screens.some(screen => screen.getSlug() === newSlug);
 
@@ -35,8 +27,9 @@ export function App({ isGameTesting, screens, onAddScreen }) {
             return;
         }
 
-        onAddScreen(newScreen);
-    };
+        dispatch(addScreen(newScreen));
+        dispatch(setEditScreen(newScreen.id));
+    }, [dispatch, screens]);
 
     return (
         <div className="yathApp">
@@ -47,23 +40,4 @@ export function App({ isGameTesting, screens, onAddScreen }) {
     );
 }
 
-App.propTypes = propTypes;
-App.defaultProps = defaultProps;
-
-const mapStateToProps = (state) => {
-    return {
-        isGameTesting: appSelectors.isGameTesting(state),
-        screens: screensSelectors.getAsArray(state),
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onAddScreen(screen) {
-            dispatch(addScreen(screen));
-            dispatch(setEditScreen(screen.id));
-        },
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
