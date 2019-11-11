@@ -3,15 +3,13 @@ import './board.less';
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
-import screensSelectors from 'Modules/screens/selectors';
-import appSelectors from 'Modules/app/selectors';
-import ScreenEdit from 'Modules/screens/components/ScreenEdit';
-import Screen from 'Modules/screens/components/Screen';
+import { selectors as screenSelectors, Screen, ScreenEdit } from 'Modules/screens';
+
 import ArrowsBoard from '../ArrowsBoard';
 
 function Board() {
-    const editScreenId = useSelector(appSelectors.getEditScreenId);
-    const screens = useSelector(screensSelectors.getAsArray, shallowEqual);
+    const editedScreenId = useSelector(screenSelectors.editedScreenId.get);
+    const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
 
     return (
         <section className="yathBoard">
@@ -20,7 +18,7 @@ function Board() {
                     <Screen key={ screen.id } screenId={screen.id} />
                 ))
             }
-            { editScreenId && <ScreenEdit /> }
+            { editedScreenId && <ScreenEdit /> }
             <ArrowsBoard />
         </section>
     );

@@ -1,11 +1,3 @@
-export function downloadJson(filename, jsonObject) {
-    download(`${filename}.json`, JSON.stringify(jsonObject), 'application/json');
-}
-
-export function downloadHtml(filename, htmlContent) {
-    download(`${filename}.html`, htmlContent, 'text/html');
-}
-
 function download(filename, fileContent, dataType) {
     const link = document.createElement('a');
     link.setAttribute('href', `data:${dataType};charset=utf-8,${encodeURIComponent(fileContent)}`);
@@ -17,4 +9,12 @@ function download(filename, fileContent, dataType) {
     link.click();
 
     document.body.removeChild(link);
+}
+
+export function downloadJson(filename, jsonObject) {
+    download(`${filename}.json`, JSON.stringify(jsonObject), 'application/json');
+}
+
+export function downloadHtml(filename, htmlContent) {
+    download(`${filename}.html`, htmlContent, 'text/html');
 }

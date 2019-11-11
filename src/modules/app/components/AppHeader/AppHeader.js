@@ -4,35 +4,36 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'proptypes';
 
-import Screen from 'Modules/screens/models/Screen';
-import { downloadJson, downloadHtml } from 'Modules/download';
+import { actions as gameActions, getFullHtml } from 'Modules/game';
+import { downloadJson, downloadHtml } from 'Modules/utils';
+import {
+    selectors as screensSelectors,
+    ScreenModel,
+    actions as screenActions
+} from 'Modules/screens';
 
-import appSelectors from 'Modules/app/selectors';
-import screensSelectors from 'Modules/screens/selectors';
 import screensChoicesSelectors from 'Modules/screensChoices/selectors';
-
-import { deleteAllScreens, loadScreens } from 'Modules/screens/actions';
 import { deleteAllScreenChoices, loadScreensChoices } from 'Modules/screensChoices/actions';
-import { testGame as testGameAction } from 'Modules/app/actions';
-import { getFullHtml } from 'Modules/game/services';
+
+import selectors from '../../selectors';
 
 const propTypes = {
     onAddScreen: PropTypes.func.isRequired,
 };
 
 function AppHeader({ onAddScreen }) {
-    const appState = useSelector(appSelectors.getExportableState,shallowEqual);
+    const appState = useSelector(selectors.getExportableState, shallowEqual);
     const dispatch = useDispatch();
     const loadInput = useRef(null);
-    const testGame = useCallback(() => dispatch(testGameAction()), [dispatch]);
+    const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
     const loadState = useCallback((newState) => {
-        dispatch(deleteAllScreens());
+        dispatch(screenActions.deleteAllScreens());
         dispatch(deleteAllScreenChoices());
         dispatch(loadScreensChoices(newState.screensChoices));
-        dispatch(loadScreens(newState.screens));
+        dispatch(screenActions.loadScreens(newState.screens));
     }, [dispatch]);
 
-    const loadFile = useCallback(() => {
+    const loadFile = useCallback((loadEvent) => {
         loadInput.current.value = '';
 
         try {
@@ -67,7 +68,7 @@ function AppHeader({ onAddScreen }) {
         const screenName = prompt('Screen name?');
 
         if (screenName) {
-            onAddScreen(new Screen(screenName));
+            onAddScreen(new ScreenModel(screenName));
         }
     }
 
@@ -76,9 +77,9 @@ function AppHeader({ onAddScreen }) {
     }
 
     function downloadGame() {
-        const screens = screensSelectors.getAsArray(appState);
+        const screens = screensSelectors.list.getAsArray(appState);
         const screensChoices = screensChoicesSelectors.get(appState);
-        const startScreen = screensSelectors.getStart(appState);
+        const startScreen = screensSelectors.list.getStart(appState);
 
         getFullHtml(screens, screensChoices, startScreen).then((html) => {
             downloadHtml('yath', html);
@@ -87,8 +88,8 @@ function AppHeader({ onAddScreen }) {
 
     return (
         <header className="appHeader">
-            <button onClick={ onAddScreenClickHandler } className="appHeader__button appHeader__button--addScreen">🔨</button>
-            <button onClick={ save } className="appHeader__button appHeader__button--save">💾</button>
+            <button onClick={onAddScreenClickHandler} className="appHeader__button appHeader__button--addScreen">🔨</button>
+            <button onClick={save} className="appHeader__button appHeader__button--save">💾</button>
             <button className="appHeader__button appHeader__button--load">
                 <label htmlFor="appHeader__loadFile">📤</label>
             </button>

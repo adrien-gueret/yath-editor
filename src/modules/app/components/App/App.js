@@ -4,18 +4,15 @@ import React, { useCallback } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 
 import AppHeader from '../AppHeader';
-import Board from '../Board';
 
-import appSelectors from 'Modules/app/selectors';
-import screensSelectors from 'Modules/screens/selectors';
-import { addScreen } from 'Modules/screens/actions';
-import { setEditScreen } from 'Modules/app/actions';
-
-import GameTest from 'Modules/game/components/GameTest';
+import { Board } from 'Modules/Board';
+import { GameTest, selectors as gameSelectors } from 'Modules/game';
+import { actions as screenActions, selectors as screenSelectors } from 'Modules/screens';
 
 export function App() {
-    const isGameTesting = useSelector(appSelectors.isGameTesting);
-    const screens = useSelector(screensSelectors.getAsArray, shallowEqual);
+    const isTesting = useSelector(gameSelectors.isTesting.get);
+
+    const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
     const dispatch = useDispatch();
 
     const addScreenHandler = useCallback((newScreen) => {
@@ -27,15 +24,15 @@ export function App() {
             return;
         }
 
-        dispatch(addScreen(newScreen));
-        dispatch(setEditScreen(newScreen.id));
+        dispatch(screenActions.addScreen(newScreen));
+        dispatch(screenActions.setEditScreen(newScreen.id));
     }, [dispatch, screens]);
 
     return (
         <div className="yathApp">
             <AppHeader onAddScreen={ addScreenHandler } />
             <Board />
-            { isGameTesting && <GameTest /> }
+            { isTesting && <GameTest /> }
         </div>
     );
 }

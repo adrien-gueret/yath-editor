@@ -1,11 +1,11 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
-import screensSelectors from 'Modules/screens/selectors';
+import { selectors as screenSelectors } from 'Modules/screens';
 import './arrowsBoard.less';
 
 function ArrowsBoard () {
-    const arrows = useSelector(screensSelectors.getArrows, shallowEqual);
+    const arrows = useSelector(screenSelectors.list.getArrows, shallowEqual);
 
     return (
         <svg width="100%" height="100%" className="arrowsBoard">

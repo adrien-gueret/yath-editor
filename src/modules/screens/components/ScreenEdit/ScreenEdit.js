@@ -182,7 +182,7 @@ class ScreenEdit extends React.Component {
     renderActionsButton() {
         if (this.props.screen.isStart) {
             return (
-                <span className="screenEdit__notDeletable">This screen is the start one and can't be delete.</span>
+                <span className="screenEdit__notDeletable">This screen is the start one and can't be deleted.</span>
             );
         }
 

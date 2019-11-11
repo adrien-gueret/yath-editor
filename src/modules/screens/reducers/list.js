@@ -1,21 +1,12 @@
-import Screen from 'Modules/screens/models/Screen';
-import {
-    ADD_SCREEN,
-    DELETE_SCREEN,
-    DELETE_ALL_SCREENS,
-    EDIT_SCREEN_NAME,
-    EDIT_SCREEN_CONTENT,
-    SET_START_SCREEN,
-    LOAD_SCREENS,
-    MOVE_SCREEN,
-    RESIZE_SCREEN,
-} from 'Modules/screens/actions';
+import ScreenModel from '../models/Screen';
+
+import actionTypes from '../actions/types';
 
 import {
     ADD_SCREEN_CHOICE,
 } from 'Modules/screensChoices/actions';
 
-const startScreen = new Screen('Start screen', '', true);
+const startScreen = new ScreenModel('Start screen', '', true);
 startScreen.x = 200;
 startScreen.y = 200;
 
@@ -23,15 +14,15 @@ const INITIAL_STATE = {
     [startScreen.id]: startScreen,
 };
 
-function screens(state = INITIAL_STATE, action) {
+export default function list(state = INITIAL_STATE, action) {
     switch (action.type) {
-        case ADD_SCREEN:
+        case actionTypes.ADD_SCREEN:
             return {
                 ...state,
                 [action.payload.screen.id]: action.payload.screen,
             };
 
-        case DELETE_SCREEN: {
+        case actionTypes.DELETE_SCREEN: {
             const screenToDelete = state[action.payload.screenId];
 
             if (!screenToDelete) {
@@ -44,16 +35,16 @@ function screens(state = INITIAL_STATE, action) {
             return newScreens;
         }
 
-        case DELETE_ALL_SCREENS: {
+        case actionTypes.DELETE_ALL_SCREENS: {
             return {};
         }
 
-        case EDIT_SCREEN_NAME: {
+        case actionTypes.EDIT_SCREEN_NAME: {
             let newName = action.payload.newName;
             let alreadyExisted = false;
 
             do {
-                const newSlug = new Screen(newName, '', 1).getSlug();
+                const newSlug = new ScreenModel(newName, '', 1).getSlug();
                 alreadyExisted = Object.keys(state).some(screenId => state[screenId].getSlug() === newSlug);
 
                 if (alreadyExisted) {
@@ -70,7 +61,7 @@ function screens(state = INITIAL_STATE, action) {
             };
         }
 
-        case EDIT_SCREEN_CONTENT: {
+        case actionTypes.EDIT_SCREEN_CONTENT: {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.content = action.payload.newContent;
 
@@ -80,7 +71,7 @@ function screens(state = INITIAL_STATE, action) {
             };
         }
 
-        case SET_START_SCREEN: {
+        case actionTypes.SET_START_SCREEN: {
             return Object.keys(state)
                 .reduce((newState, screenId) => {
                     const clonedScreen = state[screenId].clone();
@@ -103,7 +94,7 @@ function screens(state = INITIAL_STATE, action) {
             };
         }
 
-        case MOVE_SCREEN: {
+        case actionTypes.MOVE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.x = action.payload.newX;
             newScreen.y = action.payload.newY;
@@ -114,7 +105,7 @@ function screens(state = INITIAL_STATE, action) {
             };
         }
 
-        case RESIZE_SCREEN: {
+        case actionTypes.RESIZE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.width = parseInt(action.payload.newWidth, 10);
             newScreen.height = parseInt(action.payload.newHeight, 10);
@@ -125,9 +116,9 @@ function screens(state = INITIAL_STATE, action) {
             };
         }
 
-        case LOAD_SCREENS: {
-            return Object.keys(action.payload.screensData)
-                    .map(screenId => Screen.createFromJSON(action.payload.screensData[screenId]))
+        case actionTypes.LOAD_SCREENS: {
+            return Object.keys(action.payload.screensData.list)
+                    .map(screenId => ScreenModel.createFromJSON(action.payload.screensData.list[screenId]))
                     .reduce((newState, screen) => ({
                         ...newState,
                         [screen.id]: screen,
@@ -138,5 +129,3 @@ function screens(state = INITIAL_STATE, action) {
             return state;
     }
 }
-
-export default screens;

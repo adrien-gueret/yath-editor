@@ -1,8 +1,8 @@
-import { getSegmentsIntersectionPoint } from 'Modules/maths/services/geometry';
+import { geometry } from 'Modules/maths';
 import choicesSelectors from 'Modules/screensChoices/selectors';
 
 function get(state) {
-    return state.screens;
+    return state.screens.list;
 }
 
 function getAsArray(state) {
@@ -76,7 +76,7 @@ function getArrows(state) {
             const arrow = { start, end: targetCenter };
 
             const end = [topSegment, rightSegment, bottomSegment, leftSegment].reduce((finalEnd, segment) => (
-                getSegmentsIntersectionPoint(arrow, segment) || finalEnd
+                geometry.getSegmentsIntersectionPoint(arrow, segment) || finalEnd
             ), targetCenter);
 
             return { start, end };

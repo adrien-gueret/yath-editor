@@ -4,23 +4,22 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
-import screensSelectors from 'Modules/screens/selectors';
-import { moveScreen, resizeScreen as resizeScreenAction } from 'Modules/screens/actions';
-import { setEditScreen } from 'Modules/app/actions';
+import actions from '../../actions';
+import selectors from '../../selectors';
 
 function Screen({ screenId }) {
     const domElement = useRef(null);
     const dispatch = useDispatch();
-    const screen = useSelector(state => screensSelectors.getById(state, screenId), shallowEqual);
-    const hasChoiceWithoutTarget = useSelector(state => screensSelectors.hasChoiceWithoutTarget(state, screenId));
+    const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
+    const hasChoiceWithoutTarget = useSelector(state => selectors.list.hasChoiceWithoutTarget(state, screenId));
 
     const resizeScreen = useCallback((newWidth, newHeight) => (
-        dispatch(resizeScreenAction(screenId, newWidth, newHeight))
+        dispatch(actions.resizeScreen(screenId, newWidth, newHeight))
     ), [dispatch, screenId]);
 
-    const editScreen = useCallback(() => dispatch(setEditScreen(screenId)), [dispatch, screenId]);
+    const editScreen = useCallback(() => dispatch(actions.setEditScreen(screenId)), [dispatch, screenId]);
     const dragScreen = useCallback((e, data) => {
-        dispatch(moveScreen(screenId, data.x, data.y));
+        dispatch(actions.moveScreen(screenId, data.x, data.y));
     }, [dispatch, screenId]);
 
     useEffect(() => {

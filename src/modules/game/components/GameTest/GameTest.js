@@ -4,10 +4,10 @@ import React from 'react';
 import PropTypes from 'proptypes';
 import { connect } from 'react-redux'
 
-import screensSelectors from 'Modules/screens/selectors';
+import { selectors as screenSelectors } from 'Modules/screens';
 import screensChoicesSelectors from 'Modules/screensChoices/selectors';
 
-import { finishTestGame } from 'Modules/app/actions';
+import actions from '../../actions';
 
 import { getScreensHtml, getStartGameScript, fetchYathCSS, fetchYathJS } from '../../services';
 
@@ -67,14 +67,14 @@ class GameTest extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    screens: screensSelectors.getAsArray(state),
-    startScreen: screensSelectors.getStart(state),
+    screens: screenSelectors.list.getAsArray(state),
+    startScreen: screenSelectors.list.getStart(state),
     screensChoices: screensChoicesSelectors.get(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
     finishTestGame() {
-        dispatch(finishTestGame());
+        dispatch(actions.finishTestGame());
     }
 });
 

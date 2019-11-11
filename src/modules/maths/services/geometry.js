@@ -1,5 +1,5 @@
 // Algo from https://openclassrooms.com/forum/sujet/calcul-du-point-d-intersection-de-deux-segments-21661
-export function getLinesIntersectionPoint(line1, lineZ) {
+function getLinesIntersectionPoint(line1, lineZ) {
     const line1Start = line1.start;
     const line1End = line1.end;
     const lineZStart = lineZ.start;
@@ -34,7 +34,7 @@ export function getLinesIntersectionPoint(line1, lineZ) {
     };
 }
 
-export function getSegmentsIntersectionPoint(segment1, segment2) {
+function getSegmentsIntersectionPoint(segment1, segment2) {
     const intersection = getLinesIntersectionPoint(segment1, segment2);
 
     if (!intersection) {

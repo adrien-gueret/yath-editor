@@ -1,3 +1,1 @@
-import GameTest from './GameTest';
-
-export default GameTest;
+export { default } from './GameTest';
