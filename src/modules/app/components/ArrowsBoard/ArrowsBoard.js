@@ -1,27 +1,12 @@
+import React from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
+
+import screensSelectors from 'Modules/screens/selectors';
 import './arrowsBoard.less';
 
-import React from 'react';
-import PropTypes from 'proptypes';
+function ArrowsBoard () {
+    const arrows = useSelector(screensSelectors.getArrows, shallowEqual);
 
-const pointPropType = PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-});
-
-const arrowPropType = PropTypes.shape({
-    start: pointPropType.isRequired,
-    end: pointPropType.isRequired,
-});
-
-const propTypes = {
-    arrows: PropTypes.arrayOf(arrowPropType),
-};
-
-const defaultProps = {
-  arrows: [],
-};
-
-function ArrowsBoard ({ arrows }) {
     return (
         <svg width="100%" height="100%" className="arrowsBoard">
             <defs>
@@ -41,8 +26,5 @@ function ArrowsBoard ({ arrows }) {
         </svg>
     );
 }
-
-ArrowsBoard.propTypes = propTypes;
-ArrowsBoard.defaultProps = defaultProps;
 
 export default ArrowsBoard;

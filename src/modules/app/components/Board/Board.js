@@ -1,7 +1,7 @@
 import './board.less';
 
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux'
+import { shallowEqual, useSelector } from 'react-redux';
 
 import screensSelectors from 'Modules/screens/selectors';
 import appSelectors from 'Modules/app/selectors';

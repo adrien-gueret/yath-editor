@@ -1,3 +1,4 @@
+import { getSegmentsIntersectionPoint } from 'Modules/maths/services/geometry';
 import choicesSelectors from 'Modules/screensChoices/selectors';
 
 function get(state) {
@@ -35,6 +36,59 @@ function getStart(state) {
     return startScreen[0] || null;
 }
 
+function getArrows(state) {
+    const screens = getAsArray(state);
+
+    return screens.reduce((allArrows, screen) => {
+        const start = { x: screen.x + screen.width/2, y: screen.y + screen.height/2 };
+
+        const choices = choicesSelectors.getByIds(state, screen.choicesIds);
+
+        const newArrows = choices.map(choice => {
+            const targetScreen = getById(state, choice.targetScreenId);
+
+            if (!targetScreen) {
+                return null;
+            }
+
+            const targetCenter = { x: targetScreen.x + targetScreen.width/2, y: targetScreen.y + targetScreen.height/2 };
+
+            const topSegment = {
+                start: { x: targetScreen.x, y: targetScreen.y },
+                end: { x: targetScreen.x + targetScreen.width, y: targetScreen.y },
+            };
+
+            const rightSegment = {
+                start: { x: targetScreen.x + targetScreen.width, y: targetScreen.y },
+                end: { x: targetScreen.x + targetScreen.width, y: targetScreen.y + targetScreen.height },
+            };
+
+            const bottomSegment = {
+                start: { x: targetScreen.x, y: targetScreen.y + targetScreen.height },
+                end: { x: targetScreen.x + targetScreen.width, y: targetScreen.y + targetScreen.height },
+            };
+
+            const leftSegment = {
+                start: { x: targetScreen.x, y: targetScreen.y },
+                end: { x: targetScreen.x, y: targetScreen.y + targetScreen.height },
+            };
+
+            const arrow = { start, end: targetCenter };
+
+            const end = [topSegment, rightSegment, bottomSegment, leftSegment].reduce((finalEnd, segment) => (
+                getSegmentsIntersectionPoint(arrow, segment) || finalEnd
+            ), targetCenter);
+
+            return { start, end };
+        });
+
+        return [
+            ...allArrows,
+            ...newArrows.filter(arrow => !!arrow),
+        ];
+
+    }, []);
+}
 
 export default {
     get,
@@ -43,4 +97,5 @@ export default {
     getById,
     hasChoiceWithoutTarget,
     getStart,
+    getArrows,
 };

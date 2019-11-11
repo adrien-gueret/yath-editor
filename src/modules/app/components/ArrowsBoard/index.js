@@ -1,3 +1,1 @@
-import ArrowsBoard from './ArrowsBoardContainer';
-
-export default ArrowsBoard;
+export { default } from './ArrowsBoard';
