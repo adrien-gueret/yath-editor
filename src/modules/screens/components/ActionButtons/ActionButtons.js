@@ -14,7 +14,7 @@ const propTypes = {
 
 export default function ActionButtons({ screenId }) {
     const dispatch = useDispatch();
-    const screen = useSelector(selectors.list.getEditedScreen, shallowEqual) || {};
+    const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
     const onDeleteHandler = useCallback(() => {
         if (!confirm('Do you really want to delete this screen?')) {
             return;

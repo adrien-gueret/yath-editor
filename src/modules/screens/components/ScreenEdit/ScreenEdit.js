@@ -1,6 +1,7 @@
 import './screen-edit.less';
 
 import React, { useCallback, useState } from 'react';
+import PropTypes from 'proptypes';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import ActionButtons from '../ActionButtons';
@@ -9,10 +10,13 @@ import ChoiceListContainer from '../ChoiceListContainer';
 import actions from '../../actions';
 import selectors from '../../selectors';
 
-export default function ScreenEdit() {
+const propTypes = {
+    screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+};
+
+export default function ScreenEdit({ screenId }) {
     const dispatch = useDispatch();
-    const screen = useSelector(selectors.list.getEditedScreen, shallowEqual) || {};
-    const screenId = screen.id;
+    const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
 
     const [screenName, setScreenName] = useState(screen.name);
     const [screenContent, setScreenContent] = useState(screen.content);
@@ -54,7 +58,7 @@ export default function ScreenEdit() {
                 />
                 <br />
 
-                { Boolean(otherScreens.length) && <ChoiceListContainer screenId={screenId} /> }
+                {Boolean(otherScreens.length) && <ChoiceListContainer screenId={screenId} />}
 
                 <footer className="screenEdit__footer">
                     <ActionButtons screenId={screenId} />
@@ -68,3 +72,5 @@ export default function ScreenEdit() {
         </section>
     );
 }
+
+ScreenEdit.propTypes = propTypes;

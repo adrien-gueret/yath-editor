@@ -18,7 +18,7 @@ function Board() {
                     <Screen key={ screen.id } screenId={screen.id} />
                 ))
             }
-            { editedScreenId && <ScreenEdit /> }
+            { editedScreenId && <ScreenEdit screenId={editedScreenId} /> }
             <ArrowsBoard />
         </section>
     );
