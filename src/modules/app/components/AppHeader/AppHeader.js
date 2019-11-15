@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'proptypes';
 
@@ -15,7 +15,8 @@ import { downloadJson, downloadHtml } from 'Modules/utils';
 import {
     selectors as screensSelectors,
     ScreenModel,
-    actions as screenActions
+    actions as screenActions,
+    AddScreenDialog,
 } from 'Modules/screens';
 
 import { selectors as screensChoicesSelectors, actions as screensChoicesActions } from 'Modules/screensChoices';
@@ -51,6 +52,7 @@ function AppHeader({ onAddScreen }) {
         dispatch(screensChoicesActions.loadScreensChoices(newState.screensChoices));
         dispatch(screenActions.loadScreens(newState.screens));
     }, [dispatch]);
+    const [isAddScreenDialogOpen, setIsAddScreenDialogOpen] = useState(false);
 
     const loadFile = useCallback((loadEvent) => {
         loadInput.current.value = '';
@@ -91,12 +93,19 @@ function AppHeader({ onAddScreen }) {
     const classes = useStyles();
 
     function onAddScreenClickHandler() {
-        const screenName = prompt('Screen name?');
+        setIsAddScreenDialogOpen(true);
+    }
 
+    const onAddScreenDialogClose = useCallback(() => {
+        setIsAddScreenDialogOpen(false);
+    }, [setIsAddScreenDialogOpen]);
+
+    const onAddScreenDialogSubmit = useCallback((screenName) => {
         if (screenName) {
             onAddScreen(new ScreenModel(screenName));
         }
-    }
+        onAddScreenDialogClose();
+    }, [onAddScreenDialogClose]);
 
     function save() {
         downloadJson('yath', appState);
@@ -114,6 +123,11 @@ function AppHeader({ onAddScreen }) {
 
     return (
         <AppBar>
+            <AddScreenDialog
+                isOpen={isAddScreenDialogOpen}
+                onClose={onAddScreenDialogClose}
+                onSubmit={onAddScreenDialogSubmit}
+            />
             <Toolbar>
                 <Tooltip title="Add screen">
                     <IconButton
