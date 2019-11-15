@@ -1,8 +1,14 @@
-import './appHeader.less';
-
 import React, { useCallback, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'proptypes';
+
+import { AppBar, IconButton, Toolbar, Tooltip, makeStyles } from '@material-ui/core';
+
+import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
+import SaveIcon from '@material-ui/icons/GetApp';
+import LoadIcon from '@material-ui/icons/Publish';
+import DownloadGameIcon from '@material-ui/icons/PublicOutlined';
+import TestGameIcon from '@material-ui/icons/SportsEsportsOutlined';
 
 import { actions as gameActions, getFullHtml } from 'Modules/game';
 import { downloadJson, downloadHtml } from 'Modules/utils';
@@ -15,6 +21,20 @@ import {
 import { selectors as screensChoicesSelectors, actions as screensChoicesActions } from 'Modules/screensChoices';
 
 import selectors from '../../selectors';
+
+const useStyles = makeStyles(({ spacing, palette }) => ({
+    separator: {
+        margin: spacing(0, 2),
+        height: 32,
+        borderRight: `2px solid ${palette.divider}`,
+    },
+    toRight: {
+        marginLeft: 'auto',
+    },
+    inputFile: {
+        display: 'none',
+    }
+}), { classNamePrefix: 'AppHeader' });
 
 const propTypes = {
     onAddScreen: PropTypes.func.isRequired,
@@ -44,6 +64,11 @@ function AppHeader({ onAddScreen }) {
 
     }, [loadInput.current]);
 
+    const askForFile = useCallback(() => {
+        loadInput.current.click();
+
+    }, [loadInput.current]);
+
     useEffect(() => {
         if (!loadInput.current) {
             return;
@@ -62,6 +87,8 @@ function AppHeader({ onAddScreen }) {
 
         return () => loadInput.current.removeEventListener('change', onChange);
     }, [loadInput.current]);
+
+    const classes = useStyles();
 
     function onAddScreenClickHandler() {
         const screenName = prompt('Screen name?');
@@ -86,22 +113,59 @@ function AppHeader({ onAddScreen }) {
     }
 
     return (
-        <header className="appHeader">
-            <button onClick={onAddScreenClickHandler} className="appHeader__button appHeader__button--addScreen">🔨</button>
-            <button onClick={save} className="appHeader__button appHeader__button--save">💾</button>
-            <button className="appHeader__button appHeader__button--load">
-                <label htmlFor="appHeader__loadFile">📤</label>
-            </button>
-            <button onClick={ downloadGame } className="appHeader__button appHeader__button--download">🌍</button>
-            <button onClick={ testGame } className="appHeader__button appHeader__button--test">🚩</button>
-            <span className="appHeader__tooltip appHeader__tooltip--addScreen">Add screen</span>
-            <span className="appHeader__tooltip appHeader__tooltip--save">Download save file</span>
-            <span className="appHeader__tooltip appHeader__tooltip--download">Download HTML game</span>
-            <span className="appHeader__tooltip appHeader__tooltip--load">Load save file</span>
-            <span className="appHeader__tooltip appHeader__tooltip--test">Test game</span>
-
-            <input ref={loadInput} id="appHeader__loadFile" className="appHeader__loadFile" type="file" />
-        </header>
+        <AppBar>
+            <Toolbar>
+                <Tooltip title="Add screen">
+                    <IconButton
+                        color="inherit"
+                        aria-label="Add screen"
+                        onClick={onAddScreenClickHandler}
+                    >
+                        <AddScreenIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
+                <div className={classes.separator} />
+                <Tooltip title="Download save file">
+                    <IconButton
+                        color="inherit"
+                        aria-label="Download save file"
+                        onClick={save}
+                    >
+                        <SaveIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Load save file">
+                    <IconButton
+                        color="inherit"
+                        aria-label="Load save file"
+                        onClick={askForFile}
+                    >
+                        <LoadIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
+                
+                <Tooltip title="Download game as HTML file">
+                    <IconButton
+                        className={classes.toRight}
+                        color="inherit"
+                        aria-label="Download game as HTML file"
+                        onClick={downloadGame} 
+                    >
+                        <DownloadGameIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Test game">
+                    <IconButton
+                        color="inherit"
+                        aria-label="Test game"
+                        onClick={testGame}
+                    >
+                        <TestGameIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
+            </Toolbar>
+            <input ref={loadInput} className={classes.inputFile} type="file" />
+        </AppBar>
     );
 }
 

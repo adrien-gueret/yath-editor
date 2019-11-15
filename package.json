@@ -5,6 +5,8 @@
     "push": "./tasks/push.sh"
   },
   "dependencies": {
+    "@material-ui/core": "^4.6.1",
+    "@material-ui/icons": "^4.5.1",
     "proptypes": "^1.1.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
