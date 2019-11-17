@@ -19,7 +19,7 @@ import {
     AddScreenDialog,
 } from 'Modules/screens';
 
-import { selectors as screensChoicesSelectors, actions as screensChoicesActions } from 'Modules/screensChoices';
+import { selectors as linkSelectors, actions as linkActions } from 'Modules/links';
 
 import selectors from '../../selectors';
 
@@ -48,8 +48,8 @@ function AppHeader({ onAddScreen }) {
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
     const loadState = useCallback((newState) => {
         dispatch(screenActions.deleteAllScreens());
-        dispatch(screensChoicesActions.deleteAllScreenChoices());
-        dispatch(screensChoicesActions.loadScreensChoices(newState.screensChoices));
+        dispatch(linkActions.deleteAllLinks());
+        dispatch(linkActions.loadLinks(newState.links));
         dispatch(screenActions.loadScreens(newState.screens));
     }, [dispatch]);
     const [isAddScreenDialogOpen, setIsAddScreenDialogOpen] = useState(false);
@@ -113,10 +113,10 @@ function AppHeader({ onAddScreen }) {
 
     function downloadGame() {
         const screens = screensSelectors.list.getAsArray(appState);
-        const screensChoices = screensChoicesSelectors.list.get(appState);
+        const links = linkSelectors.list.get(appState);
         const startScreen = screensSelectors.list.getStart(appState);
 
-        getFullHtml(screens, screensChoices, startScreen).then((html) => {
+        getFullHtml(screens, links, startScreen).then((html) => {
             downloadHtml('yath', html);
         });
     }

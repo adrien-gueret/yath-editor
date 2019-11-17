@@ -9,7 +9,7 @@ class Screen {
         screen.y = json.y;
         screen.width = json.width;
         screen.height = json.height;
-        screen.choicesIds = [...json.choicesIds];
+        screen.linkIds = [...json.linkIds];
 
         return screen;
     }
@@ -23,7 +23,7 @@ class Screen {
         this.width = 0;
         this.height = 0;
         this.isStart = isStart;
-        this.choicesIds = [];
+        this.linkIds = [];
     }
 
     getNl2BrContent() {
@@ -40,13 +40,13 @@ class Screen {
         copiedScreen.y = this.y;
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
-        copiedScreen.choicesIds = [...this.choicesIds];
+        copiedScreen.linkIds = [...this.linkIds];
 
         return copiedScreen;
     }
 
-    toHTML(allChoices) {
-        const navigation = this.choicesIds.map(choiceId => allChoices[choiceId].toHTML()).join('');
+    toHTML(allLinks) {
+        const navigation = this.linkIds.map(linkId => allLinks[linkId].toHTML()).join('');
         return `
          <section data-yath-screen="${this.id}">
             <div>${this.getNl2BrContent()}</div>

@@ -5,8 +5,8 @@ function fetchYath(type) {
         .then(response => response.text());
 }
 
-export function getScreensHtml(screens, screensChoices) {
-    return screens.map(screen => screen.toHTML(screensChoices)).join('');
+export function getScreensHtml(screens, links) {
+    return screens.map(screen => screen.toHTML(links)).join('');
 }
 
 export function fetchYathCSS() {
@@ -21,8 +21,8 @@ export function getStartGameScript(startScreenId) {
     return `const g = new yath.Game(null, null, document.body);g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(screens, screensChoices, startScreen) {
-    const screensHtml = getScreensHtml(screens, screensChoices);
+export function getFullHtml(screens, links, startScreen) {
+    const screensHtml = getScreensHtml(screens, links);
     const startGame = getStartGameScript(startScreen.id);
 
     return Promise.all([

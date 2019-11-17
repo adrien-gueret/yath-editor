@@ -1,11 +1,14 @@
-import './screen-edit.less';
-
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'proptypes';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
+import {
+    Dialog, DialogTitle, DialogContent,
+    TextField, DialogActions, Button,
+} from '@material-ui/core';
+
 import ActionButtons from '../ActionButtons';
-import ChoiceListContainer from '../ChoiceListContainer';
+import LinkListContainer from '../LinkListContainer';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
@@ -40,36 +43,43 @@ export default function ScreenEdit({ screenId }) {
     const onClose = useCallback(() => dispatch(actions.unsetEditScreen()), [dispatch]);
 
     return (
-        <section className="screenEdit__overlay">
-            <div className="screenEdit__content">
-                <label htmlFor="screenEditName">Screen name:</label>
-                <input
-                    id="screenEditName"
-                    value={screenName}
-                    onChange={onChangeNameHandler}
+        <Dialog open aria-labelledby="edit-screen-dialog" fullWidth>
+            <DialogTitle id="edit-screen-dialog">Screen information</DialogTitle>
+            <DialogContent dividers>
+                <TextField
+                    margin="dense"
+                    label="Screen name"
                     type="text"
+                    fullWidth
+                    onChange={onChangeNameHandler}
+                    value={screenName}
+                    variant="outlined"
                 />
-                <label htmlFor="screenEditContent">Screen content:</label>
-                <textarea
-                    id="screenEditContent"
+                <TextField
+                    margin="normal"
+                    label="Screen content"
+                    type="text"
                     autoFocus={!screenContent.length}
+                    fullWidth
+                    multiline
                     onChange={onChangeContentHandler}
                     value={screenContent}
+                    variant="outlined"
                 />
-                <br />
 
-                {Boolean(otherScreens.length) && <ChoiceListContainer screenId={screenId} />}
+                { Boolean(otherScreens.length) && <LinkListContainer screenId={screenId} /> }
 
-                <footer className="screenEdit__footer">
-                    <ActionButtons screenId={screenId} />
-                    <button
-                        onClick={onClose}
-                        title="Submit"
-                        className="screenEdit__submit"
-                    >✔️</button>
-                </footer>
-            </div>
-        </section>
+            </DialogContent>
+            <DialogActions>
+                <ActionButtons screenId={screenId} />
+                <Button
+                    onClick={onClose}
+                    color="primary"
+                    type="button"
+                    variant="contained"
+                >Save</Button>
+            </DialogActions>
+     </Dialog>
     );
 }
 

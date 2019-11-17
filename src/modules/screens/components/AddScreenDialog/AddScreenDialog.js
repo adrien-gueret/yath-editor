@@ -31,27 +31,28 @@ const AddScreenDialog = ({ isOpen, onClose, onSubmit }) => {
     };
 
     return (
-    <Dialog open={isOpen} aria-labelledby="add-screen-dialog">
-        <form onSubmit={onSubmitHandler}>
-            <DialogTitle id="add-screen-dialog">Add new screen</DialogTitle>
-            <DialogContent>
-                <DialogContentText>Please enter the name of the new screen.</DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    label="Screen name"
-                    type="text"
-                    fullWidth
-                    onChange={onChangeHandler}
-                    value={screenName}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button type="button" onClick={onClose} variant="outlined">Cancel</Button>
-                <Button type="submit" color="primary" variant="contained">Create</Button>
-            </DialogActions>
-        </form>
-    </Dialog>
+        <Dialog open={isOpen} aria-labelledby="add-screen-dialog">
+            <form onSubmit={onSubmitHandler}>
+                <DialogTitle id="add-screen-dialog">Add new screen</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Please enter the name of the new screen.</DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Screen name"
+                        type="text"
+                        fullWidth
+                        onChange={onChangeHandler}
+                        value={screenName}
+                        variant="outlined"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button type="button" onClick={onClose} variant="outlined">Cancel</Button>
+                    <Button type="submit" color="primary" variant="contained">Create</Button>
+                </DialogActions>
+            </form>
+        </Dialog>
     );
 };
 

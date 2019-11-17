@@ -1,10 +1,10 @@
 function getExportableState(state) {
-    const { screens, screensChoices } = { ...state };
+    const { screens, links } = { ...state };
     return {
         screens: {
             list: screens.list,
         },
-        screensChoices,
+        links,
     };
 };
 

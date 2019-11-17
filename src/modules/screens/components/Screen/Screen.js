@@ -11,7 +11,7 @@ function Screen({ screenId }) {
     const domElement = useRef(null);
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
-    const hasChoiceWithoutTarget = useSelector(state => selectors.list.hasChoiceWithoutTarget(state, screenId));
+    const hasLinkWithoutTarget = useSelector(state => selectors.list.hasLinkWithoutTarget(state, screenId));
 
     const resizeScreen = useCallback((newWidth, newHeight) => (
         dispatch(actions.resizeScreen(screenId, newWidth, newHeight))
@@ -32,7 +32,7 @@ function Screen({ screenId }) {
     }, [domElement.current, resizeScreen]);
 
     const className = 'yathScreen';
-    const classError = hasChoiceWithoutTarget ? 'yathScreen--error' : '';
+    const classError = hasLinkWithoutTarget ? 'yathScreen--error' : '';
     const classStart = screen.isStart ? 'yathScreen--start' : '';
 
     return (
@@ -45,7 +45,7 @@ function Screen({ screenId }) {
             <div
                 className={`${className} ${classError} ${classStart}`}
                 ref={domElement}
-                title={hasChoiceWithoutTarget ? 'This screen has some choices without targets' : null}
+                title={hasLinkWithoutTarget ? 'This screen has some links without targets' : null}
             >
                 <header className="yathScreen__header">
                     <span className="yathScreen__name">{ screen.name }</span>

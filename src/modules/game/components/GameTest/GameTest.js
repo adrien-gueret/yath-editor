@@ -5,7 +5,7 @@ import PropTypes from 'proptypes';
 import { connect } from 'react-redux'
 
 import { selectors as screenSelectors } from 'Modules/screens';
-import { selectors as screensChoicesSelectors } from 'Modules/screensChoices';
+import { selectors as linkSelectors } from 'Modules/links';
 
 import actions from '../../actions';
 
@@ -15,13 +15,13 @@ class GameTest extends React.Component {
     static propTypes = {
         finishTestGame: PropTypes.func.isRequired,
         screens: PropTypes.arrayOf(PropTypes.object),
-        screensChoices: PropTypes.object,
+        links: PropTypes.object,
         startScreen: PropTypes.object,
     };
 
     static defaultProps = {
         screens: [],
-        screensChoices: {},
+        links: {},
         startScreen: null,
     };
 
@@ -44,7 +44,7 @@ class GameTest extends React.Component {
             yathScript.appendChild(document.createTextNode(jsContent));
             iframe.contentDocument.head.appendChild(yathScript);
 
-            iframe.contentDocument.body.innerHTML = getScreensHtml(this.props.screens, this.props.screensChoices);
+            iframe.contentDocument.body.innerHTML = getScreensHtml(this.props.screens, this.props.links);
 
             const gameContent = getStartGameScript(this.props.startScreen.id);
             const gameScript = document.createElement('script');
@@ -69,7 +69,7 @@ class GameTest extends React.Component {
 const mapStateToProps = (state) => ({
     screens: screenSelectors.list.getAsArray(state),
     startScreen: screenSelectors.list.getStart(state),
-    screensChoices: screensChoicesSelectors.list.get(state),
+    links: linkSelectors.list.get(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,5 +1,5 @@
 import { geometry } from 'Modules/maths';
-import { selectors as screensChoicesSelectors } from 'Modules/screensChoices';
+import { selectors as linkSelectors } from 'Modules/links';
 
 import editedScreenId from './editedScreenId';
 
@@ -25,15 +25,15 @@ function getAllExceptOne(state, screenId) {
     return getAsArray(state).filter(screen => screen.id !== screenId);
 }
 
-function hasChoiceWithoutTarget(state, screenId) {
+function hasLinkWithoutTarget(state, screenId) {
     const screen = getById(state, screenId);
 
     if (!screen) {
         return false;
     }
 
-    const choices = screensChoicesSelectors.list.getByIds(state, screen.choicesIds);
-    return choices.some(choice => !choice.targetScreenId);
+    const links = linkSelectors.list.getByIds(state, screen.linkIds);
+    return links.some(link => !link.targetScreenId);
 }
 
 function getStart(state) {
@@ -48,10 +48,10 @@ function getArrows(state) {
     return screens.reduce((allArrows, screen) => {
         const start = { x: screen.x + screen.width/2, y: screen.y + screen.height/2 };
 
-        const choices = screensChoicesSelectors.list.getByIds(state, screen.choicesIds);
+        const links = linkSelectors.list.getByIds(state, screen.linkIds);
 
-        const newArrows = choices.map(choice => {
-            const targetScreen = getById(state, choice.targetScreenId);
+        const newArrows = links.map(link => {
+            const targetScreen = getById(state, link.targetScreenId);
 
             if (!targetScreen) {
                 return null;
@@ -101,7 +101,7 @@ export default {
     getAsArray,
     getAllExceptOne,
     getById,
-    hasChoiceWithoutTarget,
+    hasLinkWithoutTarget,
     getStart,
     getArrows,
     getEditedScreen,

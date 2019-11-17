@@ -2,7 +2,7 @@ import ScreenModel from '../models/Screen';
 
 import actionTypes from '../actions/types';
 
-import { actionTypes as screensChoisesActionTypes } from 'Modules/screensChoices';
+import { actionTypes as linkActionTypes } from 'Modules/links';
 
 const startScreen = new ScreenModel('Start screen', '', true);
 startScreen.x = 200;
@@ -113,9 +113,9 @@ export default function list(state = INITIAL_STATE, action) {
                     }), {});
         }
 
-        case screensChoisesActionTypes.ADD_SCREEN_CHOICE: {
+        case linkActionTypes.ADD_LINK: {
             const newScreen = state[action.payload.screenId].clone();
-            newScreen.choicesIds.push(action.payload.screenChoice.id);
+            newScreen.linkIds.push(action.payload.link.id);
 
             return {
                 ...state,
