@@ -44,7 +44,7 @@ export default function ScreenEdit({ screenId }) {
 
     return (
         <Dialog open aria-labelledby="edit-screen-dialog" fullWidth maxWidth={false}>
-            <DialogTitle id="edit-screen-dialog">Screen information</DialogTitle>
+            <DialogTitle id="edit-screen-dialog">Screen configuration</DialogTitle>
             <DialogContent dividers>
                 <TextField
                     margin="dense"

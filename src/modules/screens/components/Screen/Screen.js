@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
 import { Chip, Tooltip, makeStyles } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@material-ui/icons/Settings';
 import FlagIcon from '@material-ui/icons/Flag';
 
 import actions from '../../actions';
