@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "parcel index.html",
-    "build:prod": "parcel build index.html --no-cache --public-url ./ --experimental-scope-hoisting",
+    "build:prod": "parcel build index.html --no-cache --public-url ./",
     "push": "./tasks/push.sh"
   },
   "dependencies": {
