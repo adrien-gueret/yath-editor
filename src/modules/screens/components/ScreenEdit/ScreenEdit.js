@@ -43,7 +43,7 @@ export default function ScreenEdit({ screenId }) {
     const onClose = useCallback(() => dispatch(actions.unsetEditScreen()), [dispatch]);
 
     return (
-        <Dialog open aria-labelledby="edit-screen-dialog" fullWidth>
+        <Dialog open aria-labelledby="edit-screen-dialog" fullWidth maxWidth={false}>
             <DialogTitle id="edit-screen-dialog">Screen information</DialogTitle>
             <DialogContent dividers>
                 <TextField

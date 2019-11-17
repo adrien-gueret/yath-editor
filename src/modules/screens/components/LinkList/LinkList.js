@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'proptypes';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import {
     Table, TableBody, TableHead, TableCell, TableRow,
-    Tooltip, IconButton, Typography, makeStyles,
+    Tooltip, IconButton, Typography, TextField, makeStyles,
+    Select, MenuItem, FormControl, InputLabel
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowRightIcon from '@material-ui/icons/ArrowRightAltOutlined';
@@ -31,6 +32,22 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     headerCell: {
         color: palette.common.white,
         textAlign: 'center',
+    },
+    select: {
+        width: '100%',
+    },
+    labelColumn: {
+        width: '45%',
+    },
+    arrowColumn: {
+        width: '5%',
+        textAlign: 'center',
+    },
+    targetScreenColumn: {
+        width: '45%',
+    },
+    deleteColumn: {
+        width: '5%',
     },
 }), { classNamePrefix: 'LinkList' });
 
@@ -60,7 +77,7 @@ export default function LinkList({ screenId }) {
 
         dispatch(linkActions.deleteLink(linkId));
     }, [dispatch]);
-    
+
     const classes = useStyles();
 
     if (!links.length) {
@@ -68,13 +85,13 @@ export default function LinkList({ screenId }) {
     }
 
     return (
-        <Table size="small" className={classes.root}>
+        <Table className={classes.root}>
             <TableHead className={classes.header}>
                 <TableRow>
-                    <TableCell className={classes.headerCell}>Label</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell className={classes.headerCell}>Target screen</TableCell>
-                    <TableCell ></TableCell>
+                    <TableCell className={`${classes.headerCell} ${classes.labelColumn}`}>Label</TableCell>
+                    <TableCell className={classes.arrowColumn}></TableCell>
+                    <TableCell className={`${classes.headerCell} ${classes.targetScreenColumn}`}>Target screen</TableCell>
+                    <TableCell className={classes.deleteColumn}></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -82,31 +99,42 @@ export default function LinkList({ screenId }) {
                      links.map(link => (
                         <TableRow key={link.id}>
                             <TableCell>
-                                <input
-                                    autoFocus={!link.label.length}
-                                    value={link.label}
-                                    onChange={getOnChangeLinkLabelHandler(link.id)}
+                                <TextField
+                                    margin="dense"
                                     type="text"
+                                    autoFocus={!link.label.length}
+                                    fullWidth
+                                    onChange={getOnChangeLinkLabelHandler(link.id)}
+                                    value={link.label}
+                                    variant="outlined"
+                                    error={!link.label.length}
                                 />
                             </TableCell>
                             <TableCell><ArrowRightIcon /></TableCell>
                             <TableCell>
-                                <select
-                                    onChange={getOnChangeLinkTargetHandler(link.id)}
-                                    defaultValue={link.targetScreenId || null}
+                                <FormControl
+                                    variant="outlined"
+                                    className={classes.select}
+                                    error={!link.targetScreenId}
                                 >
-                                    <option>-- Select a screen --</option>
-                                    {
-                                        otherScreens.map(otherScreen => (
-                                           <option
-                                               key={otherScreen.id}
-                                               value={otherScreen.id}
-                                           >
-                                               {otherScreen.name}
-                                           </option>
-                                        ))
-                                    }
-                                </select>
+                                    <Select
+                                        labelId={`label-target-screen-link-${link.id}`}
+                                        value={link.targetScreenId || ''}
+                                        onChange={getOnChangeLinkTargetHandler(link.id)}
+                                        displayEmpty
+                                    >
+                                        {
+                                            otherScreens.map(otherScreen => (
+                                            <MenuItem
+                                                key={otherScreen.id}
+                                                value={otherScreen.id}
+                                            >
+                                                {otherScreen.name}
+                                            </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
                             </TableCell>
                             <TableCell>
                                 <Tooltip title="Delete this action">
