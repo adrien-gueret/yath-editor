@@ -9,16 +9,18 @@ const propTypes = {
     onCancel: PropTypes.func.isRequired,
     onAccept: PropTypes.func.isRequired,
     children: PropTypes.node,
+    isDeletion: PropTypes.bool,
 };
 
 const defaultProps = {
     children: null,
+    isDeletion: false,
 };
 
-function ConfirmDialog({ children, onCancel, onAccept, ...otherProps }) {
+function ConfirmDialog({ children, onCancel, onAccept, isDeletion, ...otherProps }) {
     return (
-        <Dialog {...otherProps} aria-labelledby="confirm-dialog" fullWidth>
-            <DialogTitle id="confirm-dialog">Confirm action?</DialogTitle>
+        <Dialog {...otherProps} fullWidth>
+            <DialogTitle>Confirm action?</DialogTitle>
             <DialogContent>
                 <DialogContentText>{ children }</DialogContentText>
             </DialogContent>
@@ -30,10 +32,10 @@ function ConfirmDialog({ children, onCancel, onAccept, ...otherProps }) {
                 >Cancel</Button>
                 <Button
                     onClick={onAccept}
-                    color="secondary"
+                    color={isDeletion ? 'secondary' : 'primary'}
                     type="button"
                     variant="contained"
-                >Confirm</Button>
+                >{isDeletion ? 'Delete' : 'Confirm'}</Button>
             </DialogActions>
         </Dialog>
     );

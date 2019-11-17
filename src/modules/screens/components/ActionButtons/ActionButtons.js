@@ -68,6 +68,7 @@ export default function ActionButtons({ screenId }) {
                 </IconButton>
             </Tooltip>
             <ConfirmDialog
+                isDeletion
                 open={isConfirmDialogOpen}
                 onAccept={onDeleteHandler}
                 onCancel={() => toggleConfirmDialogOpen(false)}
