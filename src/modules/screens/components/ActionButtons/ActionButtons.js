@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'proptypes';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
@@ -7,6 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FlagIcon from '@material-ui/icons/Flag';
 
 import { actions as linkActions } from 'Modules/links';
+import { ConfirmDialog } from 'Modules/utils';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
@@ -28,13 +29,10 @@ const useStyles = makeStyles(({ spacing }) => ({
 }), { classNamePrefix: 'ActionButtons' });
 
 export default function ActionButtons({ screenId }) {
+    const [isConfirmDialogOpen, toggleConfirmDialogOpen] = useState(false);
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
     const onDeleteHandler = useCallback(() => {
-        if (!confirm('Do you really want to delete this screen?')) {
-            return;
-        }
-
         screen.linkIds.forEach(linkId => dispatch(linkActions.deleteLink(linkId)));
         dispatch(actions.deleteScreen(screenId));
         dispatch(actions.unsetEditScreen());
@@ -57,7 +55,7 @@ export default function ActionButtons({ screenId }) {
     return (
         <React.Fragment>
             <Tooltip title="Delete screen">
-                <IconButton onClick={onDeleteHandler}>
+                <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
                     <DeleteIcon color="secondary" />
                 </IconButton>
             </Tooltip>
@@ -69,6 +67,13 @@ export default function ActionButtons({ screenId }) {
                     <FlagIcon />
                 </IconButton>
             </Tooltip>
+            <ConfirmDialog
+                open={isConfirmDialogOpen}
+                onAccept={onDeleteHandler}
+                onCancel={() => toggleConfirmDialogOpen(false)}
+            >
+                Do you really want to delete this screen?
+            </ConfirmDialog>
         </React.Fragment>
     );
 }
