@@ -4,6 +4,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import { IconButton, Tooltip, makeStyles, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FlagIcon from '@material-ui/icons/Flag';
 
 import { actions as linkActions } from 'Modules/links';
 
@@ -64,7 +65,9 @@ export default function ActionButtons({ screenId }) {
                 <IconButton
                     onClick={onSetStartHandler}
                     className={`${classes.pushToLeft} ${classes.startScreenButton}`} 
-                >🏁</IconButton>
+                >
+                    <FlagIcon />
+                </IconButton>
             </Tooltip>
         </React.Fragment>
     );

@@ -1,11 +1,21 @@
-import './screen.less';
-
 import React, { useRef, useEffect, useCallback } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
+import { Chip, Tooltip, makeStyles } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import FlagIcon from '@material-ui/icons/Flag';
+
 import actions from '../../actions';
 import selectors from '../../selectors';
+
+const useStyles = makeStyles(() => ({
+    root: {
+        position: 'absolute',
+        zIndex: 1,
+        cursor: 'move',
+    },
+}), { classNamePrefix: 'Screen' });
 
 function Screen({ screenId }) {
     const domElement = useRef(null);
@@ -31,30 +41,25 @@ function Screen({ screenId }) {
         resizeScreen(style.width, style.height);
     }, [domElement.current, resizeScreen]);
 
-    const className = 'yathScreen';
-    const classError = hasLinkWithoutTarget ? 'yathScreen--error' : '';
-    const classStart = screen.isStart ? 'yathScreen--start' : '';
+    const classes = useStyles();
 
     return (
         <Draggable
             bounds="parent"
             defaultPosition={screen}
-            handle=".yathScreen__name"
             onDrag={dragScreen}
         >
-            <div
-                className={`${className} ${classError} ${classStart}`}
-                ref={domElement}
-                title={hasLinkWithoutTarget ? 'This screen has some links without targets' : null}
-            >
-                <header className="yathScreen__header">
-                    <span className="yathScreen__name">{ screen.name }</span>
-                    <span
-                        className="yathScreen__editButton"
-                        onClick={editScreen}
-                    >✏️</span>
-                </header>
-            </div>
+            <Tooltip title={hasLinkWithoutTarget ? 'This screen has some links without targets' : ''}>
+                <Chip
+                    className={classes.root}
+                    icon={screen.isStart ? <FlagIcon /> : null}
+                    color={hasLinkWithoutTarget ? 'secondary' : 'primary'}
+                    label={screen.name}
+                    deleteIcon={<EditIcon />}
+                    onDelete={editScreen}
+                    ref={domElement}
+                />
+            </Tooltip>
         </Draggable>
     );
 }
