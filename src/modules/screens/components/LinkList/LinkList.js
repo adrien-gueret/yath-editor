@@ -3,7 +3,8 @@ import PropTypes from 'proptypes';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import {
-    Tooltip, Table, TableBody, TableHead, TableCell, TableRow, IconButton, Typography,
+    Table, TableBody, TableHead, TableCell, TableRow,
+    Tooltip, IconButton, Typography, makeStyles,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowRightIcon from '@material-ui/icons/ArrowRightAltOutlined';
@@ -18,6 +19,20 @@ import selectors from '../../selectors';
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
+
+const useStyles = makeStyles(({ palette, spacing }) => ({
+    root: {
+        marginTop: spacing(2),
+        border: `1px solid ${palette.divider}`
+    },
+    header: {
+        backgroundColor: palette.common.black,
+    },
+    headerCell: {
+        color: palette.common.white,
+        textAlign: 'center',
+    },
+}), { classNamePrefix: 'LinkList' });
 
 export default function LinkList({ screenId }) {
     const dispatch = useDispatch();
@@ -46,18 +61,20 @@ export default function LinkList({ screenId }) {
         dispatch(linkActions.deleteLink(linkId));
     }, [dispatch]);
     
+    const classes = useStyles();
+
     if (!links.length) {
         return <Typography variant="caption">This screen has no links yet.</Typography>;
     }
 
     return (
-        <Table size="small">
-            <TableHead>
+        <Table size="small" className={classes.root}>
+            <TableHead className={classes.header}>
                 <TableRow>
-                    <TableCell>Label</TableCell>
+                    <TableCell className={classes.headerCell}>Label</TableCell>
                     <TableCell></TableCell>
-                    <TableCell>Target screen</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell className={classes.headerCell}>Target screen</TableCell>
+                    <TableCell ></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
