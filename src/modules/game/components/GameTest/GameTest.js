@@ -1,81 +1,76 @@
-import './gameTest.less';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 
-import React from 'react';
-import PropTypes from 'proptypes';
-import { connect } from 'react-redux'
+import {
+    Dialog, DialogActions, DialogContent, Button, makeStyles,
+} from '@material-ui/core';
 
 import { selectors as screenSelectors } from 'Modules/screens';
 import { selectors as linkSelectors } from 'Modules/links';
 
 import actions from '../../actions';
 
-import { getScreensHtml, getStartGameScript, fetchYathCSS, fetchYathJS } from '../../services';
+import { injectGameIntoIframe } from '../../services';
 
-class GameTest extends React.Component {
-    static propTypes = {
-        finishTestGame: PropTypes.func.isRequired,
-        screens: PropTypes.arrayOf(PropTypes.object),
-        links: PropTypes.object,
-        startScreen: PropTypes.object,
-    };
+const useStyles = makeStyles(() => ({
+    dialog: {
+        height: '100%',
+    },
+    iframe: {
+        width: '100%',
+        height: '99%',
+        border: 0,
+        margin: 0,
+        padding: 0,
+    },
+}), { classNamePrefix: 'GameTest' });
 
-    static defaultProps = {
-        screens: [],
-        links: {},
-        startScreen: null,
-    };
+function GameTest() {
+    const dispatch = useDispatch();
+    const [iframeKey, setIframeKey] = useState(1);
 
-    onIframeReady = (iframe) => {
-        if (!iframe) {
-            return;
-        }
+    const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
+    const startScreen = useSelector(screenSelectors.list.getStart, shallowEqual);
+    const links = useSelector(linkSelectors.list.get, shallowEqual);
 
-        Promise.all([
-            fetchYathCSS(),
-            fetchYathJS(),
-        ]).then((responses) => {
-            const [cssContent, jsContent] = responses;
+    const finishTestGame = useCallback(() => dispatch(actions.finishTestGame()), [dispatch]);
+    const restartGame = useCallback(() => setIframeKey(iframeKey + 1), [iframeKey, setIframeKey]);
 
-            const yathStyle = document.createElement('style');
-            yathStyle.appendChild(document.createTextNode(cssContent));
-            iframe.contentDocument.head.appendChild(yathStyle);
+    const initIframe = useCallback((iframe) => {
+        injectGameIntoIframe(iframe, screens, links, startScreen.id);
+    }, [screens, links, startScreen.id]);
 
-            const yathScript = document.createElement('script');
-            yathScript.appendChild(document.createTextNode(jsContent));
-            iframe.contentDocument.head.appendChild(yathScript);
+    const classes = useStyles();
 
-            iframe.contentDocument.body.innerHTML = getScreensHtml(this.props.screens, this.props.links);
-
-            const gameContent = getStartGameScript(this.props.startScreen.id);
-            const gameScript = document.createElement('script');
-            gameScript.appendChild(document.createTextNode(gameContent));
-
-            iframe.contentDocument.body.appendChild(gameScript);
-        });
-    };
-
-    render() {
-        return (
-            <section className="gameTest__overlay">
-                <div className="gameTest__content">
-                    <button className="gameTest__close" onClick={this.props.finishTestGame}>❌</button>
-                    <iframe ref={this.onIframeReady} />
-                </div>
-            </section>
-        );
-    }
+    return (
+        <Dialog
+            classes={{ paper: classes.dialog }}
+            open
+            maxWidth={false}
+            fullWidth
+        >
+            <DialogContent>
+                <iframe ref={initIframe} className={classes.iframe} key={iframeKey} />
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    onClick={restartGame}
+                    type="button"
+                    variant="outlined"
+                >
+                    Restart
+                </Button>
+                <Button
+                    onClick={finishTestGame}
+                    color="primary"
+                    type="button"
+                    variant="contained"
+                >
+                    Close
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
-const mapStateToProps = (state) => ({
-    screens: screenSelectors.list.getAsArray(state),
-    startScreen: screenSelectors.list.getStart(state),
-    links: linkSelectors.list.get(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    finishTestGame() {
-        dispatch(actions.finishTestGame());
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(GameTest);
+export default GameTest;

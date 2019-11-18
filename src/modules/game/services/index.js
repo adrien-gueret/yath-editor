@@ -46,3 +46,32 @@ export function getFullHtml(screens, links, startScreen) {
 </html>`;
     });
 }
+
+export function injectGameIntoIframe(iframe, screens, links, startScreenId) {
+    if (!iframe) {
+        return;
+    }
+
+    Promise.all([
+        fetchYathCSS(),
+        fetchYathJS(),
+    ]).then((responses) => {
+        const [cssContent, jsContent] = responses;
+
+        const yathStyle = document.createElement('style');
+        yathStyle.appendChild(document.createTextNode(cssContent));
+        iframe.contentDocument.head.appendChild(yathStyle);
+
+        const yathScript = document.createElement('script');
+        yathScript.appendChild(document.createTextNode(jsContent));
+        iframe.contentDocument.head.appendChild(yathScript);
+
+        iframe.contentDocument.body.innerHTML = getScreensHtml(screens, links);
+
+        const gameContent = getStartGameScript(startScreenId);
+        const gameScript = document.createElement('script');
+        gameScript.appendChild(document.createTextNode(gameContent));
+
+        iframe.contentDocument.body.appendChild(gameScript);
+    });
+};
