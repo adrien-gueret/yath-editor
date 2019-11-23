@@ -26,10 +26,6 @@ class Screen {
         this.linkIds = [];
     }
 
-    getNl2BrContent() {
-        return this.content.replace(/\n/g, '<br/>');
-    }
-
     getSlug() {
         return this.name.toLowerCase().replace(/\s/g, '-');
     }
@@ -49,7 +45,7 @@ class Screen {
         const navigation = this.linkIds.map(linkId => allLinks[linkId].toHTML()).join('');
         return `
          <section data-yath-screen="${this.id}">
-            <div>${this.getNl2BrContent()}</div>
+            <div>${this.content}</div>
             <nav>${navigation}</nav>
         </section>
         `;

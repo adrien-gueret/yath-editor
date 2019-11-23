@@ -9,6 +9,7 @@ import {
 
 import ActionButtons from '../ActionButtons';
 import LinkListContainer from '../LinkListContainer';
+import Wysiwyg from '../Wysiwyg';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
@@ -22,7 +23,6 @@ export default function ScreenEdit({ screenId }) {
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
 
     const [screenName, setScreenName] = useState(screen.name);
-    const [screenContent, setScreenContent] = useState(screen.content);
 
     const otherScreens = useSelector(state => (
         selectors.list.getAllExceptOne(state, screenId)
@@ -34,9 +34,7 @@ export default function ScreenEdit({ screenId }) {
         dispatch(actions.editScreenName(screenId, newScreenName));
     }, [dispatch, screenId]);
 
-    const onChangeContentHandler = useCallback(e => {
-        const newContent = e.target.value;
-        setScreenContent(newContent);
+    const onChangeContentHandler = useCallback(newContent => {
         dispatch(actions.editScreenContent(screenId, newContent));
     }, [dispatch, screenId]);
 
@@ -55,18 +53,14 @@ export default function ScreenEdit({ screenId }) {
                     value={screenName}
                     variant="outlined"
                 />
-                <TextField
-                    margin="normal"
-                    label="Screen content"
-                    type="text"
-                    autoFocus={!screenContent.length}
-                    fullWidth
-                    multiline
-                    onChange={onChangeContentHandler}
-                    value={screenContent}
-                    variant="outlined"
-                />
 
+                <Wysiwyg
+                    id="screen-content"
+                    defaultValue={screen.content}
+                    label="Screen content"
+                    onChange={onChangeContentHandler}
+                />
+               
                 { Boolean(otherScreens.length) && <LinkListContainer screenId={screenId} /> }
 
             </DialogContent>

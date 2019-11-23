@@ -7,6 +7,9 @@
   "dependencies": {
     "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
+    "draft-js": "^0.11.2",
+    "draft-js-export-html": "^1.4.1",
+    "draft-js-import-html": "^1.4.1",
     "proptypes": "^1.1.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
