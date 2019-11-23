@@ -1,9 +1,14 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Proptypes from 'proptypes';
 import ReactDOM from 'react-dom';
-import { InputLabel, makeStyles } from '@material-ui/core';
+
+import { InputLabel, makeStyles, Toolbar, IconButton } from '@material-ui/core';
 import NotchedOutline from '@material-ui/core/OutlinedInput/NotchedOutline';
-import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
+import FormatBold from '@material-ui/icons/FormatBold';
+import FormatItalic from '@material-ui/icons/FormatItalic';
+import FormatUnderline from '@material-ui/icons/FormatUnderlined';
+
+import { Editor, EditorState, RichUtils } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 
@@ -23,6 +28,7 @@ const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
     root: {
         position: 'relative',
         marginTop: spacing(1),
+        marginBottom: spacing(1),
     },
     childrenContainer: {
         position: 'relative',
@@ -30,10 +36,22 @@ const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
     content: {
         ...typography.body1,
         lineHeight: 'initial',
-        padding: '18.5px 14px',
+        padding: '18.5px 0 0',
         '&:hover $borders': {
             borderColor: palette.common.black,
         },
+    },
+    horizontalMargins: {
+        paddingLeft: 14,
+        paddingRight: 14,
+    },
+    toolbar: {
+        backgroundColor: palette.grey[100],
+        marginTop: 18.5,
+        padding: spacing(1, 0),
+        position: 'sticky',
+        left: 0,
+        bottom: 0,
     },
     editorContentBlock: {
         '&:not(:last-child)': {
@@ -104,6 +122,14 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
         onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
     }, [editorState, onChangeHandler]);
 
+    const applyItalic = useCallback(() => {
+        onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
+    }, [editorState, onChangeHandler]);
+
+    const applyUnderline = useCallback(() => {
+        onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
+    }, [editorState, onChangeHandler]);
+
     const isEmpty = !defaultValue || defaultValue === '<p><br></p>';
     const isActive = isFocus || !isEmpty;
 
@@ -129,16 +155,34 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
             </InputLabel>
             <div className={classes.childrenContainer}>
                 <div id={id} className={classes.content}>
-                    <Editor
-                        editorState={editorState}
-                        handleKeyCommand={handleKeyCommand}
-                        handleReturn={handleReturn}
-                        blockStyleFn={blockStyleFn }
-                        spellCheck
-                        onChange={onChangeHandler}
-                        onFocus={onFocusHandler}
-                        onBlur={onBlurHandler}
-                    />
+                    <div className={classes.horizontalMargins}>
+                        <Editor
+                            editorState={editorState}
+                            handleKeyCommand={handleKeyCommand}
+                            handleReturn={handleReturn}
+                            blockStyleFn={blockStyleFn }
+                            spellCheck
+                            onChange={onChangeHandler}
+                            onFocus={onFocusHandler}
+                            onBlur={onBlurHandler}
+                        />
+                    </div>
+                    
+                    <Toolbar className={classes.toolbar} variant="dense" disableGutters>
+                        <div className={classes.horizontalMargins}>
+                            <IconButton onClick={applyBold}>
+                                <FormatBold />
+                            </IconButton>
+
+                            <IconButton onClick={applyItalic}>
+                                <FormatItalic />
+                            </IconButton>
+
+                            <IconButton onClick={applyUnderline}>
+                                <FormatUnderline />
+                            </IconButton>
+                        </div>
+                    </Toolbar>
                     
                     <NotchedOutline
                         className={`${classes.borders} ${isFocus ? classes.focused : ''}`}
