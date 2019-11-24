@@ -111,21 +111,25 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
         return 'not-handled';
     }, [onChangeHandler]);
 
+    const forceReselect = useCallback((editorStateToReslect) => {
+        onChangeHandler(EditorState.forceSelection(editorStateToReslect, editorStateToReslect.getSelection()));
+    }, [onChangeHandler]);
+
     const applyBold = useCallback(() => {
-        onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
-    }, [editorState, onChangeHandler]);
+        forceReselect(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
+    }, [editorState, forceReselect]);
 
     const applyItalic = useCallback(() => {
-        onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
-    }, [editorState, onChangeHandler]);
+        forceReselect(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
+    }, [editorState, forceReselect]);
 
     const applyUnderline = useCallback(() => {
-        onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
-    }, [editorState, onChangeHandler]);
+        forceReselect(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
+    }, [editorState, forceReselect]);
 
     const applySoftBreakline = useCallback(() => {
-        onChangeHandler(RichUtils.insertSoftNewline(editorState));
-    }, [editorState, onChangeHandler]);
+        forceReselect(RichUtils.insertSoftNewline(editorState));
+    }, [editorState, forceReselect]);
 
     const handleReturn = useCallback((e) => {
         if (e.shiftKey) {
@@ -147,6 +151,8 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
             return classes.editorContentBlock;
         }
     }, [classes]);
+
+    const currentInlineStyle = editorState.getCurrentInlineStyle();
 
     return (
         <div className={classes.root}>
@@ -177,19 +183,28 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                     <Toolbar className={classes.toolbar} variant="dense" disableGutters>
                         <div className={classes.horizontalMargins}>
                             <Tooltip title="Bold (Ctrl + B)">
-                                <IconButton onClick={applyBold}>
+                                <IconButton
+                                    onClick={applyBold}
+                                    color={ currentInlineStyle.has('BOLD') ? 'primary' : 'default' }
+                                >
                                     <FormatBold />
                                 </IconButton>
                             </Tooltip>
 
                             <Tooltip title="Italic (Ctrl + I)">
-                                <IconButton onClick={applyItalic}>
+                                <IconButton
+                                    onClick={applyItalic}
+                                    color={ currentInlineStyle.has('ITALIC') ? 'primary' : 'default' }
+                                >
                                     <FormatItalic />
                                 </IconButton>
                             </Tooltip>
 
                             <Tooltip title="Underline (Ctrl + U)">
-                                <IconButton onClick={applyUnderline}>
+                                <IconButton
+                                    onClick={applyUnderline}
+                                    color={ currentInlineStyle.has('UNDERLINE') ? 'primary' : 'default' }
+                                >
                                     <FormatUnderline />
                                 </IconButton>
                             </Tooltip>
