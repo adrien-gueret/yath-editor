@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Proptypes from 'proptypes';
 import ReactDOM from 'react-dom';
 
-import { InputLabel, makeStyles, Toolbar, IconButton } from '@material-ui/core';
+import { InputLabel, makeStyles, Toolbar, Tooltip, IconButton } from '@material-ui/core';
+
 import NotchedOutline from '@material-ui/core/OutlinedInput/NotchedOutline';
 import FormatBold from '@material-ui/icons/FormatBold';
 import FormatItalic from '@material-ui/icons/FormatItalic';
 import FormatUnderline from '@material-ui/icons/FormatUnderlined';
+import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
@@ -109,15 +111,6 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
         return 'not-handled';
     }, [onChangeHandler]);
 
-    const handleReturn = useCallback((e, currentEditorState) => {
-        if (e.shiftKey) {
-            onChangeHandler(RichUtils.insertSoftNewline(currentEditorState));
-            return 'handled';
-        }
-
-        return 'not-handled';
-    }, [onChangeHandler]);
-
     const applyBold = useCallback(() => {
         onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
     }, [editorState, onChangeHandler]);
@@ -129,6 +122,19 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
     const applyUnderline = useCallback(() => {
         onChangeHandler(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
     }, [editorState, onChangeHandler]);
+
+    const applySoftBreakline = useCallback(() => {
+        onChangeHandler(RichUtils.insertSoftNewline(editorState));
+    }, [editorState, onChangeHandler]);
+
+    const handleReturn = useCallback((e) => {
+        if (e.shiftKey) {
+            applySoftBreakline();
+            return 'handled';
+        }
+
+        return 'not-handled';
+    }, [onChangeHandler, applySoftBreakline]);
 
     const isEmpty = !defaultValue || defaultValue === '<p><br></p>';
     const isActive = isFocus || !isEmpty;
@@ -170,17 +176,29 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                     
                     <Toolbar className={classes.toolbar} variant="dense" disableGutters>
                         <div className={classes.horizontalMargins}>
-                            <IconButton onClick={applyBold}>
-                                <FormatBold />
-                            </IconButton>
+                            <Tooltip title="Bold (Ctrl + B)">
+                                <IconButton onClick={applyBold}>
+                                    <FormatBold />
+                                </IconButton>
+                            </Tooltip>
 
-                            <IconButton onClick={applyItalic}>
-                                <FormatItalic />
-                            </IconButton>
+                            <Tooltip title="Italic (Ctrl + I)">
+                                <IconButton onClick={applyItalic}>
+                                    <FormatItalic />
+                                </IconButton>
+                            </Tooltip>
 
-                            <IconButton onClick={applyUnderline}>
-                                <FormatUnderline />
-                            </IconButton>
+                            <Tooltip title="Underline (Ctrl + U)">
+                                <IconButton onClick={applyUnderline}>
+                                    <FormatUnderline />
+                                </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Soft breakline (Shift + Enter)">
+                                <IconButton onClick={applySoftBreakline}>
+                                    <KeyboardReturn />
+                                </IconButton>
+                            </Tooltip>
                         </div>
                     </Toolbar>
                     
