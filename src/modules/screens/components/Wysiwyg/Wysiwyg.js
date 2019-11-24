@@ -82,6 +82,9 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
     const [isFocus, setIsFocus] = useState(false);
 
+    const currentInlineStyle = editorState.getCurrentInlineStyle();
+    const currentSelection = editorState.getSelection();
+
     useEffect(() => {
         const labelNode = ReactDOM.findDOMNode(labelRef.current);
         setLabelWidth(labelNode != null ? labelNode.offsetWidth : 0);
@@ -128,8 +131,12 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
     }, [editorState, forceReselect]);
 
     const applySoftBreakline = useCallback(() => {
+        if (!currentSelection.isCollapsed()) {
+            return;
+        }
+
         forceReselect(RichUtils.insertSoftNewline(editorState));
-    }, [editorState, forceReselect]);
+    }, [editorState, forceReselect, currentSelection]);
 
     const handleReturn = useCallback((e) => {
         if (e.shiftKey) {
@@ -143,7 +150,6 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
     const isEmpty = !defaultValue || defaultValue === '<p><br></p>';
     const isActive = isFocus || !isEmpty;
 
-
     const blockStyleFn = useCallback((contentBlock) => {
         const type = contentBlock.getType();
 
@@ -151,8 +157,6 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
             return classes.editorContentBlock;
         }
     }, [classes]);
-
-    const currentInlineStyle = editorState.getCurrentInlineStyle();
 
     return (
         <div className={classes.root}>
@@ -210,7 +214,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                             </Tooltip>
 
                             <Tooltip title="Soft breakline (Shift + Enter)">
-                                <IconButton onClick={applySoftBreakline}>
+                                <IconButton onClick={applySoftBreakline} disabled={!currentSelection.isCollapsed()}>
                                     <KeyboardReturn />
                                 </IconButton>
                             </Tooltip>
