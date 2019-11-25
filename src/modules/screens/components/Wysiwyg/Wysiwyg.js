@@ -116,7 +116,8 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
 
     const forceReselect = useCallback((editorStateToReslect) => {
         onChangeHandler(EditorState.forceSelection(editorStateToReslect, editorStateToReslect.getSelection()));
-    }, [onChangeHandler]);
+        onFocusHandler();
+    }, [onChangeHandler, onFocusHandler]);
 
     const applyBold = useCallback(() => {
         forceReselect(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
@@ -189,7 +190,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                             <Tooltip title="Bold (Ctrl + B)">
                                 <IconButton
                                     onClick={applyBold}
-                                    color={ currentInlineStyle.has('BOLD') ? 'primary' : 'default' }
+                                    color={ isFocus && currentInlineStyle.has('BOLD') ? 'primary' : 'default' }
                                 >
                                     <FormatBold />
                                 </IconButton>
@@ -198,7 +199,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                             <Tooltip title="Italic (Ctrl + I)">
                                 <IconButton
                                     onClick={applyItalic}
-                                    color={ currentInlineStyle.has('ITALIC') ? 'primary' : 'default' }
+                                    color={ isFocus && currentInlineStyle.has('ITALIC') ? 'primary' : 'default' }
                                 >
                                     <FormatItalic />
                                 </IconButton>
@@ -207,7 +208,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                             <Tooltip title="Underline (Ctrl + U)">
                                 <IconButton
                                     onClick={applyUnderline}
-                                    color={ currentInlineStyle.has('UNDERLINE') ? 'primary' : 'default' }
+                                    color={ isFocus && currentInlineStyle.has('UNDERLINE') ? 'primary' : 'default' }
                                 >
                                     <FormatUnderline />
                                 </IconButton>
