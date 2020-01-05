@@ -14,9 +14,8 @@ import { actions as gameActions, getFullHtml } from 'Modules/game';
 import { downloadJson, downloadHtml } from 'Modules/utils';
 import {
     selectors as screensSelectors,
-    ScreenModel,
     actions as screenActions,
-    AddScreenDialog,
+    useAddScreenDialog,
 } from 'Modules/screens';
 
 import { selectors as linkSelectors, actions as linkActions } from 'Modules/links';
@@ -37,12 +36,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     }
 }), { classNamePrefix: 'AppHeader' });
 
-const propTypes = {
-    onAddScreen: PropTypes.func.isRequired,
-};
-
-function AppHeader({ onAddScreen }) {
+function AppHeader() {
     const appState = useSelector(selectors.getExportableState, shallowEqual);
+    const { openDialog, dialog } = useAddScreenDialog();
     const dispatch = useDispatch();
     const loadInput = useRef(null);
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
@@ -52,7 +48,6 @@ function AppHeader({ onAddScreen }) {
         dispatch(linkActions.loadLinks(newState.links));
         dispatch(screenActions.loadScreens(newState.screens));
     }, [dispatch]);
-    const [isAddScreenDialogOpen, setIsAddScreenDialogOpen] = useState(false);
 
     const loadFile = useCallback((loadEvent) => {
         loadInput.current.value = '';
@@ -92,21 +87,6 @@ function AppHeader({ onAddScreen }) {
 
     const classes = useStyles();
 
-    function onAddScreenClickHandler() {
-        setIsAddScreenDialogOpen(true);
-    }
-
-    const onAddScreenDialogClose = useCallback(() => {
-        setIsAddScreenDialogOpen(false);
-    }, [setIsAddScreenDialogOpen]);
-
-    const onAddScreenDialogSubmit = useCallback((screenName) => {
-        if (screenName) {
-            onAddScreen(new ScreenModel(screenName));
-        }
-        onAddScreenDialogClose();
-    }, [onAddScreenDialogClose]);
-
     function save() {
         downloadJson('yath', appState);
     }
@@ -123,17 +103,13 @@ function AppHeader({ onAddScreen }) {
 
     return (
         <AppBar>
-            <AddScreenDialog
-                isOpen={isAddScreenDialogOpen}
-                onClose={onAddScreenDialogClose}
-                onSubmit={onAddScreenDialogSubmit}
-            />
+            { dialog }
             <Toolbar>
                 <Tooltip title="Add screen">
                     <IconButton
                         color="inherit"
                         aria-label="Add screen"
-                        onClick={onAddScreenClickHandler}
+                        onClick={openDialog}
                     >
                         <AddScreenIcon fontSize="large" />
                     </IconButton>
@@ -182,7 +158,5 @@ function AppHeader({ onAddScreen }) {
         </AppBar>
     );
 }
-
-AppHeader.propTypes = propTypes;
 
 export default AppHeader;
