@@ -11,8 +11,8 @@ import FormatUnderline from '@material-ui/icons/FormatUnderlined';
 import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 
 import { Editor, EditorState, RichUtils } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
-import { stateFromHTML } from 'draft-js-import-html';
+
+import { convertFromHTML, convertToHTML } from 'draft-convert';
 
 const propTypes = {
     id: Proptypes.string.isRequired,
@@ -25,6 +25,10 @@ const defaultProps = {
     defaultValue: undefined,
     onChange() {},
 };
+
+const stateToHTML = convertToHTML({});
+
+const htmlToState = convertFromHTML({});
 
 const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
     root: {
@@ -78,7 +82,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
     const [labelWidth, setLabelWidth] = useState(0);
     const labelRef = useRef(null);
    
-    const contentState = stateFromHTML(defaultValue);
+    const contentState = htmlToState(defaultValue);
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState));
     const [isFocus, setIsFocus] = useState(false);
 
@@ -177,7 +181,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                             editorState={editorState}
                             handleKeyCommand={handleKeyCommand}
                             handleReturn={handleReturn}
-                            blockStyleFn={blockStyleFn }
+                            blockStyleFn={blockStyleFn}
                             spellCheck
                             onChange={onChangeHandler}
                             onFocus={onFocusHandler}
