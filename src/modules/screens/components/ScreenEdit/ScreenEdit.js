@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'proptypes';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
@@ -22,15 +22,8 @@ export default function ScreenEdit({ screenId }) {
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
 
-    const [screenName, setScreenName] = useState(screen.name);
-
-    const otherScreens = useSelector(state => (
-        selectors.list.getAllExceptOne(state, screenId)
-    ));
-
     const onChangeNameHandler = useCallback(e => {
         const newScreenName = e.target.value;
-        setScreenName(newScreenName);
         dispatch(actions.editScreenName(screenId, newScreenName));
     }, [dispatch, screenId]);
 
@@ -43,14 +36,14 @@ export default function ScreenEdit({ screenId }) {
     return (
         <Dialog open aria-labelledby="edit-screen-dialog" fullWidth maxWidth={false}>
             <DialogTitle id="edit-screen-dialog">Screen configuration</DialogTitle>
-            <DialogContent dividers>
+            <DialogContent key={screenId} dividers>
                 <TextField
                     margin="dense"
                     label="Screen name"
                     type="text"
                     fullWidth
                     onChange={onChangeNameHandler}
-                    value={screenName}
+                    defaultValue={screen.name}
                     variant="outlined"
                 />
 
@@ -61,7 +54,7 @@ export default function ScreenEdit({ screenId }) {
                     onChange={onChangeContentHandler}
                 />
                
-                { Boolean(otherScreens.length) && <LinkListContainer screenId={screenId} /> }
+                { <LinkListContainer screenId={screenId} /> }
 
             </DialogContent>
             <DialogActions>
@@ -71,7 +64,7 @@ export default function ScreenEdit({ screenId }) {
                     color="primary"
                     type="button"
                     variant="contained"
-                >Save</Button>
+                >Close</Button>
             </DialogActions>
      </Dialog>
     );

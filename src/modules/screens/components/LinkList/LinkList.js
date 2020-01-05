@@ -5,15 +5,18 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
     Table, TableBody, TableHead, TableCell, TableRow,
     Tooltip, IconButton, Typography, TextField, makeStyles,
-    Select, MenuItem, FormControl
+    Select, MenuItem, FormControl, ListItemIcon
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowRightIcon from '@material-ui/icons/ArrowRightAltOutlined';
+import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
 
 import {
     actions as linkActions,
     selectors as linkSelectors
 } from 'Modules/links';
+
+import { useAddScreenDialog } from 'Modules/screens';
 
 import { ConfirmDialog } from 'Modules/utils';
 
@@ -54,8 +57,10 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 }), { classNamePrefix: 'LinkList' });
 
 export default function LinkList({ screenId }) {
-    const [isConfirmDialogOpen, toggleConfirmDialogOpen] = useState(false);
-    const closeConfirmDialog = () => toggleConfirmDialogOpen(false);
+    const [isDeleteLinkConfirmDialogOpen, toggleDeleteLinkConfirmDialogOpen] = useState(false);
+    const closeConfirmDialog = () => toggleDeleteLinkConfirmDialogOpen(false);
+
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog((s) => console.log(s));
 
     const [deleteLink, setDeleteLink] = useState(() => closeConfirmDialog);
 
@@ -73,16 +78,23 @@ export default function LinkList({ screenId }) {
     }, [dispatch]);
 
     const getOnChangeLinkTargetHandler = useCallback(linkId => e => {
-        const targetId = e.target.value;
-        dispatch(linkActions.editLinkTarget(linkId, targetId));
-    }, [dispatch]);
+        const setNewLink = targetId => dispatch(linkActions.editLinkTarget(linkId, targetId));
+        const { value } = e.target;
+
+        if (value === 'create-new-screen') {
+            openAddScreenDialog(({ id }) => setNewLink(id));
+            return;
+        }
+
+        setNewLink(value);
+    }, [openAddScreenDialog, dispatch]);
 
     const getOnDeleteLinkHandler = useCallback(linkId => () => {
         setDeleteLink(() => () => {
             dispatch(linkActions.deleteLink(linkId));
-            toggleConfirmDialogOpen(false);
+            toggleDeleteLinkConfirmDialogOpen(false);
         });
-        toggleConfirmDialogOpen(true);
+        toggleDeleteLinkConfirmDialogOpen(true);
     }, [dispatch]);
 
     const classes = useStyles();
@@ -131,6 +143,10 @@ export default function LinkList({ screenId }) {
                                             onChange={getOnChangeLinkTargetHandler(link.id)}
                                             displayEmpty
                                         >
+                                            <MenuItem value="create-new-screen">
+                                                <ListItemIcon><AddScreenIcon /></ListItemIcon>
+                                                Create new screen
+                                            </MenuItem>
                                             {
                                                 otherScreens.map(otherScreen => (
                                                 <MenuItem
@@ -157,13 +173,14 @@ export default function LinkList({ screenId }) {
                 </TableBody>
             </Table>
             <ConfirmDialog
-                open={isConfirmDialogOpen}
+                open={isDeleteLinkConfirmDialogOpen}
                 onAccept={deleteLink}
                 onCancel={closeConfirmDialog}
                 isDeletion
             >
                 Do you really want to delete this link?
             </ConfirmDialog>
+            { addScreenDialog }
         </React.Fragment>
     );
 }

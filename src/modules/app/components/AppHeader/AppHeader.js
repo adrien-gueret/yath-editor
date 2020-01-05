@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'proptypes';
 
 import { AppBar, IconButton, Toolbar, Tooltip, makeStyles } from '@material-ui/core';
 
@@ -38,7 +37,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 
 function AppHeader() {
     const appState = useSelector(selectors.getExportableState, shallowEqual);
-    const { openDialog, dialog } = useAddScreenDialog();
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
     const dispatch = useDispatch();
     const loadInput = useRef(null);
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
@@ -103,13 +102,13 @@ function AppHeader() {
 
     return (
         <AppBar>
-            { dialog }
+            { addScreenDialog }
             <Toolbar>
                 <Tooltip title="Add screen">
                     <IconButton
                         color="inherit"
                         aria-label="Add screen"
-                        onClick={openDialog}
+                        onClick={openAddScreenDialog}
                     >
                         <AddScreenIcon fontSize="large" />
                     </IconButton>

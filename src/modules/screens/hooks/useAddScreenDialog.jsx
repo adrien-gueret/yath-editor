@@ -8,6 +8,7 @@ import actions from '../actions';
 
 export default function useAddScreenDialog() {
     const [isAddScreenDialogOpen, setIsAddScreenDialogOpen] = useState(false);
+    const [submitCallback, setSubmitCallback] = useState(() => () => {});
     const dispatch = useDispatch();
     const screens = useSelector(listSelectors.getAsArray, shallowEqual);
 
@@ -28,16 +29,19 @@ export default function useAddScreenDialog() {
         setIsAddScreenDialogOpen(false);
     }, [setIsAddScreenDialogOpen]);
 
-    const openDialog = useCallback(() => {
+    const openDialog = useCallback((onSubmitCallback) => {
+        setSubmitCallback(() => onSubmitCallback);
         setIsAddScreenDialogOpen(true);
     }, [setIsAddScreenDialogOpen]);
 
     const onAddScreenDialogSubmit = useCallback((screenName) => {
         if (screenName) {
-            addScreenHandler(new ScreenModel(screenName));
+            const newScreen = new ScreenModel(screenName);
+            addScreenHandler(newScreen);
+            submitCallback(newScreen);
         }
         onAddScreenDialogClose();
-    }, [onAddScreenDialogClose]);
+    }, [addScreenHandler, submitCallback, onAddScreenDialogClose]);
 
     const dialog = useMemo(() => (
         <AddScreenDialog
@@ -47,5 +51,5 @@ export default function useAddScreenDialog() {
         />
     ), [isAddScreenDialogOpen, onAddScreenDialogClose]);
 
-    return { openDialog, dialog };
+    return { openAddScreenDialog: openDialog, addScreenDialog: dialog };
 }
