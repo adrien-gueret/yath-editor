@@ -15,6 +15,12 @@ const useStyles = makeStyles(() => ({
         zIndex: 1,
         cursor: 'move',
     },
+    label: {
+        display: 'block',
+        maxWidth: 200,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+    }
 }), { classNamePrefix: 'Screen' });
 
 function Screen({ screenId }) {
@@ -51,7 +57,7 @@ function Screen({ screenId }) {
         >
             <Tooltip title={hasLinkWithoutTarget ? 'This screen has some links without targets' : ''}>
                 <Chip
-                    className={classes.root}
+                    classes={classes}
                     icon={screen.isStart ? <FlagIcon /> : null}
                     color={hasLinkWithoutTarget ? 'secondary' : 'primary'}
                     label={screen.name}
