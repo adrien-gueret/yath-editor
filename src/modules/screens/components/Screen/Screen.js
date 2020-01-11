@@ -45,7 +45,7 @@ function Screen({ screenId }) {
         
         const style = window.getComputedStyle(domElement.current);
         resizeScreen(style.width, style.height);
-    }, [domElement.current, resizeScreen]);
+    }, [domElement.current, screen.name, resizeScreen]);
 
     const classes = useStyles();
 
