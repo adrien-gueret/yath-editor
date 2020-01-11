@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
@@ -29,6 +29,14 @@ function Screen({ screenId }) {
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
     const hasLinkWithoutTarget = useSelector(state => selectors.list.hasLinkWithoutTarget(state, screenId));
 
+    const domElementStyle = useMemo(() => {
+        if (!domElement.current) {
+            return {};
+        }
+
+        return window.getComputedStyle(domElement.current);
+    }, [domElement.current, screen.name]);
+
     const resizeScreen = useCallback((newWidth, newHeight) => (
         dispatch(actions.resizeScreen(screenId, newWidth, newHeight))
     ), [dispatch, screenId]);
@@ -46,9 +54,8 @@ function Screen({ screenId }) {
             return;
         }
         
-        const style = window.getComputedStyle(domElement.current);
-        resizeScreen(style.width, style.height);
-    }, [domElement.current, screen.name, resizeScreen]);
+        resizeScreen(domElementStyle.width, domElementStyle.height);
+    }, [domElement.current, domElementStyle.width, domElementStyle.height, resizeScreen]);
 
     const classes = useStyles();
 
