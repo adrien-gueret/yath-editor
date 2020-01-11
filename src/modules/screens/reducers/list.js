@@ -5,8 +5,6 @@ import actionTypes from '../actions/types';
 import { actionTypes as linkActionTypes } from 'Modules/links';
 
 const startScreen = new ScreenModel('Start screen', '', true);
-startScreen.x = 200;
-startScreen.y = 200;
 
 const INITIAL_STATE = {
     [startScreen.id]: startScreen,
@@ -115,8 +113,17 @@ export default function list(state = INITIAL_STATE, action) {
 
         case actionTypes.RESIZE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
-            newScreen.width = parseInt(action.payload.newWidth, 10);
-            newScreen.height = parseInt(action.payload.newHeight, 10);
+            newScreen.width = action.payload.newWidth;
+            newScreen.height = action.payload.newHeight;
+
+            if (action.payload.newX !== null) {
+                newScreen.x = action.payload.newX;
+            }
+
+            if (action.payload.newY !== null) {
+                newScreen.y = action.payload.newY;
+            }
+
 
             return {
                 ...state,
