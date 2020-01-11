@@ -29,7 +29,7 @@ export default function useAddScreenDialog() {
         setIsAddScreenDialogOpen(false);
     }, [setIsAddScreenDialogOpen]);
 
-    const openDialog = useCallback((onSubmitCallback) => {
+    const openDialog = useCallback((onSubmitCallback = () => {}) => {
         setSubmitCallback(() => onSubmitCallback);
         setIsAddScreenDialogOpen(true);
     }, [setIsAddScreenDialogOpen]);

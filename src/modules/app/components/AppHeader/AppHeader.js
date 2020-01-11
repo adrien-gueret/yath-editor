@@ -62,7 +62,6 @@ function AppHeader() {
 
     const askForFile = useCallback(() => {
         loadInput.current.click();
-
     }, [loadInput.current]);
 
     useEffect(() => {
@@ -108,7 +107,7 @@ function AppHeader() {
                     <IconButton
                         color="inherit"
                         aria-label="Add screen"
-                        onClick={openAddScreenDialog}
+                        onClick={() => openAddScreenDialog()}
                     >
                         <AddScreenIcon fontSize="large" />
                     </IconButton>
