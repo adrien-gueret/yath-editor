@@ -84,8 +84,28 @@ export default function list(state = INITIAL_STATE, action) {
 
         case actionTypes.MOVE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
-            newScreen.x = action.payload.newX;
-            newScreen.y = action.payload.newY;
+
+            if (action.hasCollisions) {
+                newScreen.tempX = action.payload.newX;
+                newScreen.tempY = action.payload.newY;
+            } else {
+                newScreen.x = action.payload.newX;
+                newScreen.y = action.payload.newY;
+                newScreen.tempX = null;
+                newScreen.tempY = null;
+            }
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case actionTypes.RESET_TEMP_COORDINATES: {
+            const newScreen = state[action.payload.screenId].clone();
+
+            newScreen.tempX = null;
+            newScreen.tempY = null;
 
             return {
                 ...state,

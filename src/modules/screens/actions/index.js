@@ -16,6 +16,9 @@ export default {
     moveScreen(screenId, newX, newY) {
         return { type: actionTypes.MOVE_SCREEN, payload: { screenId, newX, newY } };
     },
+    resetTempCoordinates(screenId) {
+        return { type: actionTypes.RESET_TEMP_COORDINATES, payload: { screenId } };
+    },
     resizeScreen(screenId, newWidth, newHeight) {
         return { type: actionTypes.RESIZE_SCREEN, payload: { screenId, newWidth, newHeight } };
     },

@@ -46,7 +46,8 @@ function getArrows(state) {
     const screens = getAsArray(state);
 
     return screens.reduce((allArrows, screen) => {
-        const start = { x: screen.x + screen.width/2, y: screen.y + screen.height/2 };
+        const screenPosition = screen.getCoordinates();
+        const start = { x: screenPosition.x + screen.width/2, y: screenPosition.y + screen.height/2 };
 
         const links = linkSelectors.list.getByIds(state, screen.linkIds);
 
@@ -57,26 +58,28 @@ function getArrows(state) {
                 return null;
             }
 
-            const targetCenter = { x: targetScreen.x + targetScreen.width/2, y: targetScreen.y + targetScreen.height/2 };
+            const targetPosition = targetScreen.getCoordinates();
+
+            const targetCenter = { x: targetPosition.x + targetScreen.width/2, y: targetPosition.y + targetScreen.height/2 };
 
             const topSegment = {
-                start: { x: targetScreen.x, y: targetScreen.y },
-                end: { x: targetScreen.x + targetScreen.width, y: targetScreen.y },
+                start: { x: targetPosition.x, y: targetPosition.y },
+                end: { x: targetPosition.x + targetScreen.width, y: targetPosition.y },
             };
 
             const rightSegment = {
-                start: { x: targetScreen.x + targetScreen.width, y: targetScreen.y },
-                end: { x: targetScreen.x + targetScreen.width, y: targetScreen.y + targetScreen.height },
+                start: { x: targetPosition.x + targetScreen.width, y: targetPosition.y },
+                end: { x: targetPosition.x + targetScreen.width, y: targetPosition.y + targetScreen.height },
             };
 
             const bottomSegment = {
-                start: { x: targetScreen.x, y: targetScreen.y + targetScreen.height },
-                end: { x: targetScreen.x + targetScreen.width, y: targetScreen.y + targetScreen.height },
+                start: { x: targetPosition.x, y: targetPosition.y + targetScreen.height },
+                end: { x: targetPosition.x + targetScreen.width, y: targetPosition.y + targetScreen.height },
             };
 
             const leftSegment = {
-                start: { x: targetScreen.x, y: targetScreen.y },
-                end: { x: targetScreen.x, y: targetScreen.y + targetScreen.height },
+                start: { x: targetPosition.x, y: targetPosition.y },
+                end: { x: targetPosition.x, y: targetPosition.y + targetScreen.height },
             };
 
             const arrow = { start, end: targetCenter };

@@ -37,6 +37,9 @@ function Screen({ screenId }) {
     const dragScreen = useCallback((e, data) => {
         dispatch(actions.moveScreen(screenId, data.x, data.y));
     }, [dispatch, screenId]);
+    const dragStop = useCallback((e, data) => {
+        dispatch(actions.resetTempCoordinates(screenId));
+    }, [dispatch, screenId]);
 
     useEffect(() => {
         if (!domElement.current) {
@@ -49,11 +52,14 @@ function Screen({ screenId }) {
 
     const classes = useStyles();
 
+    const position = screen.getCoordinates();
+
     return (
         <Draggable
             bounds="parent"
-            defaultPosition={screen}
+            position={position}
             onDrag={dragScreen}
+            onStop={dragStop}
         >
             <Tooltip title={hasLinkWithoutTarget ? 'This screen has some links without targets' : ''}>
                 <Chip
