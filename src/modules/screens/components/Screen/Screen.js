@@ -50,11 +50,13 @@ function Screen({ screenId }) {
     }, [dispatch, screenId]);
 
     useEffect(() => {
-        if (!domElement.current) {
+        const { width, height } = domElementStyle;
+
+        if (!domElement.current || !width || !height) {
             return;
         }
         
-        resizeScreen(domElementStyle.width, domElementStyle.height);
+        resizeScreen(width, height);
     }, [domElement.current, domElementStyle.width, domElementStyle.height, resizeScreen]);
 
     const classes = useStyles();
@@ -83,4 +85,4 @@ function Screen({ screenId }) {
     );
 }
 
-export default Screen;
+export default React.memo(Screen);
