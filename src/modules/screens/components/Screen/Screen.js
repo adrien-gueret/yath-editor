@@ -24,23 +24,13 @@ const useStyles = makeStyles(() => ({
 }), { classNamePrefix: 'Screen' });
 
 function Screen({ screenId }) {
-    const domElement = useRef(null);
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
     const hasLinkWithoutTarget = useSelector(state => selectors.list.hasLinkWithoutTarget(state, screenId));
 
-    const domElementStyle = useMemo(() => {
-        if (!domElement.current) {
-            return {};
-        }
-
-        return window.getComputedStyle(domElement.current);
-    }, [domElement.current, screen.name]);
-
     const resizeScreen = useCallback((newWidth, newHeight) => (
         dispatch(actions.resizeScreen(screenId, newWidth, newHeight))
     ), [dispatch, screenId]);
-
     const editScreen = useCallback(() => dispatch(actions.setEditScreen(screenId)), [dispatch, screenId]);
     const dragScreen = useCallback((e, data) => {
         dispatch(actions.moveScreen(screenId, data.x, data.y));
@@ -49,15 +39,19 @@ function Screen({ screenId }) {
         dispatch(actions.resetTempCoordinates(screenId));
     }, [dispatch, screenId]);
 
-    useEffect(() => {
-        const { width, height } = domElementStyle;
+    const domRef = useCallback((domElement) => {
+        if (!domElement) {
+            return;
+        }
 
-        if (!domElement.current || !width || !height) {
+        const { width, height } = window.getComputedStyle(domElement);
+
+        if (!width || !height) {
             return;
         }
         
         resizeScreen(width, height);
-    }, [domElement.current, domElementStyle.width, domElementStyle.height, resizeScreen]);
+    }, [screen.name]);
 
     const classes = useStyles();
 
@@ -78,11 +72,11 @@ function Screen({ screenId }) {
                     label={screen.name}
                     deleteIcon={<EditIcon />}
                     onDelete={editScreen}
-                    ref={domElement}
+                    ref={domRef}
                 />
             </Tooltip>
         </Draggable>
     );
 }
 
-export default React.memo(Screen);
+export default Screen;
