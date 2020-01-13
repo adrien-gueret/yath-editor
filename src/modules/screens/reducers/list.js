@@ -133,7 +133,10 @@ export default function list(state = INITIAL_STATE, action) {
 
         case actionTypes.LOAD_SCREENS: {
             return Object.keys(action.payload.screensData.list)
-                    .map(screenId => ScreenModel.createFromJSON(action.payload.screensData.list[screenId]))
+                    .map(screenId => ScreenModel.createFromJSON({
+                        ...action.payload.screensData.list[screenId],
+                        id: screenId,
+                    }))
                     .reduce((newState, screen) => ({
                         ...newState,
                         [screen.id]: screen,
