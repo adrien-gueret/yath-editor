@@ -6,6 +6,7 @@ function getExportableState(state) {
                 ...acc,
                 [screenId]: {
                     ...screens.list[screenId],
+                    linkIds: screens.list[screenId].linkIds.filter(linkId => Boolean(links.list[linkId])),
                     id: undefined,
                 },
             }), {}),
