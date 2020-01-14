@@ -153,6 +153,18 @@ export default function list(state = INITIAL_STATE, action) {
             };
         }
 
+        case linkActionTypes.DELETE_LINK: {
+            return Object.keys(state).reduce((allScreens, screenId) => {
+                const clone = state[screenId].clone();
+                clone.linkIds = clone.linkIds.filter(linkId => linkId !== action.payload.linkId);
+
+                return {
+                    ...allScreens,
+                    [screenId]: clone,
+                };
+            }, {});
+        }
+
         default:
             return state;
     }
