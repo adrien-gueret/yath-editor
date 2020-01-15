@@ -59,7 +59,7 @@ export default function list(state = INITIAL_STATE, action) {
 
         case actionTypes.EDIT_SCREEN_CONTENT: {
             const newScreen = state[action.payload.screenId].clone();
-            newScreen.content = action.payload.newContent;
+            newScreen.content = action.payload.newContent === '<p></p>' ? '' : action.payload.newContent;
 
             return {
                 ...state,
