@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
     },
 }), { classNamePrefix: 'GameTest' });
 
-function GameTest() {
+function GameTest({ startScreenId }) {
     const dispatch = useDispatch();
     const [iframeKey, setIframeKey] = useState(1);
 
@@ -36,9 +36,11 @@ function GameTest() {
     const finishTestGame = useCallback(() => dispatch(actions.finishTestGame()), [dispatch]);
     const restartGame = useCallback(() => setIframeKey(iframeKey + 1), [iframeKey, setIframeKey]);
 
+    const startScreenIdToUse = startScreenId || startScreen.id;
+
     const initIframe = useCallback((iframe) => {
-        injectGameIntoIframe(iframe, screens, links, startScreen.id);
-    }, [screens, links, startScreen.id]);
+        injectGameIntoIframe(iframe, screens, links, startScreenIdToUse);
+    }, [screens, links, startScreenIdToUse]);
 
     const classes = useStyles();
 

@@ -5,7 +5,9 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { IconButton, Tooltip, makeStyles, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FlagIcon from '@material-ui/icons/Flag';
+import TestGameIcon from '@material-ui/icons/SportsEsports';
 
+import { actions as gameActions } from 'Modules/game';
 import { actions as linkActions } from 'Modules/links';
 import { ConfirmDialog } from 'Modules/utils';
 
@@ -38,17 +40,33 @@ export default function ActionButtons({ screenId }) {
         dispatch(actions.unsetEditScreen());
     }, [dispatch, screenId, screen.linkIds]);
     const onSetStartHandler = useCallback(() => dispatch(actions.setStartScreen(screenId)), [dispatch, screenId]);
+    const onTestGameHandler = useCallback(() => dispatch(gameActions.testGame(screenId)), [dispatch, screenId]);
     
     const classes = useStyles();
 
+    const testButton = (
+        <Tooltip title="Test game from this screen">
+            <IconButton
+                onClick={() => onTestGameHandler()}
+                className={classes.pushToLeft}
+            >
+                <TestGameIcon />
+            </IconButton>
+        </Tooltip>
+    );
+
     if (screen.isStart) {
         return (
-            <Typography
-                variant="caption"
-                className={`${classes.pushToLeft} ${classes.onDeletableMessage}`}
-            >
-                This screen is the start one and can't be deleted.
-            </Typography>
+            <React.Fragment>
+                <Typography
+                    variant="caption"
+                    className={classes.onDeletableMessage}
+                >
+                    This screen is the start one and can't be deleted.
+                </Typography>
+                <br />
+                { testButton }
+            </React.Fragment>
         );
     }
 
@@ -62,11 +80,12 @@ export default function ActionButtons({ screenId }) {
             <Tooltip title="Mark as start screen">
                 <IconButton
                     onClick={onSetStartHandler}
-                    className={`${classes.pushToLeft} ${classes.startScreenButton}`} 
+                    className={classes.startScreenButton} 
                 >
                     <FlagIcon />
                 </IconButton>
             </Tooltip>
+            { testButton }
             <ConfirmDialog
                 isDeletion
                 open={isConfirmDialogOpen}
