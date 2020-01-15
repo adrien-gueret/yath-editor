@@ -69,7 +69,9 @@ function Screen({ screenId }) {
     if (hasErrors) {
         if (hasEmptyContent) {
             tooltipMessages.push(<p key="no-content">This screen does not have content.</p>)
-        } else if (hasLinkWithoutTarget) {
+        }
+        
+        if (hasLinkWithoutTarget) {
             tooltipMessages.push(<p key="bad-link">This screen has some links without targets.</p>)
         }
     }
