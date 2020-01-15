@@ -27,6 +27,9 @@ function Screen({ screenId }) {
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
     const hasLinkWithoutTarget = useSelector(state => selectors.list.hasLinkWithoutTarget(state, screenId));
+    const hasEmptyContent = !screen.content;
+
+    const hasErrors = hasLinkWithoutTarget || hasEmptyContent;
 
     const resizeScreen = useCallback((newWidth, newHeight) => (
         dispatch(actions.resizeScreen(screenId, newWidth, newHeight))
@@ -54,8 +57,17 @@ function Screen({ screenId }) {
     }, [screen.name]);
 
     const classes = useStyles();
-
     const position = screen.getCoordinates();
+
+    const tooltipMessages = [];
+
+    if (hasEmptyContent) {
+        tooltipMessages.push(<p>This screen does not have content.</p>)
+    }
+
+    if (hasLinkWithoutTarget) {
+        tooltipMessages.push(<p>This screen has some links without targets.</p>)
+    }
 
     return (
         <Draggable
@@ -64,11 +76,11 @@ function Screen({ screenId }) {
             onDrag={dragScreen}
             onStop={dragStop}
         >
-            <Tooltip title={hasLinkWithoutTarget ? 'This screen has some links without targets' : ''}>
+            <Tooltip title={tooltipMessages.length ? tooltipMessages : ''}>
                 <Chip
                     classes={classes}
                     icon={screen.isStart ? <FlagIcon /> : null}
-                    color={hasLinkWithoutTarget ? 'secondary' : 'primary'}
+                    color={hasErrors ? 'secondary' : 'primary'}
                     label={screen.name}
                     deleteIcon={<EditIcon />}
                     onDelete={editScreen}

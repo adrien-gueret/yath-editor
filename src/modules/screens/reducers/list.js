@@ -4,7 +4,7 @@ import actionTypes from '../actions/types';
 
 import { actionTypes as linkActionTypes } from 'Modules/links';
 
-const startScreen = new ScreenModel('Start screen', '', true);
+const startScreen = new ScreenModel('Start screen', 'Welcome to the <b>first screen</b> of your story!', true);
 
 const INITIAL_STATE = {
     [startScreen.id]: startScreen,
