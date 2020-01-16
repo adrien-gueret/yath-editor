@@ -22,8 +22,8 @@ function addScreenInterceptor(allScreens, next, action) {
     const { screen } = action.payload;
 
     while (hasCollisions(screen, allScreens)) {
-        screen.x += 16;
-        screen.y += 16;
+        screen.x += 20;
+        screen.y += 20;
     }
 
     return next(action);
@@ -38,8 +38,8 @@ function resizeScreenInterceptor(allScreens, next, action) {
     resizedScreen.height = newHeight;
 
     while (hasCollisions(resizedScreen, allScreens)) {
-        resizedScreen.x += 16;
-        resizedScreen.y += 16;
+        resizedScreen.x += 20;
+        resizedScreen.y += 20;
     }
 
     action.payload.newWidth = newWidth;

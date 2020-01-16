@@ -31,9 +31,12 @@ class Screen {
     }
 
     getCoordinates() {
+        const x = this.tempX !== null ? this.tempX : this.x;
+        const y = this.tempY !== null ? this.tempY : this.y;
+
         return {
-            x: this.tempX !== null ? this.tempX : this.x,
-            y: this.tempY !== null ? this.tempY : this.y,
+            x: x - x % 20,
+            y: y - y % 20,
         };
     }
 

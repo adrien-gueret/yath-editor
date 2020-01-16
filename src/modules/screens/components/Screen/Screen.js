@@ -15,6 +15,7 @@ const useStyles = makeStyles(() => ({
         position: 'absolute',
         zIndex: 1,
         cursor: 'move',
+        height: 40,
     },
     label: {
         display: 'block',
@@ -97,6 +98,7 @@ function Screen({ screenId }) {
             onStart={dragStart}
             onDrag={dragScreen}
             onStop={dragStop}
+            grid={[20, 20]}
         >
             <Tooltip title={(showTooltip && tooltipMessages.length) ? tooltipMessages : ''}>
                 <Chip
