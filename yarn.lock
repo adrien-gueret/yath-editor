@@ -1825,6 +1825,10 @@ draft-js@^0.11.2:
     immutable "~3.7.4"
     object-assign "^4.1.0"
 
+dragselect@^1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/dragselect/-/dragselect-1.13.1.tgz#aa4166e1164b51ed5ee0cd89e0c5310a9c35be6a"
+
 duplexer2@~0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer2/-/duplexer2-0.1.4.tgz#8b12dab878c0d69e3e7891051662a32fc6bddcc1"

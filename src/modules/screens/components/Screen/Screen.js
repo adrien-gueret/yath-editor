@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { forwardRef, useCallback, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
@@ -16,16 +16,21 @@ const useStyles = makeStyles(() => ({
         zIndex: 1,
         cursor: 'move',
         height: 40,
+        userSelect: 'none',
     },
     label: {
         display: 'block',
         maxWidth: 200,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-    }
+        pointerEvents: 'none',
+    },
+    outlined: {
+        backgroundColor: ['#fff', '!important'],
+    },
 }), { classNamePrefix: 'Screen' });
 
-function Screen({ screenId }) {
+function Screen({ screenId, onDragStart, onDragStop }, ref) {
     const dispatch = useDispatch();
     const [showTooltip, toggleShowTooltip] = useState(true);
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
@@ -42,13 +47,18 @@ function Screen({ screenId }) {
     const dragScreen = useCallback((e, data) => {
         dispatch(actions.moveScreen(screenId, data.x, data.y));
     }, [dispatch, screenId]);
-    const dragStart = () => toggleShowTooltip(false);
+    const dragStart = useCallback(() => {
+        toggleShowTooltip(false);
+        onDragStart();
+    }, [onDragStart]);
     const dragStop = useCallback(() => {
         dispatch(actions.resetTempCoordinates(screenId));
         toggleShowTooltip(true);
-    }, [dispatch, screenId]);
+        onDragStop();
+    }, [dispatch, screenId, onDragStop]);
 
     const domRef = useCallback((domElement) => {
+        ref(domElement);
         if (!domElement) {
             return;
         }
@@ -103,11 +113,13 @@ function Screen({ screenId }) {
             <Tooltip title={(showTooltip && tooltipMessages.length) ? tooltipMessages : ''}>
                 <Chip
                     classes={classes}
+                    clickable
                     icon={icon}
                     color={hasErrors ? 'secondary' : 'primary'}
                     label={screen.name}
                     deleteIcon={<EditIcon />}
                     onDelete={editScreen}
+                    variant={screen.isSelected ? 'outlined' : 'default'}
                     ref={domRef}
                 />
             </Tooltip>
@@ -115,4 +127,4 @@ function Screen({ screenId }) {
     );
 }
 
-export default Screen;
+export default forwardRef(Screen);

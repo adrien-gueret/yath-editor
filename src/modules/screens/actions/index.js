@@ -37,4 +37,10 @@ export default {
     unsetEditScreen() {
         return { type: actionTypes.UNSET_EDIT_SCREEN };
     },
+    selectScreen(screenId) {
+        return { type: actionTypes.SELECT_SCREEN, payload: { screenId } };
+    },
+    unselectScreen(screenId) {
+        return { type: actionTypes.UNSELECT_SCREEN, payload: { screenId } };
+    },
 }

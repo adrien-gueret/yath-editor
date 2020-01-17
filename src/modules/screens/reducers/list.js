@@ -111,6 +111,28 @@ export default function list(state = INITIAL_STATE, action) {
             };
         }
 
+        case actionTypes.SELECT_SCREEN: {
+            const newScreen = state[action.payload.screenId].clone();
+
+            newScreen.isSelected = true;
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case actionTypes.UNSELECT_SCREEN: {
+            const newScreen = state[action.payload.screenId].clone();
+
+            newScreen.isSelected = false;
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
         case actionTypes.RESIZE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.width = action.payload.newWidth;

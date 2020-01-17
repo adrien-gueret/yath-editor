@@ -12,6 +12,7 @@ class Screen {
         screen.width = json.width;
         screen.height = json.height;
         screen.linkIds = [...json.linkIds];
+        screen.isSelected = false;
 
         return screen;
     }
@@ -28,6 +29,7 @@ class Screen {
         this.height = 0;
         this.isStart = isStart;
         this.linkIds = [];
+        this.isSelected = false;
     }
 
     getCoordinates() {
@@ -53,6 +55,7 @@ class Screen {
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
         copiedScreen.linkIds = [...this.linkIds];
+        copiedScreen.isSelected = this.isSelected;
 
         return copiedScreen;
     }
