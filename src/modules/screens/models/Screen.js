@@ -7,8 +7,6 @@ class Screen {
         const screen = new Screen(json.name, json.content, json.isStart, json.id);
         screen.x = json.x;
         screen.y = json.y;
-        screen.tempX = null;
-        screen.tempY = null;
         screen.width = json.width;
         screen.height = json.height;
         screen.linkIds = [...json.linkIds];
@@ -23,8 +21,6 @@ class Screen {
         this.content = content;
         this.x = DEFAULT_COORDINATE + document.body.scrollLeft;
         this.y = DEFAULT_COORDINATE + document.body.scrollTop;
-        this.tempX = null;
-        this.tempY = null;
         this.width = 0;
         this.height = 0;
         this.isStart = isStart;
@@ -33,8 +29,7 @@ class Screen {
     }
 
     getCoordinates() {
-        const x = this.tempX !== null ? this.tempX : this.x;
-        const y = this.tempY !== null ? this.tempY : this.y;
+        const { x, y } = this;
 
         return {
             x: x - x % 20,
@@ -50,8 +45,6 @@ class Screen {
         const copiedScreen = new Screen(this.name, this.content, this.isStart, this.id);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
-        copiedScreen.tempX = this.tempX;
-        copiedScreen.tempY = this.tempY;
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
         copiedScreen.linkIds = [...this.linkIds];

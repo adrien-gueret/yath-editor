@@ -20,8 +20,6 @@ function moveScreenInterceptor(allScreens, next, action) {
     newScreen.x = action.payload.newX;
     newScreen.y = action.payload.newY;
 
-    action.payload.hasCollisions = hasCollisions(newScreen, allScreens);
-
     return next(action);
 }
 
