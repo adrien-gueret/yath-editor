@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import DragSelect from 'dragselect';
 
-import { actions as screenActions, selectors as screenSelectors, Screen, ScreenEdit } from 'Modules/screens';
+import { actions as screenActions, selectors as screenSelectors, Screen, ScreenEdit, actionTypes } from 'Modules/screens';
 
 import ArrowsBoard from '../ArrowsBoard';
 
@@ -23,6 +23,7 @@ function Board() {
     const dispatch = useDispatch();
     const selectScreen = useCallback((screenId) => dispatch(screenActions.selectScreen(screenId)), [dispatch]);
     const unselectScreen = useCallback((screenId) => dispatch(screenActions.unselectScreen(screenId)), [dispatch]);
+    const moveScreens = useCallback((screenIds, deltaX, deltaY) => dispatch(screenActions.moveScreens(screenIds, deltaX, deltaY)), [dispatch]);
 
     const [dragSelect] = useState(() => new DragSelect({
         selectorClass: classes.selector,
@@ -53,6 +54,16 @@ function Board() {
 
     }, [dragSelect]);
 
+    const onScreenDragHandler = useCallback((screenId, deltaX, deltaY) => {
+        const otherSelectedScreens = screens.filter(screen => screen.isSelected && screen.id !== screenId);
+
+        if (otherSelectedScreens.length === 0) {
+            return;
+        }
+
+        moveScreens(otherSelectedScreens.map(screen => screen.id), deltaX, deltaY);
+    }, [screens]);
+
     const onScreenDragStopHandler = useCallback(() => {
         if (!dragSelect) {
             return;
@@ -70,6 +81,7 @@ function Board() {
                         screenId={screen.id}
                         ref={getScreenRef(screen.id)}
                         onDragStart={onScreenDragStartHandler}
+                        onDrag={onScreenDragHandler}
                         onDragStop={onScreenDragStopHandler}
                     />
                 ))

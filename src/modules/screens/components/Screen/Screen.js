@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
     },
 }), { classNamePrefix: 'Screen' });
 
-function Screen({ screenId, onDragStart, onDragStop }, ref) {
+function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
     const dispatch = useDispatch();
     const [showTooltip, toggleShowTooltip] = useState(true);
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
@@ -46,7 +46,8 @@ function Screen({ screenId, onDragStart, onDragStop }, ref) {
     const editScreen = useCallback(() => dispatch(actions.setEditScreen(screenId)), [dispatch, screenId]);
     const dragScreen = useCallback((e, data) => {
         dispatch(actions.moveScreen(screenId, data.x, data.y));
-    }, [dispatch, screenId]);
+        !onDrag(screenId, data.deltaX, data.deltaY);
+    }, [dispatch, screenId, onDrag]);
     const dragStart = useCallback(() => {
         toggleShowTooltip(false);
         onDragStart();
