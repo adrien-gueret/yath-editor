@@ -9,20 +9,15 @@ export default store => next => action => {
         });
         return;
     }
-    
-    if (action.type === actionTypes.MOVE_SCREEN) {
+
+    if (action.type === actionTypes.MOVE_SCREEN && action.payload.isDelta) {
         const state = store.getState();
         const allScreens = listSelectors.get(state);
         const newScreen = allScreens[action.payload.screenId].clone();
         const { x, y } = newScreen.getCoordinates();
     
-        if (action.payload.isDelta) {
-            action.payload.newX += x;
-            action.payload.newY += y;
-        }
-    
-        newScreen.x = action.payload.newX;
-        newScreen.y = action.payload.newY;
+        action.payload.newX += x;
+        action.payload.newY += y;
     }
 
     return next(action);

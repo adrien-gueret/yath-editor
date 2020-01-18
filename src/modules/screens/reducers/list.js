@@ -83,8 +83,8 @@ export default function list(state = INITIAL_STATE, action) {
         case actionTypes.MOVE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
 
-            newScreen.x = action.payload.newX;
-            newScreen.y = action.payload.newY;
+            newScreen.x = Math.max(0, action.payload.newX);
+            newScreen.y = Math.max(0, action.payload.newY);
 
             return {
                 ...state,
