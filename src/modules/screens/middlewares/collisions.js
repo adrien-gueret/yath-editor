@@ -8,21 +8,6 @@ const hasCollisions = (screenToCheck, allScreens) => (
         .some(screen => screen.doesCollied(screenToCheck))
 );
 
-function moveScreenInterceptor(allScreens, next, action) {
-    const newScreen = allScreens[action.payload.screenId].clone();
-    const { x, y } = newScreen.getCoordinates();
-
-    if (action.payload.isDelta) {
-        action.payload.newX += x;
-        action.payload.newY += y;
-    }
-
-    newScreen.x = action.payload.newX;
-    newScreen.y = action.payload.newY;
-
-    return next(action);
-}
-
 function addScreenInterceptor(allScreens, next, action) {
     const { screen } = action.payload;
 
@@ -56,7 +41,6 @@ function resizeScreenInterceptor(allScreens, next, action) {
 }
 
 const actionTypesToInterceptors = {
-    [actionTypes.MOVE_SCREEN]: moveScreenInterceptor,
     [actionTypes.ADD_SCREEN]: addScreenInterceptor,
     [actionTypes.RESIZE_SCREEN]: resizeScreenInterceptor,
 };
