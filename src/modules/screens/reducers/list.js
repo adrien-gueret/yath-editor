@@ -83,7 +83,7 @@ export default function list(state = INITIAL_STATE, action) {
         case actionTypes.MOVE_SCREEN: {
             const newScreen = state[action.payload.screenId].clone();
 
-            if (action.hasCollisions) {
+            if (action.payload.hasCollisions) {
                 newScreen.tempX = action.payload.newX;
                 newScreen.tempY = action.payload.newY;
             } else {
@@ -100,15 +100,17 @@ export default function list(state = INITIAL_STATE, action) {
         }
 
         case actionTypes.RESET_TEMP_COORDINATES: {
-            const newScreen = state[action.payload.screenId].clone();
+            return Object.keys(state)
+                .reduce((newState, screenId) => {
+                    const clonedScreen = state[screenId].clone();
+                    clonedScreen.tempX = null;
+                    clonedScreen.tempY = null;
 
-            newScreen.tempX = null;
-            newScreen.tempY = null;
-
-            return {
-                ...state,
-                [action.payload.screenId]: newScreen,
-            };
+                    return {
+                        ...newState,
+                        [clonedScreen.id]: clonedScreen,
+                    };
+                }, {});
         }
 
         case actionTypes.SELECT_SCREEN: {

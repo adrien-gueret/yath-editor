@@ -10,10 +10,17 @@ const hasCollisions = (screenToCheck, allScreens) => (
 
 function moveScreenInterceptor(allScreens, next, action) {
     const newScreen = allScreens[action.payload.screenId].clone();
+    const { x, y } = newScreen.getCoordinates();
+
+    if (action.payload.isDelta) {
+        action.payload.newX += x;
+        action.payload.newY += y;
+    }
+
     newScreen.x = action.payload.newX;
     newScreen.y = action.payload.newY;
 
-    action.hasCollisions = hasCollisions(newScreen, allScreens);
+    action.payload.hasCollisions = hasCollisions(newScreen, allScreens);
 
     return next(action);
 }

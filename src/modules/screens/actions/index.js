@@ -13,14 +13,14 @@ export default {
     setStartScreen(screenId) {
         return { type: actionTypes.SET_START_SCREEN, payload: { screenId } };
     },
-    moveScreen(screenId, newX, newY) {
-        return { type: actionTypes.MOVE_SCREEN, payload: { screenId, newX, newY } };
+    moveScreen(screenId, newX, newY, isDelta = false) {
+        return { type: actionTypes.MOVE_SCREEN, payload: { screenId, newX, newY, isDelta } };
     },
     moveScreens(screenIds, deltaX, deltaY) {
         return { type: actionTypes.MOVE_SCREENS, payload: { screenIds, deltaX, deltaY } };
     },
-    resetTempCoordinates(screenId) {
-        return { type: actionTypes.RESET_TEMP_COORDINATES, payload: { screenId } };
+    resetTempCoordinates() {
+        return { type: actionTypes.RESET_TEMP_COORDINATES };
     },
     resizeScreen(screenId, newWidth, newHeight) {
         return { type: actionTypes.RESIZE_SCREEN, payload: { screenId, newWidth, newHeight } };

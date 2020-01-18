@@ -53,10 +53,10 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
         onDragStart();
     }, [onDragStart]);
     const dragStop = useCallback(() => {
-        dispatch(actions.resetTempCoordinates(screenId));
+        dispatch(actions.resetTempCoordinates());
         toggleShowTooltip(true);
         onDragStop();
-    }, [dispatch, screenId, onDragStop]);
+    }, [dispatch, onDragStop]);
 
     const domRef = useCallback((domElement) => {
         ref(domElement);
