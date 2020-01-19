@@ -25,9 +25,12 @@ function Board() {
     const unselectScreen = useCallback((screenId) => dispatch(screenActions.unselectScreen(screenId)), [dispatch]);
     const moveScreens = useCallback((screenIds, deltaX, deltaY) => dispatch(screenActions.moveScreens(screenIds, deltaX, deltaY)), [dispatch]);
 
+    const [draggedScreenInitialStatus, setDraggedScreenInitialStatus] = useState(false);
+
     const [dragSelect] = useState(() => new DragSelect({
         selectorClass: classes.selector,
         multiSelectMode: true,
+        multiSelectKeys: [],
         onElementSelect(domElement) {
             selectScreen(domElementToScreenIdMap.get(domElement));
         },
@@ -37,6 +40,19 @@ function Board() {
     }));
 
     const [domElementToScreenIdMap] = useState(new Map());
+    const [screenIdToDomElementMap] = useState(new Map());
+
+    const forceSelectScreen = useCallback((screenId) => {
+        dragSelect.addSelection(screenIdToDomElementMap.get(screenId));
+    }, [dragSelect]);
+
+    const forceUnselectScreen = useCallback((screenId) => {
+        dragSelect.removeSelection(screenIdToDomElementMap.get(screenId));
+    }, [dragSelect]);
+
+    const clearSelection = useCallback(() => {
+        dragSelect.clearSelection();
+    }, [dragSelect]);
 
     const getScreenRef = useCallback((screenId) => (domElement) => {
         if (!domElement || !dragSelect) {
@@ -44,17 +60,23 @@ function Board() {
         }
 
         domElementToScreenIdMap.set(domElement, screenId);
+        screenIdToDomElementMap.set(screenId, domElement);
         dragSelect.addSelectables(domElement);
     }, [dragSelect]);
 
-    const onScreenDragStartHandler = useCallback((screenId) => {
+    const onScreenDragStartHandler = useCallback((screenId, isSelected) => {
         if (!dragSelect) {
             return;
         }
 
-        selectScreen(screenId);
+        if (!isSelected) {
+            forceSelectScreen(screenId);
+        }
+        
+        setDraggedScreenInitialStatus(isSelected);
+        
         dragSelect.break();
-    }, [selectScreen, dragSelect]);
+    }, [dragSelect, forceSelectScreen]);
 
     const onScreenDragHandler = useCallback((screenId, deltaX, deltaY) => {
         const otherSelectedScreens = screens.filter(screen => screen.isSelected && screen.id !== screenId);
@@ -74,17 +96,25 @@ function Board() {
         dragSelect.start();
 
         if (deltaX !== 0 || deltaY !== 0) {
-            window.setTimeout(() => selectScreen(screenId), 0);
+            window.setTimeout(() => forceSelectScreen(screenId), 0);
+        } else {
+            window.setTimeout(() => {
+                if (draggedScreenInitialStatus) {
+                    forceUnselectScreen(screenId)
+                } else {
+                    forceSelectScreen(screenId)
+                }
+            }, 0);
         }
        
-    }, [selectScreen, dragSelect]);
+    }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus]);
 
     return (
-        <section className="yathBoard">
+        <section className="yathBoard" onDoubleClick={clearSelection}>
             {
                 screens.map(screen =>  (
                     <Screen
-                        key={ screen.id }
+                        key={screen.id}
                         screenId={screen.id}
                         ref={getScreenRef(screen.id)}
                         onDragStart={onScreenDragStartHandler}

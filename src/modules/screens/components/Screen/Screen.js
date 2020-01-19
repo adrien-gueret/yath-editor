@@ -51,8 +51,8 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
 
     const dragStart = useCallback(() => {
         toggleShowTooltip(false);
-        onDragStart(screenId);
-    }, [onDragStart, screenId]);
+        onDragStart(screenId, screen.isSelected);
+    }, [onDragStart, screen, screenId]);
     
     const dragStop = useCallback((e, data) => {
         toggleShowTooltip(true);
@@ -115,7 +115,6 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
             <Tooltip title={(showTooltip && tooltipMessages.length) ? tooltipMessages : ''}>
                 <Chip
                     classes={classes}
-                    clickable
                     icon={icon}
                     color={hasErrors ? 'secondary' : 'primary'}
                     label={screen.name}
