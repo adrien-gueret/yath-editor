@@ -1,6 +1,6 @@
 import './board.less';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import DragSelect from 'dragselect';
@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
 function Board() {
     const editedScreenId = useSelector(screenSelectors.editedScreenId.get);
     const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
+    const totalSelectedScreens = useMemo(() => screens.filter(screen => screen.isSelected).length, [screens]);
     
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -96,7 +97,9 @@ function Board() {
         dragSelect.start();
 
         if (deltaX !== 0 || deltaY !== 0) {
-            window.setTimeout(() => forceSelectScreen(screenId), 0);
+            if (totalSelectedScreens > 1) {
+                window.setTimeout(() => forceSelectScreen(screenId), 0);
+            }
         } else {
             window.setTimeout(() => {
                 if (draggedScreenInitialStatus) {
@@ -107,7 +110,7 @@ function Board() {
             }, 0);
         }
        
-    }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus]);
+    }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens]);
 
     return (
         <section className="yathBoard" onDoubleClick={clearSelection}>
