@@ -48,14 +48,16 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
         dispatch(actions.moveScreen(screenId, data.x, data.y));
         !onDrag(screenId, data.deltaX, data.deltaY);
     }, [dispatch, screenId, onDrag]);
+
     const dragStart = useCallback(() => {
         toggleShowTooltip(false);
-        onDragStart();
-    }, [onDragStart]);
-    const dragStop = useCallback(() => {
+        onDragStart(screenId);
+    }, [onDragStart, screenId]);
+    
+    const dragStop = useCallback((e, data) => {
         toggleShowTooltip(true);
-        onDragStop();
-    }, [onDragStop]);
+        onDragStop(screenId, data.deltaX, data.deltaY);
+    }, [onDragStop, screenId]);
 
     const domRef = useCallback((domElement) => {
         ref(domElement);

@@ -27,6 +27,7 @@ function Board() {
 
     const [dragSelect] = useState(() => new DragSelect({
         selectorClass: classes.selector,
+        multiSelectMode: true,
         onElementSelect(domElement) {
             selectScreen(domElementToScreenIdMap.get(domElement));
         },
@@ -46,13 +47,14 @@ function Board() {
         dragSelect.addSelectables(domElement);
     }, [dragSelect]);
 
-    const onScreenDragStartHandler = useCallback(() => {
+    const onScreenDragStartHandler = useCallback((screenId) => {
         if (!dragSelect) {
             return;
         }
-        dragSelect.break();
 
-    }, [dragSelect]);
+        selectScreen(screenId);
+        dragSelect.break();
+    }, [selectScreen, dragSelect]);
 
     const onScreenDragHandler = useCallback((screenId, deltaX, deltaY) => {
         const otherSelectedScreens = screens.filter(screen => screen.isSelected && screen.id !== screenId);
@@ -64,13 +66,18 @@ function Board() {
         moveScreens(otherSelectedScreens.map(screen => screen.id), deltaX, deltaY);
     }, [screens]);
 
-    const onScreenDragStopHandler = useCallback(() => {
+    const onScreenDragStopHandler = useCallback((screenId, deltaX, deltaY) => {
         if (!dragSelect) {
             return;
         }
+
         dragSelect.start();
 
-    }, [dragSelect]);
+        if (deltaX !== 0 || deltaY !== 0) {
+            window.setTimeout(() => selectScreen(screenId), 0);
+        }
+       
+    }, [selectScreen, dragSelect]);
 
     return (
         <section className="yathBoard">
