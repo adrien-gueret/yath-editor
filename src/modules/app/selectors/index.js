@@ -1,6 +1,9 @@
 function getExportableState(state) {
-    const { screens, links } = { ...state };
+    const { game, screens, links } = { ...state };
     return {
+        game: {
+            name: game.name,
+        },
         screens: {
             list: Object.keys(screens.list).reduce((acc, screenId) => ({
                 ...acc,

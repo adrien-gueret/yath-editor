@@ -59,6 +59,10 @@ function AppHeader() {
         dispatch(linkActions.deleteAllLinks());
         dispatch(linkActions.loadLinks(newState.links));
         dispatch(screenActions.loadScreens(newState.screens));
+
+        if (newState.game && newState.game.name) {
+            dispatch(gameActions.renameGame(newState.game.name));
+        }
     }, [dispatch]);
 
     const loadFile = useCallback((loadEvent) => {
