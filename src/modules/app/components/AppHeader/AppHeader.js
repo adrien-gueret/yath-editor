@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
+import slugify from 'slugify';
+
 import { AppBar, IconButton, Toolbar, Tooltip, makeStyles, InputBase } from '@material-ui/core';
 
 import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
@@ -103,7 +105,7 @@ function AppHeader() {
     const classes = useStyles();
 
     function save() {
-        downloadJson('yath', appState);
+        downloadJson(slugify(gameName), appState);
     }
 
     async function downloadGame() {
@@ -112,7 +114,7 @@ function AppHeader() {
         const startScreen = screensSelectors.list.getStart(appState);
 
         const html = await getFullHtml(screens, links, startScreen);
-        downloadHtml('yath', html);
+        downloadHtml(slugify(gameName), html);
     }
 
     const onGameNameChangeHandler = e => dispatch(gameActions.renameGame(e.target.value));

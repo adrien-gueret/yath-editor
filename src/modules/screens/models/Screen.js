@@ -1,4 +1,5 @@
 import uuid from 'uuid/v1';
+import slugify from 'slugify';
 
 const DEFAULT_COORDINATE = 100;
 
@@ -38,7 +39,7 @@ class Screen {
     }
 
     getSlug() {
-        return this.name.toLowerCase().replace(/\s/g, '-');
+        return slugify(this.name);
     }
 
     clone() {
