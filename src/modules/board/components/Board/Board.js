@@ -1,6 +1,6 @@
 import './board.less';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import DragSelect from 'dragselect';
@@ -28,7 +28,7 @@ function Board() {
 
     const [draggedScreenInitialStatus, setDraggedScreenInitialStatus] = useState(false);
 
-    const [dragSelect] = useState(() => new DragSelect({
+    const dragSelect = useMemo(() => new DragSelect({
         selectorClass: classes.selector,
         multiSelectMode: true,
         multiSelectKeys: [],
@@ -38,14 +38,24 @@ function Board() {
         onElementUnselect(domElement) {
             unselectScreen(domElementToScreenIdMap.get(domElement));
         },
-    }));
+    }), []);
 
     const [domElementToScreenIdMap] = useState(new Map());
     const [screenIdToDomElementMap] = useState(new Map());
 
     const forceSelectScreen = useCallback((screenId) => {
-        dragSelect.addSelection(screenIdToDomElementMap.get(screenId));
-    }, [dragSelect]);
+        if (editedScreenId) {
+            return;
+        }
+        
+        const domElement = screenIdToDomElementMap.get(screenId);
+
+        if (dragSelect.getSelectables().indexOf(domElement) === -1)  {
+            return;
+        }
+
+        dragSelect.addSelection(domElement);
+    }, [dragSelect, editedScreenId]);
 
     const forceUnselectScreen = useCallback((screenId) => {
         dragSelect.removeSelection(screenIdToDomElementMap.get(screenId));
@@ -103,14 +113,29 @@ function Board() {
         } else {
             window.setTimeout(() => {
                 if (draggedScreenInitialStatus) {
-                    forceUnselectScreen(screenId)
+                    forceUnselectScreen(screenId);
                 } else {
-                    forceSelectScreen(screenId)
+                    forceSelectScreen(screenId);
                 }
             }, 0);
         }
        
-    }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens]);
+    }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens, ]);
+
+    useEffect(() => {
+        if (!dragSelect || !editedScreenId) {
+            return;
+        }
+
+        const domElement = screenIdToDomElementMap.get(editedScreenId);
+
+        clearSelection();
+
+        dragSelect.removeSelectables(domElement);
+        dragSelect.stop(false);
+
+        return () => { dragSelect.start(); dragSelect.addSelectables(domElement);};
+    }, [dragSelect, editedScreenId, clearSelection]);
 
     return (
         <section className="yathBoard" onDoubleClick={clearSelection}>
