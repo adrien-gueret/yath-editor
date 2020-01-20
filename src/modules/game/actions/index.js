@@ -7,4 +7,7 @@ export default {
     finishTestGame() {
         return { type: actionTypes.FINISH_TEST_GAME };
     },
+    renameGame(name) {
+        return { type: actionTypes.RENAME_GAME, payload: { name } };
+    },
 };

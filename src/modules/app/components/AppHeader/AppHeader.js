@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
-import { AppBar, IconButton, Toolbar, Tooltip, makeStyles } from '@material-ui/core';
+import { AppBar, IconButton, Toolbar, Tooltip, makeStyles, InputBase } from '@material-ui/core';
 
 import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
 import SaveIcon from '@material-ui/icons/GetApp';
@@ -9,7 +9,7 @@ import LoadIcon from '@material-ui/icons/Publish';
 import DownloadGameIcon from '@material-ui/icons/PublicOutlined';
 import TestGameIcon from '@material-ui/icons/SportsEsportsOutlined';
 
-import { actions as gameActions, getFullHtml } from 'Modules/game';
+import { actions as gameActions, selectors as gameSelectors, getFullHtml } from 'Modules/game';
 import { downloadJson, downloadHtml } from 'Modules/utils';
 import {
     selectors as screensSelectors,
@@ -21,7 +21,7 @@ import { selectors as linkSelectors, actions as linkActions } from 'Modules/link
 
 import selectors from '../../selectors';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
     separator: {
         margin: spacing(0, 2),
         height: 32,
@@ -32,11 +32,24 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
     },
     inputFile: {
         display: 'none',
-    }
+    },
+    inputName: {
+        background: 'rgba(255, 255, 255, .6)',
+        padding: spacing(0, 1),
+        borderRadius: shape.borderRadius,
+        margin: 'auto',
+        border: `1px solid ${palette.divider}`,
+        transition: `background ${transitions.duration.shortest}ms ${transitions.easing.sharp}`,
+    },
+    inputNameFocused: {
+        background: palette.common.white,
+        borderColor: palette.common.black,
+    },
 }), { classNamePrefix: 'AppHeader' });
 
 function AppHeader() {
     const appState = useSelector(selectors.getExportableState, shallowEqual);
+    const gameName = useSelector(gameSelectors.name.get, shallowEqual);
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
     const dispatch = useDispatch();
     const loadInput = useRef(null);
@@ -89,15 +102,16 @@ function AppHeader() {
         downloadJson('yath', appState);
     }
 
-    function downloadGame() {
+    async function downloadGame() {
         const screens = screensSelectors.list.getAsArray(appState);
         const links = linkSelectors.list.get(appState);
         const startScreen = screensSelectors.list.getStart(appState);
 
-        getFullHtml(screens, links, startScreen).then((html) => {
-            downloadHtml('yath', html);
-        });
+        const html = await getFullHtml(screens, links, startScreen);
+        downloadHtml('yath', html);
     }
+
+    const onGameNameChangeHandler = e => dispatch(gameActions.renameGame(e.target.value));
 
     return (
         <AppBar>
@@ -112,7 +126,9 @@ function AppHeader() {
                         <AddScreenIcon fontSize="large" />
                     </IconButton>
                 </Tooltip>
+
                 <div className={classes.separator} />
+                
                 <Tooltip title="Download save file">
                     <IconButton
                         color="inherit"
@@ -131,6 +147,17 @@ function AppHeader() {
                         <LoadIcon fontSize="large" />
                     </IconButton>
                 </Tooltip>
+
+                <div className={classes.separator} />
+
+                <InputBase
+                    classes={{
+                        root: classes.inputName,
+                        focused: classes.inputNameFocused,
+                    }}
+                    value={gameName}
+                    onChange={onGameNameChangeHandler}
+                />
                 
                 <Tooltip title="Download game as HTML file">
                     <IconButton
