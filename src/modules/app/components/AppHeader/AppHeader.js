@@ -11,15 +11,10 @@ import LoadIcon from '@material-ui/icons/Publish';
 import DownloadGameIcon from '@material-ui/icons/PublicOutlined';
 import TestGameIcon from '@material-ui/icons/SportsEsportsOutlined';
 
-import { actions as gameActions, selectors as gameSelectors, getFullHtml } from 'Modules/game';
-import { downloadJson, downloadHtml } from 'Modules/utils';
-import {
-    selectors as screensSelectors,
-    actions as screenActions,
-    useAddScreenDialog,
-} from 'Modules/screens';
-
-import { selectors as linkSelectors, actions as linkActions } from 'Modules/links';
+import { actions as gameActions, selectors as gameSelectors } from 'Modules/game';
+import { downloadJson } from 'Modules/utils';
+import { actions as screenActions, useAddScreenDialog } from 'Modules/screens';
+import { actions as linkActions } from 'Modules/links';
 
 import selectors from '../../selectors';
 
@@ -73,7 +68,7 @@ function AppHeader() {
         try {
             const newStoreState = JSON.parse(loadEvent.target.result);
             loadState(newStoreState);
-        } catch(error) {
+        } catch (error) {
             alert(`The file you want to load is not a correct JSON file: ${error.message}`);
         }
 
@@ -108,20 +103,15 @@ function AppHeader() {
         downloadJson(slugify(gameName), appState);
     }
 
-    async function downloadGame() {
-        const screens = screensSelectors.list.getAsArray(appState);
-        const links = linkSelectors.list.get(appState);
-        const startScreen = screensSelectors.list.getStart(appState);
-
-        const html = await getFullHtml(screens, links, startScreen);
-        downloadHtml(slugify(gameName), html);
+    function downloadGame() {
+        dispatch(gameActions.downloadGame());
     }
 
     const onGameNameChangeHandler = e => dispatch(gameActions.renameGame(e.target.value));
 
     return (
         <AppBar>
-            { addScreenDialog }
+            {addScreenDialog}
             <Toolbar>
                 <Tooltip title="Add screen">
                     <IconButton
@@ -134,7 +124,7 @@ function AppHeader() {
                 </Tooltip>
 
                 <div className={classes.separator} />
-                
+
                 <Tooltip title="Download save file">
                     <IconButton
                         color="inherit"
@@ -164,13 +154,13 @@ function AppHeader() {
                     value={gameName}
                     onChange={onGameNameChangeHandler}
                 />
-                
+
                 <Tooltip title="Download game as HTML file">
                     <IconButton
                         className={classes.toRight}
                         color="inherit"
                         aria-label="Download game as HTML file"
-                        onClick={downloadGame} 
+                        onClick={downloadGame}
                     >
                         <DownloadGameIcon fontSize="large" />
                     </IconButton>

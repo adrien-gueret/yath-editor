@@ -10,4 +10,7 @@ export default {
     renameGame(name) {
         return { type: actionTypes.RENAME_GAME, payload: { name } };
     },
+    downloadGame() {
+        return { type: actionTypes.DOWNLOAD_GAME };
+    },
 };

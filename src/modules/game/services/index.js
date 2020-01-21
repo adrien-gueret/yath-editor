@@ -21,7 +21,7 @@ export function getStartGameScript(startScreenId) {
     return `const g = new yath.Game(null, null, document.body);g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(screens, links, startScreen) {
+export function getFullHtml(gameName, screens, links, startScreen) {
     const screensHtml = getScreensHtml(screens, links);
     const startGame = getStartGameScript(startScreen.id);
 
@@ -35,7 +35,7 @@ export function getFullHtml(screens, links, startScreen) {
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>You Are The Hero!</title>
+        <title>${gameName.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</title>
         <style>${mainCss}</style>
         <script>${mainJs}</script>
     </head>
