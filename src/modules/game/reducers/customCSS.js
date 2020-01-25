@@ -1,6 +1,30 @@
 import actionTypes from '../actions/types';
 
-export default function customCSS(state = '', action) {
+export const INITIAL_STATE = `html, body {
+    /* ... */
+}
+
+.yathScreen {
+    /* ... */
+}
+
+.yathScreen--visible {
+    /* ... */
+}
+
+.yathScreen nav button {
+    /* ... */
+}
+
+.yathScreen nav button:hover {
+    /* ... */
+}
+
+.yathScreen nav button:active {
+    /* ... */
+}`;
+
+export default function customCSS(state = INITIAL_STATE, action) {
     switch(action.type) {
         case actionTypes.SET_CUSTOM_CSS:
             return action.payload.css;

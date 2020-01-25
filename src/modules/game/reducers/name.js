@@ -1,6 +1,6 @@
 import actionTypes from '../actions/types';
 
-export default function isTesting(state = 'My Yath Game', action) {
+export default function isTesting(state = 'My yath game', action) {
     switch(action.type) {
         case actionTypes.RENAME_GAME:
             return action.payload.name;
