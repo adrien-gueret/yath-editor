@@ -1,8 +1,8 @@
-import uuid from 'uuid/v1';
+import shortid from 'shortid';
 
 export default class Link {
     constructor(label = '', targetScreenId = null, id = null) {
-        this.id = id || uuid();
+        this.id = id || shortid.generate();
         this.label = label;
         this.targetScreenId = targetScreenId;
     }

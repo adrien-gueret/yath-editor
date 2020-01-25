@@ -1,4 +1,4 @@
-import uuid from 'uuid/v1';
+import shortid from 'shortid';
 import slugify from 'slugify';
 
 const DEFAULT_COORDINATE = 100;
@@ -17,7 +17,7 @@ class Screen {
     }
 
     constructor(name = '', content = '', isStart = false, id = null) {
-        this.id = id || uuid();
+        this.id = id || shortid.generate();
         this.name = name;
         this.content = content;
         this.x = DEFAULT_COORDINATE + document.body.scrollLeft;

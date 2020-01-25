@@ -36,6 +36,7 @@ const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
         padding: spacing(0, 1),
         borderRadius: shape.borderRadius,
         marginLeft: 'auto',
+        marginRight: spacing(1),
         border: `1px solid ${palette.divider}`,
         transition: `background ${transitions.duration.shortest}ms ${transitions.easing.sharp}`,
     },
