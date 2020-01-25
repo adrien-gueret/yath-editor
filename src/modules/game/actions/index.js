@@ -13,4 +13,13 @@ export default {
     downloadGame() {
         return { type: actionTypes.DOWNLOAD_GAME };
     },
+    setCustomCSS(css) {
+        return { type: actionTypes.SET_CUSTOM_CSS, payload: { css } };
+    },
+    configureGame() {
+        return { type: actionTypes.CONFIGURE_GAME };
+    },
+    finishConfigureGame() {
+        return { type: actionTypes.FINISH_CONFIGURE_GAME };
+    },
 };

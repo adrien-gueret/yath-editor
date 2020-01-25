@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import DragSelect from 'dragselect';
 
-import { actions as screenActions, selectors as screenSelectors, Screen, ScreenEdit, actionTypes } from 'Modules/screens';
+import { actions as screenActions, selectors as screenSelectors, Screen } from 'Modules/screens';
 
 import ArrowsBoard from '../ArrowsBoard';
 
@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
     },
 }), { classNamePrefix: 'Board' });
 
-function Board() {
+function Board({ isDialogOpen }) {
     const editedScreenId = useSelector(screenSelectors.editedScreenId.get);
     const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
     const totalSelectedScreens = useMemo(() => screens.filter(screen => screen.isSelected).length, [screens]);
@@ -44,7 +44,7 @@ function Board() {
     const [screenIdToDomElementMap] = useState(new Map());
 
     const forceSelectScreen = useCallback((screenId) => {
-        if (editedScreenId) {
+        if (isDialogOpen) {
             return;
         }
         
@@ -55,7 +55,7 @@ function Board() {
         }
 
         dragSelect.addSelection(domElement);
-    }, [dragSelect, editedScreenId]);
+    }, [dragSelect, isDialogOpen]);
 
     const forceUnselectScreen = useCallback((screenId) => {
         dragSelect.removeSelection(screenIdToDomElementMap.get(screenId));
@@ -123,7 +123,7 @@ function Board() {
     }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens, ]);
 
     useEffect(() => {
-        if (!dragSelect || !editedScreenId) {
+        if (!dragSelect || (!editedScreenId && !isDialogOpen)) {
             return;
         }
 
@@ -135,7 +135,7 @@ function Board() {
         dragSelect.stop(false);
 
         return () => { dragSelect.start(); dragSelect.addSelectables(domElement);};
-    }, [dragSelect, editedScreenId, clearSelection]);
+    }, [dragSelect, editedScreenId, clearSelection, isDialogOpen]);
 
     return (
         <section className="yathBoard" onDoubleClick={clearSelection}>
@@ -151,7 +151,6 @@ function Board() {
                     />
                 ))
             }
-            { editedScreenId && <ScreenEdit screenId={editedScreenId} /> }
             <ArrowsBoard />
         </section>
     );

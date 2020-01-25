@@ -10,6 +10,7 @@ import SaveIcon from '@material-ui/icons/GetApp';
 import LoadIcon from '@material-ui/icons/Publish';
 import DownloadGameIcon from '@material-ui/icons/PublicOutlined';
 import TestGameIcon from '@material-ui/icons/SportsEsportsOutlined';
+import ConfigureGameIcon from '@material-ui/icons/SettingsOutlined';
 
 import { actions as gameActions, selectors as gameSelectors } from 'Modules/game';
 import { downloadJson } from 'Modules/utils';
@@ -34,7 +35,7 @@ const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
         background: 'rgba(255, 255, 255, .6)',
         padding: spacing(0, 1),
         borderRadius: shape.borderRadius,
-        margin: 'auto',
+        marginLeft: 'auto',
         border: `1px solid ${palette.divider}`,
         transition: `background ${transitions.duration.shortest}ms ${transitions.easing.sharp}`,
     },
@@ -51,6 +52,7 @@ function AppHeader() {
     const dispatch = useDispatch();
     const loadInput = useRef(null);
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
+    const configureGame = useCallback(() => dispatch(gameActions.configureGame()), [dispatch]);
     const loadState = useCallback((newState) => {
         dispatch(screenActions.deleteAllScreens());
         dispatch(linkActions.deleteAllLinks());
@@ -154,6 +156,15 @@ function AppHeader() {
                     value={gameName}
                     onChange={onGameNameChangeHandler}
                 />
+                <Tooltip title="Configure game">
+                    <IconButton
+                        color="inherit"
+                        aria-label="Configure game"
+                        onClick={configureGame}
+                    >
+                        <ConfigureGameIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
 
                 <Tooltip title="Download game as HTML file">
                     <IconButton
