@@ -21,7 +21,7 @@ export function getStartGameScript(startScreenId) {
     return `const g = new yath.Game(null, null, document.body);g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(gameName, screens, links, startScreen) {
+export function getFullHtml(gameName, screens, links, startScreen, customCSS) {
     const screensHtml = getScreensHtml(screens, links);
     const startGame = getStartGameScript(startScreen.id);
 
@@ -31,12 +31,15 @@ export function getFullHtml(gameName, screens, links, startScreen) {
     ]).then((responses) => {
         const [mainCss, mainJs] = responses;
 
+    const customStyle = customCSS ? `<style data-meta="custom-css">${customCSS.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</style>` : '';
+
         return `<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title>${gameName.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</title>
-        <style>${mainCss}</style>
+        <style data-meta="yath">${mainCss}</style>
+        ${customStyle}
         <script>${mainJs}</script>
     </head>
     <body>
@@ -47,7 +50,7 @@ export function getFullHtml(gameName, screens, links, startScreen) {
     });
 }
 
-export function injectGameIntoIframe(iframe, screens, links, startScreenId) {
+export function injectGameIntoIframe(iframe, screens, links, startScreenId, customCSS) {
     if (!iframe) {
         return;
     }
@@ -60,7 +63,15 @@ export function injectGameIntoIframe(iframe, screens, links, startScreenId) {
 
         const yathStyle = document.createElement('style');
         yathStyle.appendChild(document.createTextNode(cssContent));
+        yathStyle.dataset.meta = 'yath';
         iframe.contentDocument.head.appendChild(yathStyle);
+
+        if (customCSS) {
+            const customStyle = document.createElement('style');
+            customStyle.appendChild(document.createTextNode(customCSS));
+            customStyle.dataset.meta = 'custom-css';
+            iframe.contentDocument.head.appendChild(customStyle);
+        }
 
         const yathScript = document.createElement('script');
         yathScript.appendChild(document.createTextNode(jsContent));

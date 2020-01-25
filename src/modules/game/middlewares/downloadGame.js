@@ -20,7 +20,8 @@ export default store => next => action => {
     const links = linkSelectors.list.get(state);
     const startScreen = screensSelectors.list.getStart(state);
     const gameName = selectors.name.get(state);
+    const customCSS = selectors.customCSS.getExportable(state);
 
-    getFullHtml(gameName, screens, links, startScreen)
+    getFullHtml(gameName, screens, links, startScreen, customCSS)
         .then(html => downloadHtml(slugify(gameName), html));
 }
