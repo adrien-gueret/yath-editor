@@ -8,6 +8,7 @@ import {
     Select, MenuItem, FormControl, ListItemIcon
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Settings';
 import ArrowRightIcon from '@material-ui/icons/ArrowRightAltOutlined';
 import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
 
@@ -16,7 +17,7 @@ import {
     selectors as linkSelectors
 } from 'Modules/links';
 
-import { useAddScreenDialog } from 'Modules/screens';
+import { useAddScreenDialog, actions as screensActions } from 'Modules/screens';
 
 import { ConfirmDialog } from 'Modules/utils';
 
@@ -54,10 +55,17 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     deleteColumn: {
         width: '5%',
     },
+    selectLinkTarget: {
+        padding: spacing(1),
+    },
+    editScreenButton: {
+        margin: spacing(0, 1, 0, 0),
+    },
 }), { classNamePrefix: 'LinkList' });
 
 export default function LinkList({ screenId }) {
     const [isDeleteLinkConfirmDialogOpen, toggleDeleteLinkConfirmDialogOpen] = useState(false);
+    const [selectScreenMenuOpenState, setSelectScreenMenuOpenState] = useState({});
     const closeConfirmDialog = () => toggleDeleteLinkConfirmDialogOpen(false);
 
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog((s) => console.log(s));
@@ -95,6 +103,27 @@ export default function LinkList({ screenId }) {
             toggleDeleteLinkConfirmDialogOpen(false);
         });
         toggleDeleteLinkConfirmDialogOpen(true);
+    }, [dispatch]);
+
+    const getOpenSelectScreenHandler = useCallback(linkId => () => {
+        setSelectScreenMenuOpenState(prevState => ({
+            ...prevState,
+            [linkId]: true,
+        }));
+    }, []);
+
+    const getCloseSelectScreenHandler = useCallback(linkId => () => {
+        setSelectScreenMenuOpenState(prevState => ({
+            ...prevState,
+            [linkId]: false,
+        }));
+    }, []);
+
+    const getEditScreenHandler = useCallback(screenId => e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        dispatch(screensActions.setEditScreen(screenId));
     }, [dispatch]);
 
     const classes = useStyles();
@@ -139,8 +168,11 @@ export default function LinkList({ screenId }) {
                                     >
                                         <Select
                                             labelId={`label-target-screen-link-${link.id}`}
+                                            classes={{ select: classes.selectLinkTarget }}
                                             value={link.targetScreenId || ''}
                                             onChange={getOnChangeLinkTargetHandler(link.id)}
+                                            onOpen={getOpenSelectScreenHandler(link.id)}
+                                            onClose={getCloseSelectScreenHandler(link.id)}
                                             displayEmpty
                                         >
                                             <MenuItem value="create-new-screen">
@@ -153,6 +185,16 @@ export default function LinkList({ screenId }) {
                                                     key={otherScreen.id}
                                                     value={otherScreen.id}
                                                 >
+                                                    { !selectScreenMenuOpenState[link.id] && (
+                                                        <IconButton
+                                                            className={classes.editScreenButton}
+                                                            size="small"
+                                                            onClick={getEditScreenHandler(otherScreen.id)}
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    ) }
+                                    
                                                     {otherScreen.name}
                                                 </MenuItem>
                                                 ))
