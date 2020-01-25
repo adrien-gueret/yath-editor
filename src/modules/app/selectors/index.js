@@ -1,8 +1,11 @@
+import { selectors as gameSelectors } from 'Modules/game';
+
 function getExportableState(state) {
     const { game, screens, links } = { ...state };
     return {
         game: {
             name: game.name,
+            customCSS: gameSelectors.customCSS.getExportable(state),
         },
         screens: {
             list: Object.keys(screens.list).reduce((acc, screenId) => ({

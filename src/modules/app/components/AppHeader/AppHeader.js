@@ -59,8 +59,12 @@ function AppHeader() {
         dispatch(linkActions.loadLinks(newState.links));
         dispatch(screenActions.loadScreens(newState.screens));
 
-        if (newState.game && newState.game.name) {
+        if (newState.game.name) {
             dispatch(gameActions.renameGame(newState.game.name));
+        }
+
+        if (newState.game.customCSS) {
+            dispatch(gameActions.setCustomCSS(newState.game.customCSS));
         }
     }, [dispatch]);
 

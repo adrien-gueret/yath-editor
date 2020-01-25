@@ -1,4 +1,4 @@
-import INITIAL_STATE from '../reducers/customCSS';
+import { INITIAL_STATE } from '../reducers/customCSS';
 
 function get(state) {
     return state.game.customCSS;
