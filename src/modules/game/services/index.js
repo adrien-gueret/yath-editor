@@ -18,7 +18,7 @@ export function fetchYathJS() {
 }
 
 export function getStartGameScript(startScreenId) {
-    return `const g = new yath.Game(document.body);g.goToScreen('${startScreenId}');`;
+    return `const g = yath(document.body);g.goToScreen('${startScreenId}');`;
 }
 
 export function getFullHtml(gameName, screens, links, startScreen, customCSS) {
