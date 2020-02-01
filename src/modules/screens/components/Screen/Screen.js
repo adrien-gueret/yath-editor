@@ -6,6 +6,7 @@ import { Chip, Tooltip, makeStyles } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Settings';
 import FlagIcon from '@material-ui/icons/Flag';
 import BlockIcon from '@material-ui/icons/Block';
+import LogicIcon from '@material-ui/icons/AccountTree';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
@@ -91,6 +92,8 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
     
     if (screen.isStart) {
         tooltipMessages.push(<p key="start">This screen is the start screen.</p>);
+    } else if (screen.type === 'logic') {
+        tooltipMessages.push(<p key="logic">This screen contains some logic.</p>);
     } else if (!hasLinks) {
         tooltipMessages.push(<p key="end">This screen is a dead-end screen.</p>);
     }
@@ -99,6 +102,8 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
 
     if (screen.isStart) {
         icon = <FlagIcon />;
+    } else if (screen.type === 'logic') {
+        icon = <LogicIcon />;
     } else if (!hasLinks) {
         icon = <BlockIcon />;
     }
