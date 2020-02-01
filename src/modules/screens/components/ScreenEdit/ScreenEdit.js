@@ -5,6 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
     Dialog, DialogTitle, DialogContent,
     TextField, DialogActions, Button,
+    makeStyles, InputLabel, Select, MenuItem,
 } from '@material-ui/core';
 
 import ActionButtons from '../ActionButtons';
@@ -17,6 +18,15 @@ import selectors from '../../selectors';
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
+
+const useStyles = makeStyles(() => ({
+    typeContainer: {
+        float: 'right',
+    },
+    typeLabel: {
+        display: 'inline',
+    },
+}), { classNamePrefix: 'ScreenEdit' });
 
 export default function ScreenEdit({ screenId }) {
     const dispatch = useDispatch();
@@ -31,11 +41,32 @@ export default function ScreenEdit({ screenId }) {
         dispatch(actions.editScreenContent(screenId, newContent));
     }, [dispatch, screenId]);
 
+    const onChangeTypeHandler = useCallback(e => {
+        const newScreenType = e.target.value;
+        dispatch(actions.editScreenType(screenId, newScreenType));
+    }, [dispatch, screenId]);
+
     const onClose = useCallback(() => dispatch(actions.unsetEditScreen()), [dispatch]);
+
+    const classes = useStyles();
 
     return (
         <Dialog open aria-labelledby="edit-screen-dialog" fullWidth maxWidth={false}>
-            <DialogTitle id="edit-screen-dialog">Screen configuration</DialogTitle>
+            <DialogTitle id="edit-screen-dialog">
+                Screen configuration
+                { !screen.isStart && (
+                    <span className={classes.typeContainer}>
+                        <InputLabel className={classes.typeLabel}>Type: </InputLabel>
+                        <Select
+                            value={screen.type}
+                            onChange={onChangeTypeHandler}
+                        >
+                            <MenuItem value="classic">Classic</MenuItem>
+                            <MenuItem value="logic">Logic</MenuItem>
+                        </Select>
+                    </span>
+                ) }
+            </DialogTitle>
             <DialogContent key={screenId} dividers>
                 <TextField
                     margin="dense"
