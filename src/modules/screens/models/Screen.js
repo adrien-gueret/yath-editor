@@ -5,7 +5,7 @@ const DEFAULT_COORDINATE = 100;
 
 class Screen {
     static createFromJSON(json) {
-        const screen = new Screen(json.name, json.content, json.isStart, json.id);
+        const screen = new Screen(json.name, json.content, json.isStart, json.id, json.type);
         screen.x = json.x;
         screen.y = json.y;
         screen.width = json.width;
@@ -16,7 +16,7 @@ class Screen {
         return screen;
     }
 
-    constructor(name = '', content = '', isStart = false, id = null) {
+    constructor(name = '', content = '', isStart = false, id = null, type = 'classic') {
         this.id = id || shortid.generate();
         this.name = name;
         this.content = content;
@@ -27,6 +27,7 @@ class Screen {
         this.isStart = isStart;
         this.linkIds = [];
         this.isSelected = false;
+        this.type = type;
     }
 
     getCoordinates() {
@@ -43,7 +44,7 @@ class Screen {
     }
 
     clone() {
-        const copiedScreen = new Screen(this.name, this.content, this.isStart, this.id);
+        const copiedScreen = new Screen(this.name, this.content, this.isStart, this.id, this.type);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
         copiedScreen.width = this.width;
