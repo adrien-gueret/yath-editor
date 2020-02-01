@@ -4,22 +4,26 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import {
     Dialog, DialogTitle, DialogContent,
-    TextField, DialogActions, Button,
+    DialogActions, Button, TextField,
     makeStyles, InputLabel, Select, MenuItem,
 } from '@material-ui/core';
 
 import ActionButtons from '../ActionButtons';
-import LinkListContainer from '../LinkListContainer';
-import Wysiwyg from '../Wysiwyg';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
+
+import ScreenEditClassicContent from './ScreenEditClassicContent';
+import ScreenEditLogicContent from './ScreenEditLogicContent';
 
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 const useStyles = makeStyles(() => ({
+    actionButtonContainer: {
+        marginRight: 'auto',
+    },
     typeContainer: {
         float: 'right',
     },
@@ -32,18 +36,14 @@ export default function ScreenEdit({ screenId }) {
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
 
-    const onChangeNameHandler = useCallback(e => {
-        const newScreenName = e.target.value;
-        dispatch(actions.editScreenName(screenId, newScreenName));
-    }, [dispatch, screenId]);
-
-    const onChangeContentHandler = useCallback(newContent => {
-        dispatch(actions.editScreenContent(screenId, newContent));
-    }, [dispatch, screenId]);
-
     const onChangeTypeHandler = useCallback(e => {
         const newScreenType = e.target.value;
         dispatch(actions.editScreenType(screenId, newScreenType));
+    }, [dispatch, screenId]);
+
+    const onChangeNameHandler = useCallback(e => {
+        const newScreenName = e.target.value;
+        dispatch(actions.editScreenName(screenId, newScreenName));
     }, [dispatch, screenId]);
 
     const onClose = useCallback(() => dispatch(actions.unsetEditScreen()), [dispatch]);
@@ -67,6 +67,7 @@ export default function ScreenEdit({ screenId }) {
                     </span>
                 ) }
             </DialogTitle>
+
             <DialogContent key={screenId} dividers>
                 <TextField
                     margin="dense"
@@ -77,19 +78,18 @@ export default function ScreenEdit({ screenId }) {
                     defaultValue={screen.name}
                     variant="outlined"
                 />
-
-                <Wysiwyg
-                    id="screen-content"
-                    defaultValue={screen.content}
-                    label="Screen content"
-                    onChange={onChangeContentHandler}
-                />
-               
-                { <LinkListContainer screenId={screenId} /> }
-
+                { screen.type === 'logic' && (
+                    <ScreenEditLogicContent screenId={screenId} />
+                ) }
+                { screen.type === 'classic' && (
+                    <ScreenEditClassicContent screenId={screenId} />
+                ) }
             </DialogContent>
+            
             <DialogActions>
-                <ActionButtons screenId={screenId} />
+                <span className={classes.actionButtonContainer}>
+                    <ActionButtons screenId={screenId} />
+                </span>
                 <Button
                     onClick={onClose}
                     color="primary"

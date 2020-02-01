@@ -19,9 +19,6 @@ const propTypes = {
 };
 
 const useStyles = makeStyles(({ spacing }) => ({
-    pushToLeft: {
-        marginRight: 'auto',
-    },
     onDeletableMessage: {
         marginLeft: spacing(2),
     },
@@ -44,11 +41,32 @@ export default function ActionButtons({ screenId }) {
     
     const classes = useStyles();
 
+    const deleteButton = (
+        <React.Fragment>
+            <Tooltip title="Delete screen">
+                <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
+                    <DeleteIcon color="secondary" />
+                </IconButton>
+            </Tooltip>
+            <ConfirmDialog
+                isDeletion
+                open={isConfirmDialogOpen}
+                onAccept={onDeleteHandler}
+                onCancel={() => toggleConfirmDialogOpen(false)}
+            >
+                Do you really want to delete this screen?
+            </ConfirmDialog>
+        </React.Fragment>
+    );
+
+    if (screen.type === 'logic') {
+        return deleteButton;
+    }
+
     const testButton = (
         <Tooltip title="Test game from this screen">
             <IconButton
                 onClick={() => onTestGameHandler()}
-                className={classes.pushToLeft}
             >
                 <TestGameIcon />
             </IconButton>
@@ -72,11 +90,7 @@ export default function ActionButtons({ screenId }) {
 
     return (
         <React.Fragment>
-            <Tooltip title="Delete screen">
-                <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
-                    <DeleteIcon color="secondary" />
-                </IconButton>
-            </Tooltip>
+            { deleteButton }
             <Tooltip title="Mark as start screen">
                 <IconButton
                     onClick={onSetStartHandler}
@@ -86,14 +100,6 @@ export default function ActionButtons({ screenId }) {
                 </IconButton>
             </Tooltip>
             { testButton }
-            <ConfirmDialog
-                isDeletion
-                open={isConfirmDialogOpen}
-                onAccept={onDeleteHandler}
-                onCancel={() => toggleConfirmDialogOpen(false)}
-            >
-                Do you really want to delete this screen?
-            </ConfirmDialog>
         </React.Fragment>
     );
 }
