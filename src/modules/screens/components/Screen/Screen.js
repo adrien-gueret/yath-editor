@@ -38,6 +38,7 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
     const hasLinkWithoutTarget = useSelector(state => selectors.list.hasLinkWithoutTarget(state, screenId));
     const hasEmptyContent = !screen.content;
     const hasLinks = screen.linkIds.length > 0;
+    const hasSomeLogic = false; // TODO: update with selectors when available
 
     const hasErrors = hasLinkWithoutTarget || hasEmptyContent;
 
@@ -92,7 +93,7 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
     
     if (screen.isStart) {
         tooltipMessages.push(<p key="start">This screen is the start screen.</p>);
-    } else if (screen.type === 'logic') {
+    } else if (hasSomeLogic) {
         tooltipMessages.push(<p key="logic">This screen contains some logic.</p>);
     } else if (!hasLinks) {
         tooltipMessages.push(<p key="end">This screen is a dead-end screen.</p>);
@@ -102,7 +103,7 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
 
     if (screen.isStart) {
         icon = <FlagIcon />;
-    } else if (screen.type === 'logic') {
+    } else if (hasSomeLogic) {
         icon = <LogicIcon />;
     } else if (!hasLinks) {
         icon = <BlockIcon />;

@@ -52,21 +52,7 @@ export default function ScreenEdit({ screenId }) {
 
     return (
         <Dialog open aria-labelledby="edit-screen-dialog" fullWidth maxWidth={false}>
-            <DialogTitle id="edit-screen-dialog">
-                Screen configuration
-                { !screen.isStart && (
-                    <span className={classes.typeContainer}>
-                        <InputLabel className={classes.typeLabel}>Type: </InputLabel>
-                        <Select
-                            value={screen.type}
-                            onChange={onChangeTypeHandler}
-                        >
-                            <MenuItem value="classic">Classic</MenuItem>
-                            <MenuItem value="logic">Logic</MenuItem>
-                        </Select>
-                    </span>
-                ) }
-            </DialogTitle>
+            <DialogTitle id="edit-screen-dialog">Screen configuration</DialogTitle>
 
             <DialogContent key={screenId} dividers>
                 <TextField
@@ -78,12 +64,8 @@ export default function ScreenEdit({ screenId }) {
                     defaultValue={screen.name}
                     variant="outlined"
                 />
-                { screen.type === 'logic' && (
-                    <ScreenEditLogicContent screenId={screenId} />
-                ) }
-                { screen.type === 'classic' && (
-                    <ScreenEditClassicContent screenId={screenId} />
-                ) }
+               
+                <ScreenEditClassicContent screenId={screenId} />
             </DialogContent>
             
             <DialogActions>

@@ -59,10 +59,6 @@ export default function ActionButtons({ screenId }) {
         </React.Fragment>
     );
 
-    if (screen.type === 'logic') {
-        return deleteButton;
-    }
-
     const testButton = (
         <Tooltip title="Test game from this screen">
             <IconButton
