@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'proptypes';
+import PropTypes from 'prop-types';
 import {
     Dialog, DialogTitle, DialogContent, DialogContentText,
     TextField, DialogActions, Button,

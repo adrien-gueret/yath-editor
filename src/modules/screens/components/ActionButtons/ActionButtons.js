@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'proptypes';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import { IconButton, Tooltip, makeStyles, Typography } from '@material-ui/core';

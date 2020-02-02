@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import Proptypes from 'proptypes';
+import Proptypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 import { InputLabel, makeStyles, Toolbar, Tooltip, IconButton } from '@material-ui/core';

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'proptypes';
+import PropTypes from 'prop-types';
 
 import { useDispatch } from 'react-redux';
 
