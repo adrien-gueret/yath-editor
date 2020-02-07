@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     IconButton, makeStyles,
-    Select, MenuItem, FormControl, ListItemIcon
+    Select, MenuItem, ListItemIcon
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Settings';
 import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
@@ -14,24 +14,27 @@ import selectors from '../../selectors';
 import useAddScreenDialog from '../../hooks/useAddScreenDialog';
 
 const propTypes = {
+    className: PropTypes.string,
     excludedScreenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     selectedScreenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onChange: PropTypes.func,
     allowCreation: PropTypes.bool,
+    allowEdition: PropTypes.bool,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
+    className: '',
     excludedScreenId: null,
     selectedScreenId: null,
     onChange() {},
     allowCreation: false,
+    allowEdition: false,
+    children: null,
 };
 
 const useStyles = makeStyles(({ spacing }) => ({
-    root: {
-        width: '100%',
-    },
-    select: {
+    outlined: {
         padding: spacing(1),
     },
     editScreenButton: {
@@ -39,7 +42,9 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
 }), { classNamePrefix: 'ScreenList' });
 
-export default function ScreenList({ allowCreation, excludedScreenId, selectedScreenId, onChange }) {
+export default function ScreenList({
+    allowCreation, allowEdition, excludedScreenId, selectedScreenId, onChange, children, className,
+}) {
     const [isOpen, setIsOpen] = useState(false);
 
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
@@ -65,22 +70,23 @@ export default function ScreenList({ allowCreation, excludedScreenId, selectedSc
     const onCloseHandler = useCallback(() => setIsOpen(false), [setIsOpen]);
 
     const getEditScreenHandler = useCallback(screenId => e => {
+        if (!allowEdition) {
+            return;
+        }
+
         e.preventDefault();
         e.stopPropagation();
 
         dispatch(actions.setEditScreen(screenId));
-    }, [dispatch]);
+    }, [dispatch, allowEdition]);
 
     const classes = useStyles();
 
     return (
-        <FormControl
-            variant="outlined"
-            className={classes.root}
-            error={!selectedScreenId}
-        >
+        <>
             <Select
-                classes={{ select: classes.select }}
+                className={className}
+                classes={{ outlined: classes.outlined }}
                 value={selectedScreenId || ''}
                 onChange={onChangeHandler}
                 onOpen={onOpenHandler}
@@ -94,13 +100,15 @@ export default function ScreenList({ allowCreation, excludedScreenId, selectedSc
                     </MenuItem>
                 )}
 
+                { children }
+
                 {
                     otherScreens.map(otherScreen => (
                         <MenuItem
                             key={otherScreen.id}
                             value={otherScreen.id}
                         >
-                            { !isOpen && (
+                            { (!isOpen && allowEdition) && (
                                 <IconButton
                                     className={classes.editScreenButton}
                                     size="small"
@@ -116,7 +124,7 @@ export default function ScreenList({ allowCreation, excludedScreenId, selectedSc
                 }
             </Select>
             { addScreenDialog }
-        </FormControl>
+        </>
     );
 }
 

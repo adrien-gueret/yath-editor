@@ -5,6 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
     Table, TableBody, TableHead, TableCell, TableRow,
     Tooltip, IconButton, Typography, TextField, makeStyles,
+    FormControl,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowRightIcon from '@material-ui/icons/ArrowRightAltOutlined';
@@ -56,6 +57,9 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     editScreenButton: {
         margin: spacing(0, 1, 0, 0),
     },
+    selectScreenContainer: {
+        width: '100%',
+    }
 }), { classNamePrefix: 'LinkList' });
 
 export default function LinkList({ screenId }) {
@@ -131,12 +135,19 @@ export default function LinkList({ screenId }) {
                                 </TableCell>
                                 <TableCell><ArrowRightIcon /></TableCell>
                                 <TableCell>
-                                    <ScreenList
-                                        allowCreation
-                                        excludedScreenId={screenId}
-                                        selectedScreenId={link.targetScreenId}
-                                        onChange={getOnChangeLinkTargetHandler(link.id)}
-                                    />
+                                    <FormControl
+                                        variant="outlined"
+                                        className={classes.selectScreenContainer}
+                                        error={!link.targetScreenId}
+                                    >
+                                        <ScreenList
+                                            allowCreation
+                                            allowEdition
+                                            excludedScreenId={screenId}
+                                            selectedScreenId={link.targetScreenId}
+                                            onChange={getOnChangeLinkTargetHandler(link.id)}
+                                        />
+                                    </FormControl>
                                 </TableCell>
                                 <TableCell>
                                     <Tooltip title="Delete this link">
