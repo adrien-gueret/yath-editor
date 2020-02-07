@@ -5,23 +5,18 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
     Table, TableBody, TableHead, TableCell, TableRow,
     Tooltip, IconButton, Typography, TextField, makeStyles,
-    Select, MenuItem, FormControl, ListItemIcon
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Settings';
 import ArrowRightIcon from '@material-ui/icons/ArrowRightAltOutlined';
-import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
 
 import {
     actions as linkActions,
     selectors as linkSelectors
 } from 'Modules/links';
 
-import { useAddScreenDialog, actions as screensActions } from 'Modules/screens';
+import { useAddScreenDialog, ScreenList } from 'Modules/screens';
 
 import { ConfirmDialog } from 'Modules/utils';
-
-import selectors from '../../selectors';
 
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
@@ -65,36 +60,32 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 
 export default function LinkList({ screenId }) {
     const [isDeleteLinkConfirmDialogOpen, toggleDeleteLinkConfirmDialogOpen] = useState(false);
-    const [selectScreenMenuOpenState, setSelectScreenMenuOpenState] = useState({});
     const closeConfirmDialog = () => toggleDeleteLinkConfirmDialogOpen(false);
 
-    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog((s) => console.log(s));
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
 
     const [deleteLink, setDeleteLink] = useState(() => closeConfirmDialog);
 
     const dispatch = useDispatch();
+
     const links = useSelector(state => (
         linkSelectors.list.getByScreenId(state, screenId)
     ), shallowEqual);
-    const otherScreens = useSelector(state => (
-        selectors.list.getAllExceptOne(state, screenId)
-    ));
 
     const getOnChangeLinkLabelHandler = useCallback(linkId => e => {
         const label = e.target.value;
         dispatch(linkActions.editLinkLabel(linkId, label));
     }, [dispatch]);
 
-    const getOnChangeLinkTargetHandler = useCallback(linkId => e => {
+    const getOnChangeLinkTargetHandler = useCallback(linkId => newTargetId => {
         const setNewLink = targetId => dispatch(linkActions.editLinkTarget(linkId, targetId));
-        const { value } = e.target;
 
-        if (value === 'create-new-screen') {
+        if (newTargetId === 'create-new-screen') {
             openAddScreenDialog(({ id }) => setNewLink(id));
             return;
         }
 
-        setNewLink(value);
+        setNewLink(newTargetId);
     }, [openAddScreenDialog, dispatch]);
 
     const getOnDeleteLinkHandler = useCallback(linkId => () => {
@@ -103,27 +94,6 @@ export default function LinkList({ screenId }) {
             toggleDeleteLinkConfirmDialogOpen(false);
         });
         toggleDeleteLinkConfirmDialogOpen(true);
-    }, [dispatch]);
-
-    const getOpenSelectScreenHandler = useCallback(linkId => () => {
-        setSelectScreenMenuOpenState(prevState => ({
-            ...prevState,
-            [linkId]: true,
-        }));
-    }, []);
-
-    const getCloseSelectScreenHandler = useCallback(linkId => () => {
-        setSelectScreenMenuOpenState(prevState => ({
-            ...prevState,
-            [linkId]: false,
-        }));
-    }, []);
-
-    const getEditScreenHandler = useCallback(screenId => e => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        dispatch(screensActions.setEditScreen(screenId));
     }, [dispatch]);
 
     const classes = useStyles();
@@ -161,46 +131,11 @@ export default function LinkList({ screenId }) {
                                 </TableCell>
                                 <TableCell><ArrowRightIcon /></TableCell>
                                 <TableCell>
-                                    <FormControl
-                                        variant="outlined"
-                                        className={classes.select}
-                                        error={!link.targetScreenId}
-                                    >
-                                        <Select
-                                            labelId={`label-target-screen-link-${link.id}`}
-                                            classes={{ select: classes.selectLinkTarget }}
-                                            value={link.targetScreenId || ''}
-                                            onChange={getOnChangeLinkTargetHandler(link.id)}
-                                            onOpen={getOpenSelectScreenHandler(link.id)}
-                                            onClose={getCloseSelectScreenHandler(link.id)}
-                                            displayEmpty
-                                        >
-                                            <MenuItem value="create-new-screen">
-                                                <ListItemIcon><AddScreenIcon /></ListItemIcon>
-                                                Create new screen
-                                            </MenuItem>
-                                            {
-                                                otherScreens.map(otherScreen => (
-                                                <MenuItem
-                                                    key={otherScreen.id}
-                                                    value={otherScreen.id}
-                                                >
-                                                    { !selectScreenMenuOpenState[link.id] && (
-                                                        <IconButton
-                                                            className={classes.editScreenButton}
-                                                            size="small"
-                                                            onClick={getEditScreenHandler(otherScreen.id)}
-                                                        >
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                    ) }
-                                    
-                                                    {otherScreen.name}
-                                                </MenuItem>
-                                                ))
-                                            }
-                                        </Select>
-                                    </FormControl>
+                                    <ScreenList
+                                        excludedScreenId={screenId}
+                                        selectedScreenId={link.targetScreenId}
+                                        onChange={getOnChangeLinkTargetHandler(link.id)}
+                                    />
                                 </TableCell>
                                 <TableCell>
                                     <Tooltip title="Delete this link">

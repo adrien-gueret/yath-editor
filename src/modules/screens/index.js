@@ -5,6 +5,7 @@ export { default as ScreenModel } from './models/Screen';
 
 export { default as AddScreenDialog } from './components/AddScreenDialog';
 export { default as Screen } from './components/Screen';
+export { default as ScreenList } from './components/ScreenList';
 export { default as ScreenEdit } from './components/ScreenEdit';
 
 export { default as reducers } from './reducers';
