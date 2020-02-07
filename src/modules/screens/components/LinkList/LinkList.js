@@ -132,6 +132,7 @@ export default function LinkList({ screenId }) {
                                 <TableCell><ArrowRightIcon /></TableCell>
                                 <TableCell>
                                     <ScreenList
+                                        allowCreation
                                         excludedScreenId={screenId}
                                         selectedScreenId={link.targetScreenId}
                                         onChange={getOnChangeLinkTargetHandler(link.id)}

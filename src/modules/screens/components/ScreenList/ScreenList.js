@@ -17,12 +17,14 @@ const propTypes = {
     excludedScreenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     selectedScreenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onChange: PropTypes.func,
+    allowCreation: PropTypes.bool,
 };
 
 const defaultProps = {
     excludedScreenId: null,
     selectedScreenId: null,
     onChange() {},
+    allowCreation: false,
 };
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -37,7 +39,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
 }), { classNamePrefix: 'ScreenList' });
 
-export default function ScreenList({ excludedScreenId, selectedScreenId, onChange }) {
+export default function ScreenList({ allowCreation, excludedScreenId, selectedScreenId, onChange }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
@@ -51,13 +53,13 @@ export default function ScreenList({ excludedScreenId, selectedScreenId, onChang
     const onChangeHandler = useCallback(e => {
         const { value } = e.target;
 
-        if (value === 'create-new-screen') {
+        if (allowCreation && value === 'create-new-screen') {
             openAddScreenDialog(({ id }) => onChange(id));
             return;
         }
 
         onChange(value);
-    }, [openAddScreenDialog, onChange]);
+    }, [openAddScreenDialog, onChange, allowCreation]);
 
     const onOpenHandler = useCallback(() => setIsOpen(true), [setIsOpen]);
     const onCloseHandler = useCallback(() => setIsOpen(false), [setIsOpen]);
@@ -85,11 +87,13 @@ export default function ScreenList({ excludedScreenId, selectedScreenId, onChang
                 onClose={onCloseHandler}
                 displayEmpty
             >
-                <MenuItem value="create-new-screen">
-                    <ListItemIcon><AddScreenIcon /></ListItemIcon>
-                    Create new screen
-                </MenuItem>
-                
+                { allowCreation && (
+                    <MenuItem value="create-new-screen">
+                        <ListItemIcon><AddScreenIcon /></ListItemIcon>
+                        Create new screen
+                    </MenuItem>
+                )}
+
                 {
                     otherScreens.map(otherScreen => (
                         <MenuItem
