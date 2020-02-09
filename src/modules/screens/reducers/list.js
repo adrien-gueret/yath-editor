@@ -3,6 +3,7 @@ import ScreenModel from '../models/Screen';
 import actionTypes from '../actions/types';
 
 import { actionTypes as linkActionTypes } from 'Modules/links';
+import { actionTypes as logicActionTypes } from 'Modules/logic';
 
 const startScreen = new ScreenModel('Start screen', 'Welcome to the <b>first screen</b> of your story!', true);
 
@@ -160,6 +161,28 @@ export default function list(state = INITIAL_STATE, action) {
             return Object.keys(state).reduce((allScreens, screenId) => {
                 const clone = state[screenId].clone();
                 clone.linkIds = clone.linkIds.filter(linkId => linkId !== action.payload.linkId);
+
+                return {
+                    ...allScreens,
+                    [screenId]: clone,
+                };
+            }, {});
+        }
+
+        case logicActionTypes.ADD_RULE: {
+            const newScreen = state[action.payload.screenId].clone();
+            newScreen.logicRuleIds.push(action.payload.rule.id);
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case logicActionTypes.DELETE_RULE: {
+            return Object.keys(state).reduce((allScreens, screenId) => {
+                const clone = state[screenId].clone();
+                clone.logicRuleIds = clone.logicRuleIds.filter(ruleId => ruleId !== action.payload.ruleId);
 
                 return {
                     ...allScreens,

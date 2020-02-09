@@ -5,18 +5,20 @@ const DEFAULT_COORDINATE = 100;
 
 class Screen {
     static createFromJSON(json) {
-        const screen = new Screen(json.name, json.content, json.isStart, json.id, json.type);
+        const screen = new Screen(json.name, json.content, json.isStart, json.id);
+
         screen.x = json.x;
         screen.y = json.y;
         screen.width = json.width;
         screen.height = json.height;
-        screen.linkIds = [...json.linkIds];
+        screen.linkIds = [...(json.linkIds || [])];
+        screen.logicRuleIds = [...(json.logicRuleIds || [])];
         screen.isSelected = false;
 
         return screen;
     }
 
-    constructor(name = '', content = '', isStart = false, id = null, type = 'classic') {
+    constructor(name = '', content = '', isStart = false, id = null) {
         this.id = id || shortid.generate();
         this.name = name;
         this.content = content;
@@ -26,8 +28,8 @@ class Screen {
         this.height = 0;
         this.isStart = isStart;
         this.linkIds = [];
+        this.logicRuleIds = [];
         this.isSelected = false;
-        this.type = type;
     }
 
     getCoordinates() {
@@ -44,12 +46,13 @@ class Screen {
     }
 
     clone() {
-        const copiedScreen = new Screen(this.name, this.content, this.isStart, this.id, this.type);
+        const copiedScreen = new Screen(this.name, this.content, this.isStart, this.id);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
         copiedScreen.linkIds = [...this.linkIds];
+        copiedScreen.logicRuleIds = [...this.logicRuleIds];
         copiedScreen.isSelected = this.isSelected;
 
         return copiedScreen;

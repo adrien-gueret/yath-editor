@@ -16,6 +16,7 @@ import { actions as gameActions, selectors as gameSelectors } from 'Modules/game
 import { downloadJson } from 'Modules/utils';
 import { actions as screenActions, useAddScreenDialog } from 'Modules/screens';
 import { actions as linkActions } from 'Modules/links';
+import { actions as logicActions } from 'Modules/logic';
 
 import selectors from '../../selectors';
 
@@ -55,14 +56,15 @@ function AppHeader() {
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);
     const configureGame = useCallback(() => dispatch(gameActions.configureGame()), [dispatch]);
     const loadState = useCallback((newState) => {
-        dispatch(screenActions.deleteAllScreens());
+        dispatch(logicActions.deleteAllLogic());
         dispatch(linkActions.deleteAllLinks());
+        dispatch(screenActions.deleteAllScreens());
+
+        dispatch(logicActions.loadLogic(newState.logic));
         dispatch(linkActions.loadLinks(newState.links));
         dispatch(screenActions.loadScreens(newState.screens));
 
-        if (newState.game.name) {
-            dispatch(gameActions.renameGame(newState.game.name));
-        }
+        dispatch(gameActions.renameGame(newState.game.name));
 
         if (newState.game.customCSS) {
             dispatch(gameActions.setCustomCSS(newState.game.customCSS));
@@ -76,7 +78,7 @@ function AppHeader() {
             const newStoreState = JSON.parse(loadEvent.target.result);
             loadState(newStoreState);
         } catch (error) {
-            alert(`The file you want to load is not a correct JSON file: ${error.message}`);
+            alert(`The file you want to load is malformed: ${error.message}`);
         }
 
     }, [loadInput.current]);
