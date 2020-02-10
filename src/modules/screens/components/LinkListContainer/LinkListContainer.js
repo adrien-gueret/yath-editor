@@ -18,6 +18,9 @@ const useStyles = makeStyles(({ spacing }) => ({
     root: {
         marginTop: spacing(2),
     },
+    iconAdd: {
+        marginLeft: spacing(1),
+    },
 }), { classNamePrefix: 'LinkListContainer' });
 
 export default function LinkListContainer({ screenId }) {
@@ -33,7 +36,7 @@ export default function LinkListContainer({ screenId }) {
             <div>
                 <LinkList screenId={screenId} />
                 <Tooltip title="Add link">
-                    <IconButton onClick={addLink}>
+                    <IconButton className={classes.iconAdd} onClick={addLink}>
                         <AddLinkIcon />
                     </IconButton>
                 </Tooltip>
