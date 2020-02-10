@@ -12,6 +12,7 @@ export default store => next => action => {
                 store.dispatch(actions.deleteConditionGroups(rule.conditionGroupIds));
                 store.dispatch(actions.deleteResults(rule.resultIds));
             });
+            break;
         }
 
         case actionTypes.DELETE_CONDITION_GROUPS: {
@@ -19,6 +20,7 @@ export default store => next => action => {
                 const conditionGroup = selectors.conditionGroups.getById(state, conditionGroupId);
                 store.dispatch(actions.deleteConditions(conditionGroup.conditionIds));
             });
+            break;
         }
 
         default: break;

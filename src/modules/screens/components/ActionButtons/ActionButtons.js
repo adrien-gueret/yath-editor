@@ -9,6 +9,7 @@ import TestGameIcon from '@material-ui/icons/SportsEsports';
 
 import { actions as gameActions } from 'Modules/game';
 import { actions as linkActions } from 'Modules/links';
+import { actions as logicActions } from 'Modules/logic';
 import { ConfirmDialog } from 'Modules/utils';
 
 import actions from '../../actions';
@@ -33,6 +34,7 @@ export default function ActionButtons({ screenId }) {
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
     const onDeleteHandler = useCallback(() => {
         screen.linkIds.forEach(linkId => dispatch(linkActions.deleteLink(linkId)));
+        dispatch(logicActions.deleteRules(screen.logicRuleIds));
         dispatch(actions.deleteScreen(screenId));
         dispatch(actions.unsetEditScreen());
     }, [dispatch, screenId, screen.linkIds]);
