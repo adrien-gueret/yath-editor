@@ -12,7 +12,7 @@ class Rule {
 
     constructor(operator, id) {
         this.id = id || shortid.generate();
-        this.operator = operator;
+        this.operator = operator || 'and';
         this.conditionGroupIds = [];
         this.resultIds = [];
     }

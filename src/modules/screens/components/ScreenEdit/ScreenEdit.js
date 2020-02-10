@@ -1,12 +1,15 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'proptypes';
+import React, { useCallback, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import {
     Dialog, DialogTitle, DialogContent,
     DialogActions, Button, TextField,
-    makeStyles, InputLabel, Select, MenuItem,
+    makeStyles, Tabs, Tab,
 } from '@material-ui/core';
+
+import LogicIcon from '@material-ui/icons/AccountTree';
+import ContentIcon from '@material-ui/icons/Create';
 
 import ActionButtons from '../ActionButtons';
 
@@ -20,9 +23,12 @@ const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ spacing }) => ({
     actionButtonContainer: {
         marginRight: 'auto',
+    },
+    tabContainer: {
+        margin: spacing(1, 0, 3, 0),
     },
     typeContainer: {
         float: 'right',
@@ -35,6 +41,7 @@ const useStyles = makeStyles(() => ({
 export default function ScreenEdit({ screenId }) {
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
+    const [currentTab, setCurrentTab] = useState('content');
 
     const onChangeTypeHandler = useCallback(e => {
         const newScreenType = e.target.value;
@@ -64,10 +71,23 @@ export default function ScreenEdit({ screenId }) {
                     defaultValue={screen.name}
                     variant="outlined"
                 />
-               
-                <ScreenEditClassicContent screenId={screenId} />
+
+                <Tabs
+                    className={classes.tabContainer}
+                    value={currentTab}
+                    onChange={(e, value) => setCurrentTab(value)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                >
+                    <Tab icon={<ContentIcon />} label="Content" value="content" />
+                    <Tab icon={<LogicIcon />} label="Logic" value="logic" />
+                </Tabs>
+
+                {currentTab === 'content' && <ScreenEditClassicContent screenId={screenId} />}
+                {currentTab === 'logic' && <ScreenEditLogicContent screenId={screenId} />}
+
             </DialogContent>
-            
+
             <DialogActions>
                 <span className={classes.actionButtonContainer}>
                     <ActionButtons screenId={screenId} />
@@ -79,7 +99,7 @@ export default function ScreenEdit({ screenId }) {
                     variant="contained"
                 >Close</Button>
             </DialogActions>
-     </Dialog>
+        </Dialog>
     );
 }
 

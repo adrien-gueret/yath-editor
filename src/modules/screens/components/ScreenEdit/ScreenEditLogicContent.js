@@ -1,31 +1,42 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'proptypes';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import actions from '../../actions';
+import {
+    DialogContentText, Divider, makeStyles,
+    IconButton, Tooltip,
+} from '@material-ui/core';
+
+import AddLinkIcon from '@material-ui/icons/PostAdd';
+
+import { RuleListContainer, actions, RuleModel } from 'Modules/logic';
+
 import selectors from '../../selectors';
 
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
+const useStyles = makeStyles(({ spacing }) => ({
+    divider: {
+        margin: spacing(2),
+    },
+    iconAdd: {
+        marginLeft: spacing(1),
+    },
+}), { classNamePrefix: 'ScreenEditLogicContent' });
+
 export default function ScreenEditLogicContent({ screenId }) {
-    const dispatch = useDispatch();
-    const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
-
-    const onChangeNameHandler = useCallback(e => {
-        const newScreenName = e.target.value;
-        dispatch(actions.editScreenName(screenId, newScreenName));
-    }, [dispatch, screenId]);
-
-    const onChangeContentHandler = useCallback(newContent => {
-        dispatch(actions.editScreenContent(screenId, newContent));
-    }, [dispatch, screenId]);
-
+    const classes = useStyles();
+ 
     return (
-        <React.Fragment>
-            <p>TODO: LOGIC</p>
-        </React.Fragment>
+        <>
+            <DialogContentText>The logic below will run <strong>just before</strong> going to this screen.</DialogContentText>
+            <DialogContentText>You can check the visits history , manipulate player's inventory, or perform redirections to other screens.</DialogContentText>
+
+            <Divider className={classes.divider} variant="fullWidth" />
+
+            <RuleListContainer screenId={screenId} />
+        </>
     );
 }
 

@@ -1,7 +1,7 @@
 export { default as actions } from './actions';
 export { default as actionTypes } from './actions/types';
 
-export { default as Condition } from './components/Condition';
+export { default as RuleListContainer } from './components/RuleListContainer';
 
 export { default as logicDeletionMiddleware } from './middlewares/logicDeletion';
 

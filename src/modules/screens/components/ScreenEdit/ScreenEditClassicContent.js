@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'proptypes';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import LinkListContainer from '../LinkListContainer';
@@ -22,7 +22,6 @@ export default function ScreenEditClassicContent({ screenId }) {
 
     return (
         <React.Fragment>
-        
             <Wysiwyg
                 id="screen-content"
                 defaultValue={screen.content}
@@ -30,7 +29,7 @@ export default function ScreenEditClassicContent({ screenId }) {
                 onChange={onChangeContentHandler}
             />
             
-            { <LinkListContainer screenId={screenId} /> }
+            <LinkListContainer screenId={screenId} />
         </React.Fragment>
     );
 }
