@@ -5,7 +5,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
     Dialog, DialogTitle, DialogContent,
     DialogActions, Button, TextField,
-    makeStyles, Tabs, Tab,
+    makeStyles, Tabs, Tab, Badge,
 } from '@material-ui/core';
 
 import LogicIcon from '@material-ui/icons/AccountTree';
@@ -23,7 +23,7 @@ const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
     actionButtonContainer: {
         marginRight: 'auto',
     },
@@ -35,6 +35,11 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
     typeLabel: {
         display: 'inline',
+    },
+    badgeCounter: {
+        border: `2px solid ${palette.background.paper}`,
+        padding: spacing(0, 0.5),
+        right: spacing(-1),
     },
 }), { classNamePrefix: 'ScreenEdit' });
 
@@ -80,7 +85,16 @@ export default function ScreenEdit({ screenId }) {
                     textColor="primary"
                 >
                     <Tab icon={<ContentIcon />} label="Content" value="content" />
-                    <Tab icon={<LogicIcon />} label="Logic" value="logic" />
+                    <Tab icon={(
+                        <Badge
+                            classes={{ badge: classes.badgeCounter}}
+                            badgeContent={screen.logicRuleIds.length}
+                            color="primary"
+                            max={9}
+                        >
+                            <LogicIcon />
+                        </Badge>
+                    )} label="Logic" value="logic" />
                 </Tabs>
 
                 {currentTab === 'content' && <ScreenEditClassicContent screenId={screenId} />}
