@@ -46,7 +46,7 @@ export default function results(state = INITIAL_STATE, action) {
         }
 
         case actionTypes.LOAD_LOGIC: {
-            const { results = {} } = action.payload.logicData;
+            const { results = {} } = action.payload.logicData || {};
             return Object.keys(results)
                     .map(resultId => ResultModel.createFromJSON({
                         ...results[resultId],

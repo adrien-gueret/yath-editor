@@ -1,5 +1,15 @@
 import { selectors as gameSelectors } from 'Modules/game';
 
+const removeCollectionIds = collection => (
+    Object.keys(collection).reduce((acc, id) => ({
+        ...acc,
+        [id]: {
+            ...collection[id],
+            id: undefined,
+        },
+    }), {})
+);
+
 function getExportableState(state) {
     const { game, screens, links, logic, inventory } = { ...state };
     return {
@@ -8,18 +18,19 @@ function getExportableState(state) {
             customCSS: gameSelectors.customCSS.getExportable(state),
         },
         screens: {
-            list: Object.keys(screens.list).reduce((acc, screenId) => ({
-                ...acc,
-                [screenId]: {
-                    ...screens.list[screenId],
-                    linkIds: screens.list[screenId].linkIds.filter(linkId => Boolean(links.list[linkId])),
-                    id: undefined,
-                },
-            }), {}),
+            list: removeCollectionIds(screens.list),
         },
-        links,
-        logic,
-        inventory,
+        links: {
+            list: removeCollectionIds(links.list),
+        },
+        logic: {
+            rules: removeCollectionIds(logic.rules),
+            conditions: removeCollectionIds(logic.conditions),
+            results: removeCollectionIds(logic.results),
+        },
+        inventory: {
+            items: removeCollectionIds(inventory.items),
+        },
     };
 };
 
