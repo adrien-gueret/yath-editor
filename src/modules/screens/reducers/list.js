@@ -179,10 +179,13 @@ export default function list(state = INITIAL_STATE, action) {
             };
         }
 
-        case logicActionTypes.DELETE_RULE: {
+        case logicActionTypes.DELETE_RULES: {
             return Object.keys(state).reduce((allScreens, screenId) => {
                 const clone = state[screenId].clone();
-                clone.logicRuleIds = clone.logicRuleIds.filter(ruleId => ruleId !== action.payload.ruleId);
+
+                clone.logicRuleIds = clone.logicRuleIds.filter(ruleId => (
+                    action.payload.ruleIds.indexOf(ruleId) === -1
+                ));
 
                 return {
                     ...allScreens,

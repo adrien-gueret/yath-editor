@@ -25,7 +25,7 @@ function getByIds(state, resultIds = []) {
 }
 
 function getByRuleId(state, ruleId) {
-    const rule = selectors.list.getById(state, ruleId);
+    const rule = selectors.getById(state, ruleId);
     return getByIds(state, rule ? rule.resultIds : []);
 }
 

@@ -1,4 +1,4 @@
-import selectors from './conditionGroups';
+import selectors from './rules';
 
 function get(state) {
     return state.logic.conditions;
@@ -24,9 +24,9 @@ function getByIds(state, conditionIds = []) {
     );
 }
 
-function getByConditionGroupId(state, conditionGroupId) {
-    const conditionGroup = selectors.list.getById(state, conditionGroupId);
-    return getByIds(state, conditionGroup ? conditionGroup.conditionIds : []);
+function getByRuleId(state, ruleId) {
+    const rule = selectors.getById(state, ruleId);
+    return getByIds(state, rule ? rule.conditionIds : []);
 }
 
 export default {
@@ -34,5 +34,5 @@ export default {
     getAsArray,
     getById,
     getByIds,
-    getByConditionGroupId,
+    getByRuleId,
 };

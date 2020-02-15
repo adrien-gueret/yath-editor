@@ -9,16 +9,8 @@ export default store => next => action => {
         case actionTypes.DELETE_RULES: {
             action.payload.ruleIds.forEach((ruleId) => {
                 const rule = selectors.rules.getById(state, ruleId);
-                store.dispatch(actions.deleteConditionGroups(rule.conditionGroupIds));
+                store.dispatch(actions.deleteConditions(rule.conditionIds));
                 store.dispatch(actions.deleteResults(rule.resultIds));
-            });
-            break;
-        }
-
-        case actionTypes.DELETE_CONDITION_GROUPS: {
-            action.payload.conditionGroupIds.forEach((conditionGroupId) => {
-                const conditionGroup = selectors.conditionGroups.getById(state, conditionGroupId);
-                store.dispatch(actions.deleteConditions(conditionGroup.conditionIds));
             });
             break;
         }

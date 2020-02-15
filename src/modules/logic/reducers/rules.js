@@ -19,9 +19,9 @@ export default function rules(state = INITIAL_STATE, action) {
             }), state);
         }
 
-        case actionTypes.ADD_CONDITION_GROUP: {
+        case actionTypes.ADD_CONDITION: {
             const newRule = state[action.payload.ruleId].clone();
-            newRule.conditionGroupIds.push(action.payload.conditionGroup.id);
+            newRule.conditionIds.push(action.payload.condition.id);
 
             return {
                 ...state,
@@ -29,11 +29,13 @@ export default function rules(state = INITIAL_STATE, action) {
             };
         }
 
-        case actionTypes.DELETE_CONDITION_GROUP: {
+        case actionTypes.DELETE_CONDITIONS: {
             return Object.keys(state).reduce((allRules, ruleId) => {
                 const clone = state[ruleId].clone();
-                clone.conditionGroupIds = clone.conditionGroupIds
-                    .filter(conditionGroupId => conditionGroupId !== action.payload.conditionGroupId);
+                
+                clone.conditionIds = clone.conditionIds.filter(conditionId => (
+                    action.payload.conditionIds.indexOf(conditionId) === -1
+                ));
 
                 return {
                     ...allRules,
@@ -52,11 +54,13 @@ export default function rules(state = INITIAL_STATE, action) {
             };
         }
 
-        case actionTypes.DELETE_RESULT: {
+        case actionTypes.DELETE_RESULTS: {
             return Object.keys(state).reduce((allRules, ruleId) => {
                 const clone = state[ruleId].clone();
-                clone.resultIds = clone.resultIds
-                    .filter(resultId => resultId !== action.payload.resultId);
+
+                clone.resultIds = clone.resultIds.filter(resultId => (
+                    action.payload.resultIds.indexOf(resultId) === -1
+                ));
 
                 return {
                     ...allRules,

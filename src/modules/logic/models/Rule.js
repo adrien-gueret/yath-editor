@@ -4,7 +4,7 @@ class Rule {
     static createFromJSON(json) {
         const rule = new Rule(json.operator, json.id);
 
-        rule.conditionGroupIds = [...(json.conditionGroupIds || [])];
+        rule.conditionIds = [...(json.conditionIds || [])];
         rule.resultIds = [...(json.resultIds || [])];
 
         return rule;
@@ -13,36 +13,36 @@ class Rule {
     constructor(operator, id) {
         this.id = id || shortid.generate();
         this.operator = operator || 'and';
-        this.conditionGroupIds = [];
+        this.conditionIds = [];
         this.resultIds = [];
     }
 
     clone() {
         const clone = new Rule(this.operator, this.id);
         
-        clone.conditionGroupIds = [...this.conditionGroupIds];
+        clone.conditionIds = [...this.conditionIds];
         clone.resultIds = [...this.resultIds];
 
         return clone;
     }
 
-    toLogic(allConditionGroups, allConditions) {
-        const totalConditionGroups = this.conditionGroupIds.length;
+    toLogic(allConditions) {
+        const totalConditions = this.conditionIds.length;
 
-        if (totalConditionGroups === 0) {
+        if (totalConditions === 0) {
             return {};
         }
 
-        const conditionGroups = this.conditionGroupIds.map(conditionGroupId => (
-            allConditionGroups[conditionGroupId]
+        const conditions = this.conditionIds.map(conditionId => (
+            allConditions[conditionId]
         ));
 
-        if (totalConditionGroups === 1) {
-            return conditionGroups[0].toLogic(allConditions);
+        if (totalConditions === 1) {
+            return conditions[0].toLogic();
         }
 
         return {
-            [this.operator]: conditionGroups.map(conditionGroup => conditionGroup.toLogic(allConditions)),
+            [this.operator]: conditions.map(condition => condition.toLogic()),
         };
     }
 }

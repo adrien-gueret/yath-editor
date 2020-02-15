@@ -44,6 +44,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 export default function ScreenList({
     allowCreation, allowEdition, excludedScreenId, selectedScreenId, onChange, children, className,
+    ...otherProps
 }) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -92,6 +93,7 @@ export default function ScreenList({
                 onOpen={onOpenHandler}
                 onClose={onCloseHandler}
                 displayEmpty
+                {...otherProps}
             >
                 { allowCreation && (
                     <MenuItem value="create-new-screen">

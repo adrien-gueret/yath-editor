@@ -1,7 +1,7 @@
 import { selectors as gameSelectors } from 'Modules/game';
 
 function getExportableState(state) {
-    const { game, screens, links, logic } = { ...state };
+    const { game, screens, links, logic, inventory } = { ...state };
     return {
         game: {
             name: game.name,
@@ -19,6 +19,7 @@ function getExportableState(state) {
         },
         links,
         logic,
+        inventory,
     };
 };
 

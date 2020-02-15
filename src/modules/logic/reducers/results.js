@@ -19,13 +19,35 @@ export default function results(state = INITIAL_STATE, action) {
             }), state);
         }
 
+        case actionTypes.UPDATE_RESULT_TYPE: {
+            const newResult = state[action.payload.resultId].clone();
+
+            newResult.type = action.payload.resultType;
+
+            return {
+                ...state,
+                [action.payload.resultId]: newResult,
+            };
+        }
+
+        case actionTypes.UPDATE_RESULT_PARAMS: {
+            const newResult = state[action.payload.resultId].clone();
+
+            newResult.params = [...action.payload.resultParams];
+
+            return {
+                ...state,
+                [action.payload.resultId]: newResult,
+            };
+        }
+
         case actionTypes.DELETE_ALL_LOGIC: {
             return {};
         }
 
         case actionTypes.LOAD_LOGIC: {
-            const { results } = action.payload.logicData || {};
-            return Object.keys(results || {})
+            const { results = {} } = action.payload.logicData;
+            return Object.keys(results)
                     .map(resultId => ResultModel.createFromJSON({
                         ...results[resultId],
                         id: resultId,

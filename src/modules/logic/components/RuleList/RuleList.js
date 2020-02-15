@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, shallowEqual } from 'react-redux';
 
@@ -22,11 +22,13 @@ export default function RuleList({ screenId }) {
 
     return (
         <>
-            <DialogContentText color="textPrimary">
-                Before going to this screen:
-            </DialogContentText>
-
-            { screen.logicRuleIds.map(ruleId => <Rule key={ruleId} ruleId={ruleId} screenId={screenId} />) }
+            <DialogContentText color="textPrimary">When player is about to go to this screen...</DialogContentText>
+            { screen.logicRuleIds.map((ruleId, index) => (
+                <Fragment key={ruleId}>
+                    { index > 0 && <DialogContentText color="textPrimary">and</DialogContentText>}
+                    <Rule ruleId={ruleId} screenId={screenId} />
+                </Fragment>
+            )) }
         </>
     );
 }

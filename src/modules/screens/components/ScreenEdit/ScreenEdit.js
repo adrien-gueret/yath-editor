@@ -48,11 +48,6 @@ export default function ScreenEdit({ screenId }) {
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
     const [currentTab, setCurrentTab] = useState('content');
 
-    const onChangeTypeHandler = useCallback(e => {
-        const newScreenType = e.target.value;
-        dispatch(actions.editScreenType(screenId, newScreenType));
-    }, [dispatch, screenId]);
-
     const onChangeNameHandler = useCallback(e => {
         const newScreenName = e.target.value;
         dispatch(actions.editScreenName(screenId, newScreenName));

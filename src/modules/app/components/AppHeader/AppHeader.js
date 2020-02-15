@@ -15,6 +15,7 @@ import ConfigureGameIcon from '@material-ui/icons/SettingsOutlined';
 import { actions as gameActions, selectors as gameSelectors } from 'Modules/game';
 import { downloadJson } from 'Modules/utils';
 import { actions as screenActions, useAddScreenDialog } from 'Modules/screens';
+import { actions as inventoryActions } from 'Modules/inventory';
 import { actions as linkActions } from 'Modules/links';
 import { actions as logicActions } from 'Modules/logic';
 
@@ -59,7 +60,9 @@ function AppHeader() {
         dispatch(logicActions.deleteAllLogic());
         dispatch(linkActions.deleteAllLinks());
         dispatch(screenActions.deleteAllScreens());
+        dispatch(inventoryActions.deleteAllItems());
 
+        dispatch(inventoryActions.loadInventory(newState.inventory));
         dispatch(logicActions.loadLogic(newState.logic));
         dispatch(linkActions.loadLinks(newState.links));
         dispatch(screenActions.loadScreens(newState.screens));
@@ -79,6 +82,7 @@ function AppHeader() {
             loadState(newStoreState);
         } catch (error) {
             alert(`The file you want to load is malformed: ${error.message}`);
+            console.error(error);
         }
 
     }, [loadInput.current]);

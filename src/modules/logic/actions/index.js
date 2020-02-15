@@ -11,29 +11,10 @@ export default {
         return { type: actionTypes.DELETE_RULES, payload: { ruleIds } };
     },
 
-    addConditionGroup(conditionGroup, ruleId) {
-        return {
-            type: actionTypes.ADD_CONDITION_GROUP,
-            payload: { conditionGroup, ruleId },
-        };
-    },
-    deleteConditionGroup(conditionGroupId) {
-        return {
-            type: actionTypes.DELETE_CONDITION_GROUPS,
-            payload: { conditionGroupIds: [conditionGroupId] },
-        };
-    },
-    deleteConditionGroups(conditionGroupIds) {
-        return {
-            type: actionTypes.DELETE_CONDITION_GROUPS,
-            payload: { conditionGroupIds },
-        };
-    },
-
-    addCondition(condition, conditionGroupId) {
+    addCondition(condition, ruleId) {
         return {
             type: actionTypes.ADD_CONDITION,
-            payload: { condition, conditionGroupId },
+            payload: { condition, ruleId },
         };
     },
     deleteCondition(conditionId) {
@@ -65,6 +46,18 @@ export default {
         return {
             type: actionTypes.DELETE_RESULTS,
             payload: { resultIds },
+        };
+    },
+    updateResultType(resultId, resultType) {
+        return {
+            type: actionTypes.UPDATE_RESULT_TYPE,
+            payload: { resultId, resultType },
+        };
+    },
+    updateResultParams(resultId, resultParams) {
+        return {
+            type: actionTypes.UPDATE_RESULT_PARAMS,
+            payload: { resultId, resultParams },
         };
     },
 
