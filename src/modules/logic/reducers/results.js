@@ -14,10 +14,12 @@ export default function results(state = INITIAL_STATE, action) {
             };
 
         case actionTypes.DELETE_RESULTS: {
-            return action.payload.resultIds.reduce((newResults, resultIdToDelete) => ({
-                ...newResults,
-                [resultIdToDelete]: undefined,
-            }), state);
+            return action.payload.resultIds.reduce((acc, resultIdToDelete) => {
+                const newResults = { ...acc };
+                delete newResults[resultIdToDelete];
+
+                return newResults;
+            }, state);
         }
 
         case actionTypes.UPDATE_RESULT_TYPE: {

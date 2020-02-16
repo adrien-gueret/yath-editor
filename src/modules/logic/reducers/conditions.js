@@ -14,10 +14,12 @@ export default function conditions(state = INITIAL_STATE, action) {
 
 
         case actionTypes.DELETE_CONDITIONS: {
-            return action.payload.conditionIds.reduce((newConditions, conditionIdToDelete) => ({
-                ...newConditions,
-                [conditionIdToDelete]: undefined,
-            }), state);
+            return action.payload.conditionIds.reduce((acc, conditionIdToDelete) => {
+                const newConditions = { ...acc };
+                delete newConditions[conditionIdToDelete];
+
+                return newConditions;
+            }, state);
         }
 
         case actionTypes.DELETE_ALL_LOGIC: {

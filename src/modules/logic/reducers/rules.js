@@ -13,10 +13,12 @@ export default function rules(state = INITIAL_STATE, action) {
             };
 
         case actionTypes.DELETE_RULES: {
-            return action.payload.ruleIds.reduce((newRules, ruleIdToDelete) => ({
-                ...newRules,
-                [ruleIdToDelete]: undefined,
-            }), state);
+            return action.payload.ruleIds.reduce((acc, ruleIdToDelete) => {
+                const newRules = { ...acc };
+                delete newRules[ruleIdToDelete];
+
+                return newRules;
+            }, state);
         }
 
         case actionTypes.ADD_CONDITION: {
