@@ -44,11 +44,11 @@ export default function Rule({ ruleId, screenId }) {
 
     const classes = useStyles();
 
-    const hasResultsError = false;
+    const hasResultsError = useSelector(state => selectors.results.hasErrorsFromRuleId(state, ruleId));
     const stepLabelResultsOtherProps = hasResultsError ? {} : { icon:  <ResultsIcon color="primary" /> };
 
     const hasResults = results.length > 0;
-    const conditionStepTitle = hasResults ? 'When the above should run?' : 'Add events from above to be able to add some conditions.';
+    const conditionStepTitle = hasResults ? 'When the above should run?' : 'Add event from above to be able to add some conditions.';
 
     const hasConditionsError = false;
     const stepLabelConditionsOtherProps = hasConditionsError ? {} : { icon:  <AlgoIcon color={hasResults ? 'primary' : 'disabled'} /> };

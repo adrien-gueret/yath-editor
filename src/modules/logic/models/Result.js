@@ -1,6 +1,7 @@
 import shortid from 'shortid';
 
 import { ADD_ITEM } from '../constants/results';
+import resultToValueType from '../constants/resultToValueType';
 
 class Result {
     static createFromJSON(json) {
@@ -23,6 +24,13 @@ class Result {
         return clone;
     }
 
+    hasError() {
+        const valueType = resultToValueType[this.type];
+        const hasScreenError = valueType === 'screen' && !this.params.screenId;
+        const hasItemError = valueType === 'item' && (!this.params.itemId || !this.params.total);
+
+        return hasScreenError || hasItemError;
+    }
 }
 
 export default Result;

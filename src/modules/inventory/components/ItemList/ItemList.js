@@ -57,6 +57,7 @@ export default function ItemList({
     return (
         <>
             <Select
+                error={!Boolean(selectedItemName)}
                 className={className}
                 classes={{ outlined: classes.outlined }}
                 value={selectedItemName || ''}

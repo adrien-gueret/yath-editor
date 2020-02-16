@@ -11,6 +11,8 @@ import {
 import LogicIcon from '@material-ui/icons/AccountTree';
 import ContentIcon from '@material-ui/icons/Create';
 
+import { selectors as logicSelectors } from 'Modules/logic';
+
 import ActionButtons from '../ActionButtons';
 
 import actions from '../../actions';
@@ -46,6 +48,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 export default function ScreenEdit({ screenId }) {
     const dispatch = useDispatch();
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || {};
+    const totalLogicErrors = useSelector(state => logicSelectors.rules.getTotalErrorsByScreenId(state, screenId));
     const [currentTab, setCurrentTab] = useState('content');
 
     const onChangeNameHandler = useCallback(e => {
@@ -83,8 +86,8 @@ export default function ScreenEdit({ screenId }) {
                     <Tab icon={(
                         <Badge
                             classes={{ badge: classes.badgeCounter}}
-                            badgeContent={screen.logicRuleIds.length}
-                            color="primary"
+                            badgeContent={totalLogicErrors}
+                            color="secondary"
                             max={9}
                         >
                             <LogicIcon />

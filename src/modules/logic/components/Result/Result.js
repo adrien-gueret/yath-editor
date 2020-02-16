@@ -87,6 +87,7 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
     const selectableValues = {
         screen: (
             <ScreenList
+                error={!result.params.screenId}
                 onChange={onChangeScreenId}
                 className={classes.select}
                 excludedScreenId={screenId}

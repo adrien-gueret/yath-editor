@@ -26,10 +26,24 @@ function getByRuleId(state, ruleId) {
     return getByIds(state, rule ? rule.resultIds : []);
 }
 
+function hasErrorsFromRuleId(state, ruleId) {
+    const results = getByRuleId(state, ruleId);
+
+    return results.some(result => result.hasError());
+}
+
+function getTotalErrorsFromRuleId(state, ruleId) {
+    const results = getByRuleId(state, ruleId);
+
+    return results.filter(result => result.hasError()).length;
+}
+
 export default {
     get,
     getAsArray,
     getById,
     getByIds,
     getByRuleId,
+    hasErrorsFromRuleId,
+    getTotalErrorsFromRuleId,
 };
