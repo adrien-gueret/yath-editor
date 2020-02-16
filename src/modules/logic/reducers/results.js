@@ -1,6 +1,7 @@
 import ResultModel from '../models/Result';
 
 import actionTypes from '../actions/types';
+import resultToValueType from '../constants/resultToValueType';
 
 const INITIAL_STATE = {};
 
@@ -22,7 +23,22 @@ export default function results(state = INITIAL_STATE, action) {
         case actionTypes.UPDATE_RESULT_TYPE: {
             const newResult = state[action.payload.resultId].clone();
 
+            const prevResultToValueType = resultToValueType[newResult.type];
+            const newResultToValueType = resultToValueType[action.payload.resultType];
+
             newResult.type = action.payload.resultType;
+
+            if (prevResultToValueType !== newResultToValueType) {
+                switch(newResultToValueType) {
+                    case 'screen':
+                        newResult.params = { screenId: null };
+                    break;
+    
+                    case 'item':
+                        newResult.params = { itemId: null, total: 1 };
+                    break;
+                }
+            }
 
             return {
                 ...state,
@@ -33,7 +49,7 @@ export default function results(state = INITIAL_STATE, action) {
         case actionTypes.UPDATE_RESULT_PARAMS: {
             const newResult = state[action.payload.resultId].clone();
 
-            newResult.params = [...action.payload.resultParams];
+            newResult.params = { ...action.payload.resultParams };
 
             return {
                 ...state,

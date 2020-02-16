@@ -36,7 +36,7 @@ export default function ResultListContainer({ ruleId, screenId }) {
         <div className={classes.root}>
             <div>
                <ResultList ruleId={ruleId} screenId={screenId} />
-                <Tooltip title="Add result">
+                <Tooltip title="Add event">
                     <IconButton className={classes.iconAdd} onClick={addResult}>
                         <AddResultIcon />
                     </IconButton>

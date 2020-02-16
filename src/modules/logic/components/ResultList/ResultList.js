@@ -27,7 +27,7 @@ export default function ResultList({ ruleId, screenId }) {
     const classes = useStyles();
 
     if (!hasResults) {
-        return <Typography variant="caption">This rule has no results yet.</Typography>;
+        return <Typography variant="caption">This rule has no events yet.</Typography>;
     }
 
     return (

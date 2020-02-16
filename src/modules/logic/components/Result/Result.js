@@ -4,10 +4,12 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 
 import {
     makeStyles, Select, MenuItem,
-    Tooltip, IconButton,
+    Tooltip, IconButton, TextField,
+    InputAdornment,
 } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
+import TimesIcon from '@material-ui/icons/Close';
 
 import { ScreenList, selectors as screenSelectors } from 'Modules/screens';
 import { ItemList } from 'Modules/inventory';
@@ -35,6 +37,11 @@ const useStyles = makeStyles(({ spacing }) => ({
     select: {
         margin: spacing(0, 1),
     },
+    numberField: {
+        margin: spacing(0, 1),
+        verticalAlign: 'middle',
+        width: 80,
+    },
 }), { classNamePrefix: 'Result' });
 
 function Result({ screenId, resultId, disableRedirectToScreen }) {
@@ -58,35 +65,65 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
         dispatch(actions.updateResultType(resultId, value));
     }, [dispatch, resultId]);
 
-    const getOnChangeParamsHandler = useCallback((paramIndex = 0) => (value) => {
-        const params = [...result.params];
-        params[paramIndex] = value;
+    const onChangeScreenId = useCallback((screenId) => {
+        dispatch(actions.updateResultParams(resultId, { screenId }));
+    }, [dispatch, resultId]);
 
-        dispatch(actions.updateResultParams(resultId, params));
-    }, [dispatch, resultId, result]);
+    const onChangeTotalItems = useCallback(({ target }) => {
+        dispatch(actions.updateResultParams(resultId, {
+            itemId: result.params.itemId,
+            total: Number(target.value),
+        }));
+    }, [dispatch, result, resultId]);
+
+    const onChangeItemId = useCallback((itemId) => {
+        dispatch(actions.updateResultParams(resultId, {
+            itemId,
+            total: result.params.total,
+        }));
+    }, [dispatch, result, resultId]);
 
     const selectableValues = {
         screen: (
             <ScreenList
-                onChange={getOnChangeParamsHandler()}
+                onChange={onChangeScreenId}
                 className={classes.select}
                 excludedScreenId={screenId}
-                selectedScreenId={result.params[0]}
+                selectedScreenId={result.params.screenId}
             />
         ),
         item: (
-            <ItemList
-                allowCreation
-                onChange={getOnChangeParamsHandler()}
-                className={classes.select}
-                selectedItemName={result.params[0]}
-            />
+            <>
+                <TextField
+                    type="number"
+                    className={classes.numberField}
+                    onChange={onChangeTotalItems}
+                    value={result.params.total}
+                    InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <TimesIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    inputProps={{
+                        min: 1,
+                        max: 999,
+                    }}
+                />
+                <ItemList
+                    allowCreation
+                    onChange={onChangeItemId}
+                    className={classes.select}
+                    selectedItemName={result.params.itemId}
+                />
+            </>
         ),
     };
 
     return (
         <>
-            <Tooltip title="Delete rule">
+            <Tooltip title="Delete event">
                 <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
                     <DeleteIcon color="secondary" />
                 </IconButton>
@@ -98,7 +135,7 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
                 onAccept={onDeleteHandler}
                 onCancel={() => toggleConfirmDialogOpen(false)}
             >
-                Do you really want to delete this result?
+                Do you really want to delete this event?
             </ConfirmDialog>
 
             <Select value={type} onChange={onChangeType} className={classes.select}>

@@ -5,7 +5,7 @@ import { ADD_ITEM } from '../constants/results';
 class Result {
     static createFromJSON(json) {
         const result = new Result(json.type, json.id);
-        result.params = [...json.params];
+        result.params = {...json.params};
 
         return result;
     }
@@ -13,12 +13,12 @@ class Result {
     constructor(type = ADD_ITEM, id = null) {
         this.id = id || shortid.generate();
         this.type = type;
-        this.params = [];
+        this.params = { total: 1 };
     }
 
     clone() {
         const clone = new Result(this.type, this.id);
-        clone.params = [...this.params];
+        clone.params = { ...this.params };
 
         return clone;
     }
