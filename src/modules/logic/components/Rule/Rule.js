@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
 import {
     Card, CardContent, CardActions, makeStyles,
@@ -15,6 +15,7 @@ import ResultsIcon from '@material-ui/icons/Directions';
 import { ConfirmDialog } from 'Modules/utils';
 
 import actions from '../../actions';
+import selectors from '../../selectors';
 
 import Condition from '../Condition';
 import ResultListContainer from '../ResultListContainer';
@@ -37,7 +38,7 @@ export default function Rule({ ruleId, screenId }) {
     const [isConfirmDialogOpen, toggleConfirmDialogOpen] = useState(false);
     const dispatch = useDispatch();
 
-    // const results = useSelector(state => selectors.results.getByRuleId(state, ruleId), shallowEqual) || [];
+    const results = useSelector(state => selectors.results.getByRuleId(state, ruleId), shallowEqual) || [];
 
     const onDeleteHandler = useCallback(() => dispatch(actions.deleteRule(ruleId)), [dispatch, ruleId]);
 
@@ -46,10 +47,11 @@ export default function Rule({ ruleId, screenId }) {
     const hasResultsError = false;
     const stepLabelResultsOtherProps = hasResultsError ? {} : { icon:  <ResultsIcon color="primary" /> };
 
-    const hasConditionsError = false;
-    const stepLabelConditionsOtherProps = hasConditionsError ? {} : { icon:  <AlgoIcon color="primary" /> };
+    const hasResults = results.length > 0;
+    const conditionStepTitle = hasResults ? 'When the above should run?' : 'Add events from above to be able to add some conditions.';
 
-    // TODO: check results to dynamically set step "conditions" into active or disabled
+    const hasConditionsError = false;
+    const stepLabelConditionsOtherProps = hasConditionsError ? {} : { icon:  <AlgoIcon color={hasResults ? 'primary' : 'disabled'} /> };
 
     return (
         <Card className={classes.root}>
@@ -74,12 +76,12 @@ export default function Rule({ ruleId, screenId }) {
                             <ResultListContainer ruleId={ruleId} screenId={screenId} />
                         </StepContent>
                     </Step>
-                    <Step active>
+                    <Step active={hasResults} disabled={!hasResults}>
                         <StepLabel
                             error={hasConditionsError}
                             {...stepLabelConditionsOtherProps}
                         >
-                            When the above should run?
+                            { conditionStepTitle }
                         </StepLabel>
                         <StepContent>
                             <Condition

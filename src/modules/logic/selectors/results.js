@@ -18,10 +18,7 @@ function getById(state, resultId) {
 
 function getByIds(state, resultIds = []) {
     const allResults = get(state);
-    return resultIds.map(resultId => (
-        allResults[resultId])
-            .filter(result => !!result)
-    );
+    return resultIds.map(resultId => allResults[resultId]);
 }
 
 function getByRuleId(state, ruleId) {

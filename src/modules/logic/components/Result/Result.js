@@ -36,6 +36,7 @@ const defaultProps = {
 const useStyles = makeStyles(({ spacing }) => ({
     select: {
         margin: spacing(0, 1),
+        verticalAlign: 'middle',
     },
     numberField: {
         margin: spacing(0, 1),
