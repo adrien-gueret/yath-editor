@@ -8,6 +8,8 @@ import FlagIcon from '@material-ui/icons/Flag';
 import BlockIcon from '@material-ui/icons/Block';
 import LogicIcon from '@material-ui/icons/AccountTree';
 
+import { selectors as logicSelectors } from 'Modules/logic';
+
 import actions from '../../actions';
 import selectors from '../../selectors';
 
@@ -36,11 +38,13 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
     const [showTooltip, toggleShowTooltip] = useState(true);
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
     const hasLinkWithoutTarget = useSelector(state => selectors.list.hasLinkWithoutTarget(state, screenId));
+    const totalLogicErrors = useSelector(state => logicSelectors.rules.getTotalErrorsByScreenId(state, screenId));
     const hasEmptyContent = !screen.content;
     const hasLinks = screen.linkIds.length > 0;
-    const hasSomeLogic = false; // TODO: update with selectors when available
+    const hasSomeLogic = screen.logicRuleIds.length > 0;
+    const hasLogicErrors = totalLogicErrors > 0;
 
-    const hasErrors = hasLinkWithoutTarget || hasEmptyContent;
+    const hasErrors = hasLinkWithoutTarget || hasEmptyContent || hasLogicErrors;
 
     const resizeScreen = useCallback((newWidth, newHeight) => (
         dispatch(actions.resizeScreen(screenId, newWidth, newHeight))
@@ -83,20 +87,16 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
 
     if (hasErrors) {
         if (hasEmptyContent) {
-            tooltipMessages.push(<p key="no-content">This screen does not have content.</p>)
+            tooltipMessages.push(<p key="no-content">This screen does not have content.</p>);
         }
         
         if (hasLinkWithoutTarget) {
-            tooltipMessages.push(<p key="bad-link">This screen has some links without targets.</p>)
+            tooltipMessages.push(<p key="bad-link">This screen has some links without targets.</p>);
         }
-    }
-    
-    if (screen.isStart) {
-        tooltipMessages.push(<p key="start">This screen is the start screen.</p>);
-    } else if (hasSomeLogic) {
-        tooltipMessages.push(<p key="logic">This screen contains some logic.</p>);
-    } else if (!hasLinks) {
-        tooltipMessages.push(<p key="end">This screen is a dead-end screen.</p>);
+
+        if (hasLogicErrors) {
+            tooltipMessages.push(<p key="bad-logic">This screen has some logic errors.</p>);
+        }
     }
 
     let icon = null;
