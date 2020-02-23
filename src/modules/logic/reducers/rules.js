@@ -21,6 +21,16 @@ export default function rules(state = INITIAL_STATE, action) {
             }, state);
         }
 
+        case actionTypes.UPDATE_RULE_OPERATOR: {
+            const newRule = state[action.payload.ruleId].clone();
+            newRule.operator = action.payload.operator;
+
+            return {
+                ...state,
+                [action.payload.ruleId]: newRule,
+            };
+        }
+
         case actionTypes.ADD_CONDITION: {
             const newRule = state[action.payload.ruleId].clone();
             newRule.conditionIds.push(action.payload.condition.id);

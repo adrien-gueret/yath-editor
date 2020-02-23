@@ -1,19 +1,34 @@
 import shortid from 'shortid';
-import conditionSubjectToJSONLogic from '../constants/conditionSubjectToJSONLogic';
+import { PLAYER_HAS_NOT_VISITED } from '../constants/conditionSubjects';
+import conditionSubjectToValueType from '../constants/conditionSubjectToValueType';
 
 class Condition {
     static createFromJSON(json) {
-        return new Condition(json.subject, json.expectedValue, json.id);
+        const condition = new Condition(json.subject, json.id);
+        condition.params = {...json.params};
+
+        return condition;
     }
 
-    constructor(subject, expectedValue, id) {
+    constructor(subject = PLAYER_HAS_NOT_VISITED, id = null) {
         this.id = id || shortid.generate();
         this.subject = subject;
-        this.expectedValue = expectedValue;
+        this.params = {};
     }
 
     clone() {
-        return new Condition(this.subject, this.expectedValue, this.id);
+        const clone = new Condition(this.subject, this.id);
+        clone.params = { ...this.params };
+
+        return clone;
+    }
+
+    hasError() {
+        const valueType = conditionSubjectToValueType[this.subject];
+        const hasScreenError = valueType === 'screen' && !this.params.screenId;
+        const hasItemError = valueType === 'item' && (!this.params.itemId || !this.params.total);
+
+        return hasScreenError || hasItemError;
     }
 
     toLogic() {

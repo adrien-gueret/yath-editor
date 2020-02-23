@@ -36,7 +36,7 @@ export default function ResultList({ ruleId, screenId }) {
                 rule.resultIds.map((resultId, index) => (
                     <Fragment key={resultId}>
                         { index > 0 && <Typography className={classes.operator} color="textPrimary">and</Typography>}
-                        <Result ruleId={ruleId} screenId={screenId} resultId={resultId} />
+                        <Result screenId={screenId} resultId={resultId} />
                     </Fragment>
                 ))
         

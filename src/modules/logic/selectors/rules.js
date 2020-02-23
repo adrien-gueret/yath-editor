@@ -1,5 +1,6 @@
 import selectors from 'Modules/screens/selectors';
 
+import conditions from './conditions';
 import results from './results';
 
 function get(state) {
@@ -30,7 +31,7 @@ function getTotalErrorsByScreenId(state, screenId) {
     const rules = getByScreenId(state, screenId);
 
     return rules.reduce((totalErrors, rule) => (
-        totalErrors + results.getTotalErrorsFromRuleId(state, rule.id)
+        totalErrors + results.getTotalErrorsFromRuleId(state, rule.id) + conditions.getTotalErrorsFromRuleId(state, rule.id)
     ), 0);
 }
 

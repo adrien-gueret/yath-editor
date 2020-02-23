@@ -10,6 +10,9 @@ export default {
     deleteRules(ruleIds) {
         return { type: actionTypes.DELETE_RULES, payload: { ruleIds } };
     },
+    updateRuleOperator(ruleId, operator) {
+        return { type: actionTypes.UPDATE_RULE_OPERATOR, payload: { ruleId, operator } };
+    },
 
     addCondition(condition, ruleId) {
         return {
@@ -27,6 +30,18 @@ export default {
         return {
             type: actionTypes.DELETE_CONDITIONS,
             payload: { conditionIds },
+        };
+    },
+    updateConditionSubject(conditionId, conditionSubject) {
+        return {
+            type: actionTypes.UPDATE_CONDITION_SUBJECT,
+            payload: { conditionId, conditionSubject },
+        };
+    },
+    updateConditionParams(conditionId, conditionParams) {
+        return {
+            type: actionTypes.UPDATE_CONDITION_PARAMS,
+            payload: { conditionId, conditionParams },
         };
     },
 

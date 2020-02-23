@@ -17,7 +17,7 @@ import { ConfirmDialog } from 'Modules/utils';
 import actions from '../../actions';
 import selectors from '../../selectors';
 
-import Condition from '../Condition';
+import ConditionListContainer from '../ConditionListContainer';
 import ResultListContainer from '../ResultListContainer';
 
 const propTypes = {
@@ -50,7 +50,7 @@ export default function Rule({ ruleId, screenId }) {
     const hasResults = results.length > 0;
     const conditionStepTitle = hasResults ? 'When the above should run?' : 'Add event from above to be able to add some conditions.';
 
-    const hasConditionsError = false;
+    const hasConditionsError = useSelector(state => selectors.conditions.hasErrorsFromRuleId(state, ruleId));
     const stepLabelConditionsOtherProps = hasConditionsError ? {} : { icon:  <AlgoIcon color={hasResults ? 'primary' : 'disabled'} /> };
 
     return (
@@ -84,10 +84,7 @@ export default function Rule({ ruleId, screenId }) {
                             { conditionStepTitle }
                         </StepLabel>
                         <StepContent>
-                            <Condition
-                                screenId={screenId}
-                                onChange={(p) => console.log(p)}
-                            />
+                            <ConditionListContainer ruleId={ruleId} screenId={screenId} />
                         </StepContent>
                     </Step>
                 </Stepper>

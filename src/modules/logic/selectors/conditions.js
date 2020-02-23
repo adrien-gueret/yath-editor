@@ -18,15 +18,25 @@ function getById(state, conditionId) {
 
 function getByIds(state, conditionIds = []) {
     const allConditions = get(state);
-    return conditionIds.map(conditionId => (
-        allConditions[conditionId])
-            .filter(condition => !!condition)
-    );
+    return conditionIds.map(conditionId => allConditions[conditionId])
+            .filter(condition => !!condition);
 }
 
 function getByRuleId(state, ruleId) {
     const rule = selectors.getById(state, ruleId);
     return getByIds(state, rule ? rule.conditionIds : []);
+}
+
+function hasErrorsFromRuleId(state, ruleId) {
+    const conditions = getByRuleId(state, ruleId);
+
+    return conditions.some(condition => condition.hasError());
+}
+
+function getTotalErrorsFromRuleId(state, ruleId) {
+    const conditions = getByRuleId(state, ruleId);
+
+    return conditions.filter(condition => condition.hasError()).length;
 }
 
 export default {
@@ -35,4 +45,6 @@ export default {
     getById,
     getByIds,
     getByRuleId,
+    hasErrorsFromRuleId,
+    getTotalErrorsFromRuleId,
 };

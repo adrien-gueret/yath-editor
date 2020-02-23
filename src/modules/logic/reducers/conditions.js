@@ -1,6 +1,7 @@
 import ConditionModel from '../models/Condition';
 
 import actionTypes from '../actions/types';
+import conditionSubjectToValueType from '../constants/conditionSubjectToValueType';
 
 const INITIAL_STATE = {};
 
@@ -24,6 +25,43 @@ export default function conditions(state = INITIAL_STATE, action) {
 
         case actionTypes.DELETE_ALL_LOGIC: {
             return {};
+        }
+
+        case actionTypes.UPDATE_CONDITION_SUBJECT: {
+            const newCondition = state[action.payload.conditionId].clone();
+
+            const prevConditionToValueType = conditionSubjectToValueType[newCondition.subject];
+            const newConditionToValueType = conditionSubjectToValueType[action.payload.conditionSubject];
+
+            newCondition.subject = action.payload.conditionSubject;
+
+            if (prevConditionToValueType !== newConditionToValueType) {
+                switch(newConditionToValueType) {
+                    case 'screen':
+                        newCondition.params = { screenId: null };
+                    break;
+    
+                    case 'item':
+                        newCondition.params = { itemId: null, total: 1 };
+                    break;
+                }
+            }
+
+            return {
+                ...state,
+                [action.payload.conditionId]: newCondition,
+            };
+        }
+
+        case actionTypes.UPDATE_CONDITION_PARAMS: {
+            const newCondition = state[action.payload.conditionId].clone();
+
+            newCondition.params = { ...action.payload.conditionParams };
+
+            return {
+                ...state,
+                [action.payload.conditionId]: newCondition,
+            };
         }
 
         case actionTypes.LOAD_LOGIC: {
