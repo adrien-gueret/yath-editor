@@ -5,7 +5,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import {
     makeStyles, Select, MenuItem,
     Tooltip, IconButton, TextField,
-    InputAdornment,
+    InputAdornment, Typography,
 } from '@material-ui/core';
 
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -28,7 +28,11 @@ const propTypes = {
     conditionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ typography, spacing }) => ({
+    operator: {
+        fontWeight: typography.fontWeightBold,
+        display: 'inline',
+    },
     select: {
         margin: spacing(0, 1),
         verticalAlign: 'middle',
@@ -44,9 +48,6 @@ function Condition({ screenId, conditionId }) {
     const [isConfirmDialogOpen, toggleConfirmDialogOpen] = useState(false);
 
     const condition = useSelector(state => selectors.conditions.getById(state, conditionId), shallowEqual) || [];
-    const otherScreens = useSelector(state => (
-        screenSelectors.list.getAllExceptOne(state, screenId)
-    ));
 
     const dispatch = useDispatch();
 
@@ -67,26 +68,26 @@ function Condition({ screenId, conditionId }) {
 
     const onChangeTotalItems = useCallback(({ target }) => {
         dispatch(actions.updateConditionParams(conditionId, {
-            itemId: condition.params.itemId,
+            itemId: params.itemId,
             total: Number(target.value),
         }));
-    }, [dispatch, condition, conditionId]);
+    }, [dispatch, params, conditionId]);
 
     const onChangeItemId = useCallback((itemId) => {
         dispatch(actions.updateConditionParams(conditionId, {
             itemId,
-            total: condition.params.total,
+            total: params.total,
         }));
-    }, [dispatch, condition, conditionId]);
+    }, [dispatch, params, conditionId]);
 
     const selectableValues = {
         screen: (
             <ScreenList
-                error={!condition.params.screenId}
+                error={!params.screenId}
                 onChange={onChangeScreenId}
                 className={classes.select}
                 excludedScreenId={screenId}
-                selectedScreenId={condition.params.screenId}
+                selectedScreenId={params.screenId}
             >
                 <MenuItem value={screenId}>this screen</MenuItem>
             </ScreenList>
@@ -97,7 +98,7 @@ function Condition({ screenId, conditionId }) {
                     type="number"
                     className={classes.numberField}
                     onChange={onChangeTotalItems}
-                    value={condition.params.total}
+                    value={params.total}
                     InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -114,7 +115,7 @@ function Condition({ screenId, conditionId }) {
                     allowCreation
                     onChange={onChangeItemId}
                     className={classes.select}
-                    selectedItemName={condition.params.itemId}
+                    selectedItemName={params.itemId}
                 />
             </>
         ),
@@ -136,6 +137,8 @@ function Condition({ screenId, conditionId }) {
             >
                 Do you really want to delete this condition?
             </ConfirmDialog>
+
+            <Typography className={classes.operator}>if</Typography>
 
             <Select value={subject} onChange={onChangeSubject} className={classes.select}>
                 <MenuItem value={PLAYER_HAS_VISITED}>player has already visited</MenuItem>
