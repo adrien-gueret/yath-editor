@@ -57,14 +57,18 @@ function Condition({ screenId, conditionId }) {
 
     const classes = useStyles();
 
-    const onChangeSubject = useCallback(({ target }) => {
-        const { value } = target;
-        dispatch(actions.updateConditionSubject(conditionId, value));
-    }, [dispatch, conditionId]);
-
     const onChangeScreenId = useCallback((screenId) => {
         dispatch(actions.updateConditionParams(conditionId, { screenId }));
     }, [dispatch, conditionId]);
+
+    const onChangeSubject = useCallback(({ target }) => {
+        const { value } = target;
+        dispatch(actions.updateConditionSubject(conditionId, value));
+
+        if (CONDITION_SUBJECT_TO_VALUE_TYPE[value] === 'screen') {
+            onChangeScreenId(screenId);
+        }
+    }, [dispatch, conditionId, onChangeScreenId, screenId]);
 
     const onChangeTotalItems = useCallback(({ target }) => {
         dispatch(actions.updateConditionParams(conditionId, {

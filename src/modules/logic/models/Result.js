@@ -31,6 +31,10 @@ class Result {
 
         return hasScreenError || hasItemError;
     }
+
+    toLogic() {
+        
+    }
 }
 
 export default Result;

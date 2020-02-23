@@ -27,9 +27,11 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 export default function ConditionListContainer({ ruleId, screenId }) {
     const dispatch = useDispatch();
-    const addCondition = useCallback(() => (
-        dispatch(actions.addCondition(new ConditionModel(), ruleId))
-    ), [dispatch, ruleId]);
+    const addCondition = useCallback(() => {
+        const condition = new ConditionModel();
+        condition.params.screenId = screenId;
+        dispatch(actions.addCondition(condition, ruleId));
+    }, [dispatch, ruleId, screenId]);
     const classes = useStyles();
     
     return (
