@@ -11,7 +11,7 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import TimesIcon from '@material-ui/icons/Close';
 
-import { ScreenList, selectors as screenSelectors } from 'Modules/screens';
+import { ScreenList } from 'Modules/screens';
 import { ItemList } from 'Modules/inventory';
 import { ConfirmDialog } from 'Modules/utils';
 
@@ -69,13 +69,23 @@ function Condition({ screenId, conditionId }) {
     const onChangeTotalItems = useCallback(({ target }) => {
         dispatch(actions.updateConditionParams(conditionId, {
             itemId: params.itemId,
+            operator: paramas.operator,
             total: Number(target.value),
+        }));
+    }, [dispatch, params, conditionId]);
+
+    const onChangeOperator = useCallback(({ target }) => {
+        dispatch(actions.updateConditionParams(conditionId, {
+            itemId: params.itemId,
+            operator: target.value,
+            total: params.total,
         }));
     }, [dispatch, params, conditionId]);
 
     const onChangeItemId = useCallback((itemId) => {
         dispatch(actions.updateConditionParams(conditionId, {
             itemId,
+            operator: params.operator,
             total: params.total,
         }));
     }, [dispatch, params, conditionId]);
@@ -94,6 +104,11 @@ function Condition({ screenId, conditionId }) {
         ),
         item: (
             <>
+                <Select value={params.operator} onChange={onChangeOperator} className={classes.select}>
+                    <MenuItem value="===">exactly</MenuItem>
+                    <MenuItem value="<">less than</MenuItem>
+                    <MenuItem value=">">more than</MenuItem>
+                </Select>
                 <TextField
                     type="number"
                     className={classes.numberField}
