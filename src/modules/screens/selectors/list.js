@@ -1,5 +1,6 @@
-import { geometry } from 'Modules/maths';
+import { getArrow } from 'Modules/board';
 import { selectors as linkSelectors } from 'Modules/links';
+import { selectors as logicSelectors } from 'Modules/logic';
 
 import editedScreenId from './editedScreenId';
 
@@ -45,57 +46,40 @@ function getStart(state) {
 function getArrows(state) {
     const screens = getAsArray(state);
 
-    return screens.reduce((allArrows, screen) => {
-        const screenPosition = screen.getCoordinates();
-        const start = { x: screenPosition.x + screen.width/2, y: screenPosition.y + screen.height/2 };
+    return screens.reduce((allArrows, sourceScreen) => {
+        const links = linkSelectors.list.getByIds(state, sourceScreen.linkIds);
 
-        const links = linkSelectors.list.getByIds(state, screen.linkIds);
-
-        const newArrows = links.map(link => {
-            const targetScreen = getById(state, link.targetScreenId);
+        function getScreenArrow(targetScreenId, isLogic) {
+            const targetScreen = getById(state, targetScreenId);
 
             if (!targetScreen) {
                 return null;
             }
 
-            const targetPosition = targetScreen.getCoordinates();
+            return getArrow(sourceScreen, targetScreen, isLogic);
+        }
 
-            const targetCenter = { x: targetPosition.x + targetScreen.width/2, y: targetPosition.y + targetScreen.height/2 };
+        const linksArrows = links.map(link => getScreenArrow(link.targetScreenId));
 
-            const topSegment = {
-                start: { x: targetPosition.x, y: targetPosition.y },
-                end: { x: targetPosition.x + targetScreen.width, y: targetPosition.y },
-            };
+        const rules = logicSelectors.rules.getByScreenId(state, sourceScreen.id);
 
-            const rightSegment = {
-                start: { x: targetPosition.x + targetScreen.width, y: targetPosition.y },
-                end: { x: targetPosition.x + targetScreen.width, y: targetPosition.y + targetScreen.height },
-            };
+        const logicArrows = rules.reduce((arrows, rule) => {
+            const resultsWithScreenRedirect = logicSelectors.results.getByRuleId(state, rule.id).filter(result => !!result.params.screenId);
+            const isLogic = true;
 
-            const bottomSegment = {
-                start: { x: targetPosition.x, y: targetPosition.y + targetScreen.height },
-                end: { x: targetPosition.x + targetScreen.width, y: targetPosition.y + targetScreen.height },
-            };
+            return [
+                ...arrows,
+                ...resultsWithScreenRedirect
+                    .map(({ params }) => getScreenArrow(params.screenId, isLogic))
+            ];
+        }, []);
 
-            const leftSegment = {
-                start: { x: targetPosition.x, y: targetPosition.y },
-                end: { x: targetPosition.x, y: targetPosition.y + targetScreen.height },
-            };
-
-            const arrow = { start, end: targetCenter };
-
-            const end = [topSegment, rightSegment, bottomSegment, leftSegment].reduce((finalEnd, segment) => (
-                geometry.getSegmentsIntersectionPoint(arrow, segment) || finalEnd
-            ), targetCenter);
-
-            return { start, end };
-        });
 
         return [
             ...allArrows,
-            ...newArrows.filter(arrow => !!arrow),
+            ...linksArrows.filter(arrow => !!arrow),
+            ...logicArrows.filter(arrow => !!arrow),
         ];
-
     }, []);
 }
 

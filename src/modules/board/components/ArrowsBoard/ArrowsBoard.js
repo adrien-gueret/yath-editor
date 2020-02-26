@@ -27,6 +27,7 @@ const useStyles = makeStyles(({ palette }) => ({
     },
     logicArrow: {
         stroke: palette.primary.main,
+        strokeDasharray: 8,
         markerEnd: 'url(#logic-arrow)',
     },
 }), { classNamePrefix: 'ArrowsBoard' });
