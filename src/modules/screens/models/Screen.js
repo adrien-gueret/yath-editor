@@ -71,6 +71,19 @@ class Screen {
         return !doesNotCollied;
     }
 
+    getStringifiedRules(logic) {
+        const stringifiedRules = this.logicRuleIds
+            .map(ruleId => logic.rules[ruleId].toString(logic.results, logic.conditions))
+            .filter(stringifiedRule => !!stringifiedRule)
+            .join('');
+
+        if (!stringifiedRules) {
+            return '';
+        }
+
+        return `if(screenName==='${this.id}'){${stringifiedRules}}`;
+    }
+
     toHTML(allLinks) {
         const navigation = this.linkIds.map(linkId => allLinks[linkId].toHTML()).join('');
         return `

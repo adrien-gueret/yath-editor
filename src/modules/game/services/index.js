@@ -9,6 +9,14 @@ export function getScreensHtml(screens, links) {
     return screens.map(screen => screen.toHTML(links)).join('');
 }
 
+export function getScreensStringifiedRules(screens, logic) {
+    return screens
+        .map(screen => screen.getStringifiedRules(logic))
+        .filter(stringifiedRule => !!stringifiedRule)
+        .join(' else ');
+}
+
+
 export function fetchYathCSS() {
     return fetchYath('css');
 }
@@ -17,13 +25,17 @@ export function fetchYathJS() {
    return fetchYath('js');
 }
 
-export function getStartGameScript(startScreenId) {
-    return `const g = yath(document.body);g.goToScreen('${startScreenId}');`;
+export function getStartGameScript(startScreenId, onScreenChangeStringified) {
+    const optionsStringified = onScreenChangeStringified ? `{onScreenChange:function(o){var game=o.game,screenName=o.screenName;${onScreenChangeStringified}}}` : null;
+    const appendedOptions = optionsStringified ? `, ${optionsStringified}` : '';
+
+    return `const g = yath(document.body${appendedOptions});g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(gameName, screens, links, startScreen, customCSS) {
+export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS) {
     const screensHtml = getScreensHtml(screens, links);
-    const startGame = getStartGameScript(startScreen.id);
+    const onScreenChangeStringified = getScreensStringifiedRules(screens, logic);
+    const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified);
 
     return Promise.all([
         fetchYathCSS(),
@@ -31,7 +43,7 @@ export function getFullHtml(gameName, screens, links, startScreen, customCSS) {
     ]).then((responses) => {
         const [mainCss, mainJs] = responses;
 
-    const customStyle = customCSS ? `<style data-meta="custom-css">${customCSS.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</style>` : '';
+        const customStyle = customCSS ? `<style data-meta="custom-css">${customCSS.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</style>` : '';
 
         return `<!DOCTYPE html>
 <html>
@@ -50,7 +62,7 @@ export function getFullHtml(gameName, screens, links, startScreen, customCSS) {
     });
 }
 
-export function injectGameIntoIframe(iframe, screens, links, startScreenId, customCSS) {
+export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS) {
     if (!iframe) {
         return;
     }
@@ -79,7 +91,9 @@ export function injectGameIntoIframe(iframe, screens, links, startScreenId, cust
 
         iframe.contentDocument.body.innerHTML = getScreensHtml(screens, links);
 
-        const gameContent = getStartGameScript(startScreenId);
+        const onScreenChangeStringified = getScreensStringifiedRules(screens, logic);
+
+        const gameContent = getStartGameScript(startScreenId, onScreenChangeStringified);
         const gameScript = document.createElement('script');
         gameScript.appendChild(document.createTextNode(gameContent));
 

@@ -26,24 +26,30 @@ class Rule {
         return clone;
     }
 
-    toLogic(allConditions) {
+    toString(allResults, allConditions) {
+        const totalResults = this.resultIds.length;
+
+        if (totalResults === 0) {
+            return '';
+        }
+
+        const stringifiedResults = this.resultIds
+            .map(resultId => allResults[resultId].toString())
+            .filter(stringifiedRule => !!stringifiedRule)
+            .join('');
+
         const totalConditions = this.conditionIds.length;
 
         if (totalConditions === 0) {
-            return {};
+            return stringifiedResults;
         }
 
-        const conditions = this.conditionIds.map(conditionId => (
-            allConditions[conditionId]
-        ));
+        const stringifiedConditions = this.conditionIds
+            .map(conditionId => allConditions[conditionId].toString())
+            .filter(stringifiedCondition => !!stringifiedCondition)
+            .join(` ${this.operator === 'or' ? '||' : '&&'} `);
 
-        if (totalConditions === 1) {
-            return conditions[0].toLogic();
-        }
-
-        return {
-            [this.operator]: conditions.map(condition => condition.toLogic()),
-        };
+        return `if(${stringifiedConditions}){${stringifiedResults}}`;
     }
 }
 

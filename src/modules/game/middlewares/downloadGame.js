@@ -22,6 +22,6 @@ export default store => next => action => {
     const gameName = selectors.name.get(state);
     const customCSS = selectors.customCSS.getExportable(state);
 
-    getFullHtml(gameName, screens, links, startScreen, customCSS)
+    getFullHtml(gameName, screens, links, state.logic, startScreen, customCSS)
         .then(html => downloadHtml(slugify(gameName), html));
 }

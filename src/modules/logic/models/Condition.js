@@ -31,7 +31,8 @@ class Condition {
         return hasScreenError || hasItemError;
     }
 
-    toLogic() {
+    toString() {
+        return 'true';
         const { method, valueToCheck } = conditionSubjectToJSONLogic[this.subject];
         
         return {

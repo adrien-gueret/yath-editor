@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 
-import { ADD_ITEM } from '../constants/results';
+import { ADD_ITEM, REDIRECT, REMOVE_ITEM } from '../constants/results';
 import resultToValueType from '../constants/resultToValueType';
 
 class Result {
@@ -32,8 +32,17 @@ class Result {
         return hasScreenError || hasItemError;
     }
 
-    toLogic() {
-        
+    toString() {
+        switch(this.type) {
+            case ADD_ITEM:
+                return `game.inventory.addItem('${this.params.itemId}',${this.paramas.total});`;
+
+            case REMOVE_ITEM:
+                return `game.inventory.removeItem('${this.params.itemId}',${this.paramas.total});`;
+
+            case REDIRECT:
+                return `game.goToScreen('${this.params.screenId}');return false;`;
+        }
     }
 }
 
