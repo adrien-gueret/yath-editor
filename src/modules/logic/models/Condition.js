@@ -1,5 +1,8 @@
 import shortid from 'shortid';
-import { PLAYER_HAS_NOT_VISITED } from '../constants/conditionSubjects';
+import {
+    PLAYER_HAS_VISITED, PLAYER_HAS_NOT_VISITED,
+    INVENTORY_CONTAINS, INVENTORY_DOES_NOT_CONTAIN,
+} from '../constants/conditionSubjects';
 import conditionSubjectToValueType from '../constants/conditionSubjectToValueType';
 
 class Condition {
@@ -26,27 +29,25 @@ class Condition {
     hasError() {
         const valueType = conditionSubjectToValueType[this.subject];
         const hasScreenError = valueType === 'screen' && !this.params.screenId;
-        const hasItemError = valueType === 'item' && (!this.params.itemId || !this.params.total);
+        const hasItemError = valueType === 'item' && !this.params.itemId;
 
         return hasScreenError || hasItemError;
     }
 
     toString() {
-        return 'true';
-        const { method, valueToCheck } = conditionSubjectToJSONLogic[this.subject];
-        
-        return {
-            '===': [
-                valueToCheck,
-                {
-                    method: [
-                        { var: 'player' },
-                        method,
-                        [this.expectedValue],
-                    ]
-                }
-            ],
-        };
+        switch(this.subject) {
+            case PLAYER_HAS_VISITED:
+                return `game.hasVisitedScreen('${this.params.screenId}')`;
+
+            case PLAYER_HAS_NOT_VISITED:
+                return `!game.hasVisitedScreen('${this.params.screenId}')`;
+
+            case INVENTORY_CONTAINS:
+                return `game.inventory.countItem('${this.params.itemId}')${this.params.operator}${this.params.total}`;
+
+            case INVENTORY_DOES_NOT_CONTAIN:
+                return `!(game.inventory.countItem('${this.params.itemId}')${this.params.operator}${this.params.total})`;
+        }
     }
 }
 

@@ -73,7 +73,7 @@ function Condition({ screenId, conditionId }) {
     const onChangeTotalItems = useCallback(({ target }) => {
         dispatch(actions.updateConditionParams(conditionId, {
             itemId: params.itemId,
-            operator: paramas.operator,
+            operator: params.operator,
             total: Number(target.value),
         }));
     }, [dispatch, params, conditionId]);
@@ -126,7 +126,7 @@ function Condition({ screenId, conditionId }) {
                         ),
                       }}
                     inputProps={{
-                        min: 1,
+                        min: 0,
                         max: 999,
                     }}
                 />

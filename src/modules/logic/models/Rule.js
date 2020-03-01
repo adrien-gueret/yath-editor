@@ -47,7 +47,7 @@ class Rule {
         const stringifiedConditions = this.conditionIds
             .map(conditionId => allConditions[conditionId].toString())
             .filter(stringifiedCondition => !!stringifiedCondition)
-            .join(` ${this.operator === 'or' ? '||' : '&&'} `);
+            .join(`${this.operator === 'or' ? '||' : '&&'}`);
 
         return `if(${stringifiedConditions}){${stringifiedResults}}`;
     }
