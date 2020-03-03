@@ -22,8 +22,8 @@ class Screen {
         this.id = id || shortid.generate();
         this.name = name;
         this.content = content;
-        this.x = DEFAULT_COORDINATE + document.body.scrollLeft;
-        this.y = DEFAULT_COORDINATE + document.body.scrollTop;
+        this.x = DEFAULT_COORDINATE + document.documentElement.scrollLeft;
+        this.y = DEFAULT_COORDINATE + document.documentElement.scrollTop;
         this.width = 0;
         this.height = 0;
         this.isStart = isStart;
