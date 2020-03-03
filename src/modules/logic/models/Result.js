@@ -35,10 +35,10 @@ class Result {
     toString() {
         switch(this.type) {
             case ADD_ITEM:
-                return `game.inventory.addItem('${this.params.itemId}',${this.paramas.total});`;
+                return `game.inventory.addItem('${this.params.itemId}',${this.params.total});`;
 
             case REMOVE_ITEM:
-                return `game.inventory.removeItem('${this.params.itemId}',${this.paramas.total});`;
+                return `game.inventory.removeItem('${this.params.itemId}',${this.params.total});`;
 
             case REDIRECT:
                 return `game.goToScreen('${this.params.screenId}');return false;`;
