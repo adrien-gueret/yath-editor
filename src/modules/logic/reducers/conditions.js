@@ -42,7 +42,7 @@ export default function conditions(state = INITIAL_STATE, action) {
                     break;
     
                     case 'item':
-                        newCondition.params = { itemId: null, operator: '<', total: 1 };
+                        newCondition.params = { itemId: null, operator: '>=', total: 1 };
                     break;
                 }
             }

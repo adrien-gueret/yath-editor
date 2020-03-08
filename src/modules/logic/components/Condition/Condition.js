@@ -112,6 +112,8 @@ function Condition({ screenId, conditionId }) {
                     <MenuItem value="===">exactly</MenuItem>
                     <MenuItem value="<">less than</MenuItem>
                     <MenuItem value=">">more than</MenuItem>
+                    <MenuItem value="<=">up to</MenuItem>
+                    <MenuItem value=">=">at least</MenuItem>
                 </Select>
                 <TextField
                     type="number"
