@@ -39,6 +39,10 @@ export default function results(state = INITIAL_STATE, action) {
                     case 'item':
                         newResult.params = { itemId: null, total: 1 };
                     break;
+
+                    default:
+                        newResult.params = {};
+                        break;
                 }
             }
 

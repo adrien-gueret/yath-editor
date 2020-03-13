@@ -16,7 +16,7 @@ import { ItemList } from 'Modules/inventory';
 import { ConfirmDialog } from 'Modules/utils';
 
 import {
-    REDIRECT, ADD_ITEM, REMOVE_ITEM,
+    REDIRECT, ADD_ITEM, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY
 } from '../../constants/results';
 import RESULT_TO_VALUE_TYPE from '../../constants/resultToValueType';
 
@@ -143,6 +143,8 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
             <Select value={type} onChange={onChangeType} className={classes.select}>
                 <MenuItem value={ADD_ITEM}>Add into inventory</MenuItem>
                 <MenuItem value={REMOVE_ITEM}>Remove from inventory</MenuItem>
+                <MenuItem value={RESET_HISTORY}>Reset screens history</MenuItem>
+                <MenuItem value={RESET_INVENTORY}>Reset inventory</MenuItem>
                 <MenuItem
                     value={REDIRECT}
                     disabled={disableRedirectToScreen || otherScreens.length === 0}

@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 
-import { ADD_ITEM, REDIRECT, REMOVE_ITEM } from '../constants/results';
+import { ADD_ITEM, REDIRECT, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY } from '../constants/results';
 import resultToValueType from '../constants/resultToValueType';
 
 class Result {
@@ -39,6 +39,12 @@ class Result {
 
             case REMOVE_ITEM:
                 return `game.inventory.removeItem('${this.params.itemId}',${this.params.total});`;
+
+            case RESET_INVENTORY:
+                return `game.inventory.reset();`;
+
+            case RESET_INVENTORY:
+                return `game.resetHistory();`;
 
             case REDIRECT:
                 return `game.goToScreen('${this.params.screenId}');return false;`;
