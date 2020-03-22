@@ -1,9 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 
-import {
-    DialogTitle, DialogContent, DialogContentText, makeStyles,
-} from '@material-ui/core';
+import { DialogContentText, makeStyles } from '@material-ui/core';
 
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';

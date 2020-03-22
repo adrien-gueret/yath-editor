@@ -22,7 +22,7 @@ export function App() {
             <AppHeader />
             <Board isDialogOpen={isDialogOpen} />
             { isTesting && <GameTest startScreenId={startScreenId} /> }
-            { isConfiguring && <GameConfiguration /> }
+            <GameConfiguration  isOpen={isConfiguring} />
             { editedScreenId && <ScreenEdit screenId={editedScreenId} /> }
         </div>
     );

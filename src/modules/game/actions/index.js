@@ -22,4 +22,10 @@ export default {
     finishConfigureGame() {
         return { type: actionTypes.FINISH_CONFIGURE_GAME };
     },
+    setGoogleAnalyticsId(gaId) {
+        return { type: actionTypes.SET_GOOGLE_ANALYTICS_ID, payload: { gaId } };
+    },
+    setOtherParameters(parameters) {
+        return { type: actionTypes.SET_OTHER_PARAMETERS, payload: { parameters } };
+    },
 };

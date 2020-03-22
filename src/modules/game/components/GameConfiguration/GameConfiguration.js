@@ -3,20 +3,25 @@ import { useDispatch } from 'react-redux'
 
 import {
     Dialog, DialogActions, DialogContent, Button,
-    Tabs, Tab, makeStyles,
+    Tabs, Tab, Slide, makeStyles,
 } from '@material-ui/core';
 
+import OtherIcon from '@material-ui/icons/Build';
 import CustomCSSIcon from '@material-ui/icons/Palette';
 
 import actions from '../../actions';
 
 import CSSConfiguration from './CSSConfiguration';
+import OtherParametersConfiguration from './OtherParametersConfiguration';
 
-const useStyles = makeStyles(() => ({
-   
+const useStyles = makeStyles(({ spacing }) => ({
+    tabContainer: {
+        margin: spacing(1, 0, 3, 0),
+        flexShrink: 0,
+    },
 }), { classNamePrefix: 'GameConfiguration' });
 
-function GameConfiguration() {
+function GameConfiguration({ isOpen }) {
     const dispatch = useDispatch();
     const [currentTab, setCurrentTab] = useState('css');
 
@@ -25,7 +30,7 @@ function GameConfiguration() {
     const classes = useStyles();
 
     return (
-        <Dialog open maxWidth={false} fullWidth>
+        <Dialog open={isOpen} fullScreen TransitionComponent={Slide}>
             <Tabs
                 className={classes.tabContainer}
                 value={currentTab}
@@ -34,10 +39,12 @@ function GameConfiguration() {
                 textColor="primary"
             >
                 <Tab icon={<CustomCSSIcon />} label="Custom CSS" value="css" />
+                <Tab icon={<OtherIcon />} label="Other parameters" value="other" />
             </Tabs>
 
             <DialogContent>
                 {currentTab === 'css' && <CSSConfiguration />}
+                {currentTab === 'other' && <OtherParametersConfiguration />}
             </DialogContent>
 
             <DialogActions>

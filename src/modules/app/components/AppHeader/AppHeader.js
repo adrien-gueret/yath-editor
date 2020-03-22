@@ -72,6 +72,10 @@ function AppHeader() {
         if (newState.game.customCSS) {
             dispatch(gameActions.setCustomCSS(newState.game.customCSS));
         }
+
+        if (newState.game.otherParameters) {
+            dispatch(gameActions.setOtherParameters(newState.game.otherParameters));
+        }
     }, [dispatch]);
 
     const loadFile = useCallback((loadEvent) => {
