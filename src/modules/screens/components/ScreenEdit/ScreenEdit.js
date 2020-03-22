@@ -32,12 +32,6 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     tabContainer: {
         margin: spacing(1, 0, 3, 0),
     },
-    typeContainer: {
-        float: 'right',
-    },
-    typeLabel: {
-        display: 'inline',
-    },
     badgeCounter: {
         border: `2px solid ${palette.background.paper}`,
         padding: spacing(0, 0.5),

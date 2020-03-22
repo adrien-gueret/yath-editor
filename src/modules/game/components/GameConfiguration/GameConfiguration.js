@@ -1,50 +1,45 @@
-import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux'
 
 import {
-    DialogTitle, Dialog, DialogActions, DialogContent, DialogContentText, Button, makeStyles,
+    Dialog, DialogActions, DialogContent, Button,
+    Tabs, Tab, makeStyles,
 } from '@material-ui/core';
 
-import Editor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-css';
-import 'prismjs/themes/prism-coy.css';
+import CustomCSSIcon from '@material-ui/icons/Palette';
 
 import actions from '../../actions';
-import selectors from '../../selectors';
+
+import CSSConfiguration from './CSSConfiguration';
 
 const useStyles = makeStyles(() => ({
-    editor: {
-        backgroundColor: ['#f6f9fb', '!important'],
-    },
+   
 }), { classNamePrefix: 'GameConfiguration' });
 
 function GameConfiguration() {
     const dispatch = useDispatch();
+    const [currentTab, setCurrentTab] = useState('css');
 
-    const customCSS = useSelector(selectors.customCSS.get);
     const finishConfigureGame = useCallback(() => dispatch(actions.finishConfigureGame()), [dispatch]);
-    const setCustomCSS = useCallback((value) => dispatch(actions.setCustomCSS(value)), [dispatch]);
 
     const classes = useStyles();
 
     return (
         <Dialog open maxWidth={false} fullWidth>
-            <DialogTitle>Custom CSS</DialogTitle>
+            <Tabs
+                className={classes.tabContainer}
+                value={currentTab}
+                onChange={(e, value) => setCurrentTab(value)}
+                indicatorColor="primary"
+                textColor="primary"
+            >
+                <Tab icon={<CustomCSSIcon />} label="Custom CSS" value="css" />
+            </Tabs>
+
             <DialogContent>
-                <DialogContentText>
-                    The CSS below will be injected <strong>after</strong> the yath CSS file.
-                </DialogContentText>
-                <Editor
-                    value={customCSS}
-                    onValueChange={setCustomCSS}
-                    highlight={value => highlight(value, languages.css)}
-                    padding={10}
-                    textareaClassName={classes.editor}
-                    preClassName="language-css"
-                    
-                />
+                {currentTab === 'css' && <CSSConfiguration />}
             </DialogContent>
+
             <DialogActions>
                 <Button
                     onClick={finishConfigureGame}
