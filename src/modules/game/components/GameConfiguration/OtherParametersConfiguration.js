@@ -40,8 +40,7 @@ function OtherParametersConfiguration() {
                 placeholder="UA-123456789-1"
                 helperText={(
                 <>
-                    You can provide a Google Analytics ID to know on which screens your players will go. 
-                    { ' ' }
+                    You can provide a Google Analytics ID to know on which screens your players will go while playing your published game.<br />
                     <Link href="https://support.google.com/analytics/answer/1008015?hl=en" target="_blank">
                         Know more about Google Analytics <NewTabIcon fontSize="small" className={classes.newTabIcon} />
                     </Link>.

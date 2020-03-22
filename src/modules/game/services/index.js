@@ -1,3 +1,5 @@
+import { getGtagUrl, getAnalyticsInitScript } from './googleAnalytics';
+
 function fetchYath(type) {
     const fileName = `yath.min.${type}`;
 
@@ -32,10 +34,11 @@ export function getStartGameScript(startScreenId, onScreenChangeStringified) {
     return `const g = yath(document.body${appendedOptions});g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS) {
+export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS, otherParameters) {
     const screensHtml = getScreensHtml(screens, links);
     const onScreenChangeStringified = getScreensStringifiedRules(screens, logic);
     const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified);
+    const gaId = otherParameters.gaId;
 
     return Promise.all([
         fetchYathCSS(),
@@ -48,6 +51,9 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
         return `<!DOCTYPE html>
 <html>
     <head>
+        ${gaId ? (
+            `<script async src="${getGtagUrl(gaId)}"></script><script>${getAnalyticsInitScript(gaId)}</script>`
+        ) : ''}
         <meta charset="UTF-8">
         <title>${gameName.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</title>
         <style data-meta="yath">${mainCss}</style>
@@ -62,7 +68,7 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
     });
 }
 
-export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS) {
+export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS, otherParameters) {
     if (!iframe) {
         return;
     }

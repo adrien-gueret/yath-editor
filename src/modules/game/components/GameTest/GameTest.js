@@ -35,6 +35,7 @@ function GameTest({ startScreenId }) {
     const links = useSelector(linkSelectors.list.get, shallowEqual);
     const logic = useSelector(state => state.logic, shallowEqual);
     const customCSS = useSelector(selectors.customCSS.getExportable);
+    const otherParameters = useSelector(selectors.otherParameters.get);
 
     const finishTestGame = useCallback(() => dispatch(actions.finishTestGame()), [dispatch]);
     const restartGame = useCallback(() => setIframeKey(iframeKey + 1), [iframeKey, setIframeKey]);
@@ -42,8 +43,8 @@ function GameTest({ startScreenId }) {
     const startScreenIdToUse = startScreenId || startScreen.id;
 
     const initIframe = useCallback((iframe) => {
-        injectGameIntoIframe(iframe, screens, links, logic, startScreenIdToUse, customCSS);
-    }, [screens, links, startScreenIdToUse, customCSS]);
+        injectGameIntoIframe(iframe, screens, links, logic, startScreenIdToUse, customCSS, otherParameters);
+    }, [screens, links, startScreenIdToUse, customCSS, otherParameters]);
 
     const classes = useStyles();
 
