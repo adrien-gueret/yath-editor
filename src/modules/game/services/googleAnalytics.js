@@ -3,11 +3,9 @@ export function getGtagUrl(gaId) {
 } 
 
 export function getAnalyticsInitScript(gaId) {
-    return `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`;
+    return `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}',{send_page_view:false});`;
 }
 
-export function getTrackScreenScript(gameName) {
-
-
-    return `gtag('event','screen_view',{app_name:'myAppName',screen_name:'Home'});`;
+export function getTrackScreenScript(gaId) {
+    return `function t(n,p){gtag('config','${gaId}',{page_title:n,page_path:p});}`;
 }

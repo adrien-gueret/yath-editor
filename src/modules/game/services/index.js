@@ -1,4 +1,4 @@
-import { getGtagUrl, getAnalyticsInitScript } from './googleAnalytics';
+import { getGtagUrl, getAnalyticsInitScript, getTrackScreenScript } from './googleAnalytics';
 
 function fetchYath(type) {
     const fileName = `yath.min.${type}`;
@@ -11,11 +11,23 @@ export function getScreensHtml(screens, links) {
     return screens.map(screen => screen.toHTML(links)).join('');
 }
 
-export function getScreensStringifiedRules(screens, logic) {
-    return screens
+export function getScreensStringifiedRules(screens, logic, gaId) {
+    let analyticsLogic = '';
+
+    if (gaId) {
+        const screenIdsToScreenNames = JSON.stringify(screens.reduce((acc, screen) => ({
+            ...acc,
+            [screen.id]: { n: screen.name, s: '/' + screen.getSlug() },
+        }), {}));
+        analyticsLogic = `var m=${screenIdsToScreenNames};t(m[screenName].n,m[screenName].s);`;
+    }
+
+    const specificScreensLogic = screens
         .map(screen => screen.getStringifiedRules(logic))
         .filter(stringifiedRule => !!stringifiedRule)
         .join(' else ');
+
+    return analyticsLogic + specificScreensLogic;
 }
 
 
@@ -35,11 +47,11 @@ export function getStartGameScript(startScreenId, onScreenChangeStringified) {
 }
 
 export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS, otherParameters) {
-    const screensHtml = getScreensHtml(screens, links);
-    const onScreenChangeStringified = getScreensStringifiedRules(screens, logic);
-    const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified);
     const gaId = otherParameters.gaId;
-
+    const screensHtml = getScreensHtml(screens, links);
+    const onScreenChangeStringified = getScreensStringifiedRules(screens, logic, gaId);
+    const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified);
+    
     return Promise.all([
         fetchYathCSS(),
         fetchYathJS(),
@@ -52,7 +64,7 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
 <html>
     <head>
         ${gaId ? (
-            `<script async src="${getGtagUrl(gaId)}"></script><script>${getAnalyticsInitScript(gaId)}</script>`
+            `<script async src="${getGtagUrl(gaId)}"></script><script>${getAnalyticsInitScript(gaId)};${getTrackScreenScript(gaId)}</script>`
         ) : ''}
         <meta charset="UTF-8">
         <title>${gameName.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</title>
