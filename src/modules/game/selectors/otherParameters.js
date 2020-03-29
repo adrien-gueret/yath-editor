@@ -7,7 +7,13 @@ function getGoogleAnalyticsId(state) {
     return otherParameters.gaId;
 }
 
+function getCloudinary(state) {
+    const otherParameters = get(state);
+    return otherParameters.cloudinary;
+}
+
 export default {
     get,
     getGoogleAnalyticsId,
+    getCloudinary,
 }

@@ -25,6 +25,12 @@ export default {
     setGoogleAnalyticsId(gaId) {
         return { type: actionTypes.SET_GOOGLE_ANALYTICS_ID, payload: { gaId } };
     },
+    setCloudinaryName(name) {
+        return { type: actionTypes.SET_CLOUDINARY_NAME, payload: { name } };
+    },
+    setCloudinaryPreset(preset) {
+        return { type: actionTypes.SET_CLOUDINARY_PRESET, payload: { preset } };
+    },
     setOtherParameters(parameters) {
         return { type: actionTypes.SET_OTHER_PARAMETERS, payload: { parameters } };
     },
