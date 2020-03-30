@@ -12,7 +12,7 @@ const propTypes = {
 };
 
 export default function RuleList({ screenId }) {
-    const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual) || [];
+    const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
 
     const hasRules = screen.logicRuleIds.length > 0;
 

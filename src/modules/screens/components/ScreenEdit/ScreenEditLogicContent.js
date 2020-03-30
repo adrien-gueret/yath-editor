@@ -1,16 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-    DialogContentText, Divider, makeStyles,
-    IconButton, Tooltip,
-} from '@material-ui/core';
+import { DialogContentText, Divider, makeStyles } from '@material-ui/core';
 
-import AddLinkIcon from '@material-ui/icons/PostAdd';
-
-import { RuleListContainer, actions, RuleModel } from 'Modules/logic';
-
-import selectors from '../../selectors';
+import { RuleListContainer } from 'Modules/logic';
 
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,

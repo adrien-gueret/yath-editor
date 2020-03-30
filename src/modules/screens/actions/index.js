@@ -10,6 +10,9 @@ export default {
     editScreenContent(screenId, newContent) {
         return { type: actionTypes.EDIT_SCREEN_CONTENT, payload: { screenId, newContent } };
     },
+    editScreenImage(screenId, newImage) {
+        return { type: actionTypes.EDIT_SCREEN_IMAGE, payload: { screenId, newImage } };
+    },
     setStartScreen(screenId) {
         return { type: actionTypes.SET_START_SCREEN, payload: { screenId } };
     },

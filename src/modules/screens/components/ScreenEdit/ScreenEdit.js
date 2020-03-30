@@ -10,6 +10,7 @@ import {
 
 import LogicIcon from '@material-ui/icons/AccountTree';
 import ContentIcon from '@material-ui/icons/Create';
+import ImageIcon from '@material-ui/icons/Image';
 
 import { selectors as logicSelectors } from 'Modules/logic';
 
@@ -19,6 +20,7 @@ import actions from '../../actions';
 import selectors from '../../selectors';
 
 import ScreenEditClassicContent from './ScreenEditClassicContent';
+import ScreenEditImage from './ScreenEditImage';
 import ScreenEditLogicContent from './ScreenEditLogicContent';
 
 const propTypes = {
@@ -77,6 +79,7 @@ export default function ScreenEdit({ screenId }) {
                     textColor="primary"
                 >
                     <Tab icon={<ContentIcon />} label="Content" value="content" />
+                    <Tab icon={<ImageIcon />} label="Image" value="image" />
                     <Tab icon={(
                         <Badge
                             classes={{ badge: classes.badgeCounter}}
@@ -90,6 +93,7 @@ export default function ScreenEdit({ screenId }) {
                 </Tabs>
 
                 {currentTab === 'content' && <ScreenEditClassicContent screenId={screenId} />}
+                {currentTab === 'image' && <ScreenEditImage screenId={screenId} />}
                 {currentTab === 'logic' && <ScreenEditLogicContent screenId={screenId} />}
 
             </DialogContent>

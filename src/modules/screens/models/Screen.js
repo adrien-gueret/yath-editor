@@ -11,6 +11,7 @@ class Screen {
         screen.y = json.y;
         screen.width = json.width;
         screen.height = json.height;
+        screen.image = json.image;
         screen.linkIds = [...(json.linkIds || [])];
         screen.logicRuleIds = [...(json.logicRuleIds || [])];
         screen.isSelected = false;
@@ -26,6 +27,7 @@ class Screen {
         this.y = DEFAULT_COORDINATE + document.documentElement.scrollTop;
         this.width = 0;
         this.height = 0;
+        this.image = '';
         this.isStart = isStart;
         this.linkIds = [];
         this.logicRuleIds = [];
@@ -51,6 +53,7 @@ class Screen {
         copiedScreen.y = this.y;
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
+        copiedScreen.image = this.image;
         copiedScreen.linkIds = [...this.linkIds];
         copiedScreen.logicRuleIds = [...this.logicRuleIds];
         copiedScreen.isSelected = this.isSelected;
@@ -86,8 +89,11 @@ class Screen {
 
     toHTML(allLinks) {
         const navigation = this.linkIds.map(linkId => allLinks[linkId].toHTML()).join('');
+        const htmlImage = this.image ? `<img class="yathImage" src="${this.image}" alt="" />` : '';
+
         return `
          <section data-yath-screen="${this.id}">
+            ${htmlImage ? htmlImage : ''}
             <div>${this.content}</div>
             <nav>${navigation}</nav>
         </section>

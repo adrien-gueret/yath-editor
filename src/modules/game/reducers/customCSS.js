@@ -12,6 +12,10 @@ export const INITIAL_STATE = `html, body {
     /* ... */
 }
 
+.yathImage {
+    /* ... */
+}
+
 .yathScreen nav button {
     /* ... */
 }

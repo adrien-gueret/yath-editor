@@ -68,6 +68,16 @@ export default function list(state = INITIAL_STATE, action) {
             };
         }
 
+        case actionTypes.EDIT_SCREEN_IMAGE: {
+            const newScreen = state[action.payload.screenId].clone();
+            newScreen.image = action.payload.newImage;
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
         case actionTypes.SET_START_SCREEN: {
             return Object.keys(state)
                 .reduce((newState, screenId) => {
