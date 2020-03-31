@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux'
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
     Dialog, DialogActions, DialogContent, Button,
@@ -10,6 +10,7 @@ import OtherIcon from '@material-ui/icons/Build';
 import CustomCSSIcon from '@material-ui/icons/Palette';
 
 import actions from '../../actions';
+import selectors from '../../selectors';
 
 import CSSConfiguration from './CSSConfiguration';
 import OtherParametersConfiguration from './OtherParametersConfiguration';
@@ -23,8 +24,10 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 function GameConfiguration({ isOpen }) {
     const dispatch = useDispatch();
-    const [currentTab, setCurrentTab] = useState('css');
+    
+    const currentTab = useSelector(selectors.isConfiguring.getDefaultTab);
 
+    const setCurrentTab = useCallback((tab) => dispatch(actions.setConfigurationTab(tab)), [dispatch]);
     const finishConfigureGame = useCallback(() => dispatch(actions.finishConfigureGame()), [dispatch]);
 
     const classes = useStyles();

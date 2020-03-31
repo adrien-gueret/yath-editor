@@ -12,7 +12,8 @@ import { selectors as screenSelectors, ScreenEdit } from 'Modules/screens';
 export function App() {
     const editedScreenId = useSelector(screenSelectors.editedScreenId.get);
     const isTesting = useSelector(gameSelectors.isTesting.get);
-    const isConfiguring = useSelector(gameSelectors.isConfiguring.get);
+    const isConfiguring = useSelector(gameSelectors.isConfiguring.isConfiguring);
+
     const startScreenId = typeof isTesting === 'boolean' ? null : isTesting;
 
    const isDialogOpen = Boolean(editedScreenId) || isTesting || isConfiguring;
@@ -22,7 +23,9 @@ export function App() {
             <AppHeader />
             <Board isDialogOpen={isDialogOpen} />
             { isTesting && <GameTest startScreenId={startScreenId} /> }
-            <GameConfiguration  isOpen={isConfiguring} />
+
+            <GameConfiguration isOpen={isConfiguring} />
+
             { editedScreenId && <ScreenEdit screenId={editedScreenId} /> }
         </div>
     );

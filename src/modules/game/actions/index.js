@@ -16,8 +16,8 @@ export default {
     setCustomCSS(css) {
         return { type: actionTypes.SET_CUSTOM_CSS, payload: { css } };
     },
-    configureGame() {
-        return { type: actionTypes.CONFIGURE_GAME };
+    configureGame(defaultTab = 'css') {
+        return { type: actionTypes.CONFIGURE_GAME, payload: { defaultTab } };
     },
     finishConfigureGame() {
         return { type: actionTypes.FINISH_CONFIGURE_GAME };
@@ -33,5 +33,8 @@ export default {
     },
     setOtherParameters(parameters) {
         return { type: actionTypes.SET_OTHER_PARAMETERS, payload: { parameters } };
+    },
+    setConfigurationTab(tab) {
+        return { type: actionTypes.SET_CONFIGURATION_TAB, payload: { tab } };
     },
 };

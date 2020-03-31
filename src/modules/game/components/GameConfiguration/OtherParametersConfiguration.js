@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 
-import { DialogContentText, Link, TextField, FormHelperText, makeStyles, Typography } from '@material-ui/core';
+import { DialogContentText, Link, TextField, makeStyles, Typography } from '@material-ui/core';
 import NewTabIcon from '@material-ui/icons/OpenInNew';
 
 import actions from '../../actions';
@@ -46,22 +46,22 @@ function OtherParametersConfiguration() {
                 variant="outlined"
                 placeholder="UA-123456789-1"
             />
-            <FormHelperText>
+            <DialogContentText>
                 You can provide a Google Analytics ID to know on which screens your players will go while playing your published game.<br />
                 <Link href="https://support.google.com/analytics/answer/1008015?hl=en" target="_blank">
                     Know more about Google Analytics <NewTabIcon fontSize="small" className={classes.newTabIcon} />
                 </Link>.
-            </FormHelperText>
+            </DialogContentText>
 
             <Typography className={classes.title} variant="h6">Images uploads</Typography>
 
-            <FormHelperText>
+            <DialogContentText>
                 For more convenience, you can use Cloudinary to upload your images directly from this editor.<br />
                 To do that, you must have an account on Cloudinary. The free plan should be enough for your needs.<br />
                 <Link href="https://cloudinary.com/pricing" target="_blank">
                     Know more about Cloudinary plans <NewTabIcon fontSize="small" className={classes.newTabIcon} />
                 </Link>.
-            </FormHelperText>
+            </DialogContentText>
 
             <br />
 
@@ -73,7 +73,7 @@ function OtherParametersConfiguration() {
                 variant="outlined"
                 placeholder="demo"
             />
-            <FormHelperText>Your Cloudinary account cloud name.</FormHelperText>
+            <DialogContentText>Your Cloudinary account cloud name.</DialogContentText>
             <br />
 
             <TextField
@@ -84,7 +84,7 @@ function OtherParametersConfiguration() {
                 variant="outlined"
                 placeholder="demo-unsigned-upload-preset"
             />
-            <FormHelperText>
+            <DialogContentText>
                 The name of an unsigned upload preset that you defined for unsigned uploading to your
                 { ' ' }
                 <Link href="https://cloudinary.com/console/settings/upload" target="_blank">
@@ -93,7 +93,7 @@ function OtherParametersConfiguration() {
                 <Link href="https://cloudinary.com/documentation/upload_images#unsigned_upload" target="_blank">
                     Know more about Cloudindary Unsigned upload <NewTabIcon fontSize="small" className={classes.newTabIcon} />
                 </Link>.
-            </FormHelperText>
+            </DialogContentText>
         </>
     );
 }
