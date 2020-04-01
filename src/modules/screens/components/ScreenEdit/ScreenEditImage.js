@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useDebounce } from 'use-debounce';
 
-import { DialogContentText, Typography, TextField, Paper, Link, makeStyles } from '@material-ui/core';
+import { DialogContentText, Typography, TextField, Paper, Link, Switch, FormControlLabel, IconButton, makeStyles } from '@material-ui/core';
+
 import ErrorIcon from '@material-ui/icons/Error';
+import ResetIcon from '@material-ui/icons/Cancel';
 
 import { actions as gameActions, selectors as gameSelectors } from 'Modules/game';
+import { ImageDropzone } from 'Modules/images';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
@@ -16,8 +19,13 @@ const propTypes = {
 };
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
+    fieldContainer: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     field: {
         width: 300,
+        marginRight: spacing(1),
     },
     preview: {
         width: 200,
@@ -33,18 +41,27 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
         backgroundColor: ({ canRenderImagePreview }) => canRenderImagePreview ? palette.background.paper : palette.grey[50],
         backgroundImage: ({ imageUrl, canRenderImagePreview}) => canRenderImagePreview ? `url(${imageUrl})` : 'none',
     },
+    switchContainer: {
+        margin: spacing(2),
+    },
 }), { classNamePrefix: 'ScreenEditImage' });
 
 export default function ScreenEditImage({ screenId }) {
     const dispatch = useDispatch();
     const [hasImageError, setHasImageError] = useState(false);
+   
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
     const cloudinary = useSelector(state => gameSelectors.otherParameters.getCloudinary(state), shallowEqual);
     const configureGame = useCallback(() => dispatch(gameActions.configureGame('other')), [dispatch]);
     const [imageUrl] = useDebounce(screen.image, 300);
 
-    const onTextFieldChange = (e) => setImageUrl(e.target.value);
+    const isCloudinaryAvailable = Boolean(cloudinary.name) && Boolean(cloudinary.preset);
+    const canRenderImagePreview = Boolean(imageUrl) && !hasImageError;
+
+    const [isUploadActive, setIsUploadActive] = useState(isCloudinaryAvailable);
+
     const setImageUrl = useCallback((value) => dispatch(actions.editScreenImage(screenId, value)), [dispatch, screenId]);
+    const onTextFieldChange = (e) => setImageUrl(e.target.value);
     const setImageError = useCallback(() => setHasImageError(true), [setHasImageError]);
     const resetImageError = useCallback(() => setHasImageError(false), [setHasImageError]);
     
@@ -61,8 +78,9 @@ export default function ScreenEditImage({ screenId }) {
         img.src = imageUrl;
     }, [imageUrl, resetImageError, setImageError]);
 
-    const isCloudinaryAvailable = cloudinary.name && cloudinary.preset;
-    const canRenderImagePreview = imageUrl && !hasImageError;
+    useEffect(() => {
+        setIsUploadActive(isCloudinaryAvailable);
+    }, [isCloudinaryAvailable]);
 
     const classes = useStyles({ imageUrl, canRenderImagePreview });
 
@@ -88,15 +106,42 @@ export default function ScreenEditImage({ screenId }) {
                 )
             }
             </DialogContentText>
+
+            {
+                isCloudinaryAvailable && (
+                    <div className={classes.switchContainer}>
+                        <FormControlLabel
+                            control={(
+                                <Switch checked={isUploadActive} onChange={(e) => setIsUploadActive(e.target.checked)} color="primary"  />
+                            )}
+                            label="Upload a file"
+                        />
+                    </div>
+                )
+            }
             
-            <TextField
-                className={classes.field}
-                value={screen.image || ''}
-                onChange={onTextFieldChange}
-                label="Image URL"
-                variant="outlined"
-                placeholder="https://via.placeholder.com/300.png"
-            />
+            { (!isUploadActive || screen.image) && (
+                <span className={classes.fieldContainer}>
+                    <TextField
+                        className={classes.field}
+                        value={screen.image || ''}
+                        onChange={onTextFieldChange}
+                        label="Image URL"
+                        variant="outlined"
+                        placeholder="https://via.placeholder.com/300.png"
+                        disabled={isUploadActive}
+                    />
+                    { (screen.image && isUploadActive) && (
+                        <IconButton onClick={() => setImageUrl('')}>
+                            <ResetIcon />
+                        </IconButton>
+                    ) }
+                </span>
+            )}
+
+            { (isUploadActive && !screen.image) && (
+                <ImageDropzone cloudName={cloudinary.name} cloudPreset={cloudinary.preset} onUpload={setImageUrl} />
+            )}
 
             <Paper className={classes.preview} variant="outlined">
                 { !canRenderImagePreview && (

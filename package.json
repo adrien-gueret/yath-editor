@@ -25,8 +25,9 @@
     "use-debounce": "^3.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.2",
+    "@babel/core": "^7.0.0-0",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
     "less": "^3.10.3",
     "parcel-bundler": "^1.12.4"
   },

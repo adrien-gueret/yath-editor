@@ -57,7 +57,7 @@ export default function ScreenEdit({ screenId }) {
     const classes = useStyles();
 
     return (
-        <Dialog open aria-labelledby="edit-screen-dialog" fullWidth maxWidth={false}>
+        <Dialog open aria-labelledby="edit-screen-dialog" fullScreen>
             <DialogTitle id="edit-screen-dialog">Screen configuration</DialogTitle>
 
             <DialogContent key={screenId} dividers>
