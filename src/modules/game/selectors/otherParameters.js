@@ -9,7 +9,7 @@ function getGoogleAnalyticsId(state) {
 
 function getCloudinary(state) {
     const otherParameters = get(state);
-    return otherParameters.cloudinary;
+    return otherParameters.cloudinary || {};
 }
 
 export default {
