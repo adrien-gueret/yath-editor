@@ -72,7 +72,7 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
         ${customStyle}
         <script>${mainJs}</script>
     </head>
-    <body>
+    <body style="display:none;">
         ${screensHtml}
         <script>${startGame}</script>
     </body>
@@ -107,6 +107,7 @@ export function injectGameIntoIframe(iframe, screens, links, logic, startScreenI
         yathScript.appendChild(document.createTextNode(jsContent));
         iframe.contentDocument.head.appendChild(yathScript);
 
+        iframe.contentDocument.body.setAttribute('style', 'display:none;');
         iframe.contentDocument.body.innerHTML = getScreensHtml(screens, links);
 
         const onScreenChangeStringified = getScreensStringifiedRules(screens, logic);
