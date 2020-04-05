@@ -1,5 +1,3 @@
-import './board.less';
-
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
@@ -10,6 +8,21 @@ import { actions as screenActions, selectors as screenSelectors, Screen } from '
 import ArrowsBoard from '../ArrowsBoard';
 
 const useStyles = makeStyles(() => ({
+    root: {
+        display: 'block',
+        position: 'relative',
+        margin: 0,
+        width: '1000vw',
+        height: '1000vh',
+        backgroundColor: '#e3e3e3',
+        backgroundImage:
+          `linear-gradient(white 2px, transparent 2px),
+          linear-gradient(90deg, white 2px, transparent 2px),
+          linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px)`,
+        backgroundSize: '100px 100px, 100px 100px, 20px 20px, 20px 20px',
+        backgroundPosition: '-2px -2px, -2px -2px, -1px -1px, -1px -1px',
+    },
     selector: {
         zIndex: 100,
     },
@@ -138,7 +151,7 @@ function Board({ isDialogOpen }) {
     }, [dragSelect, editedScreenId, clearSelection, isDialogOpen]);
 
     return (
-        <section className="yathBoard" onDoubleClick={clearSelection}>
+        <section className={classes.root} onDoubleClick={clearSelection}>
             {
                 screens.map(screen =>  (
                     <Screen
