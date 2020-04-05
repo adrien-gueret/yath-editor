@@ -111,7 +111,7 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
 
     return (
         <Draggable
-            bounds="parent"
+            bounds={{ top: 60 }}
             position={position}
             onStart={dragStart}
             onDrag={dragScreen}

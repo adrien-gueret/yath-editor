@@ -12,8 +12,8 @@ const useStyles = makeStyles(() => ({
         display: 'block',
         position: 'relative',
         margin: 0,
-        width: '1000vw',
-        height: '1000vh',
+        width: '100vw',
+        height: '100vh',
         backgroundColor: '#e3e3e3',
         backgroundImage:
           `linear-gradient(white 2px, transparent 2px),
@@ -33,13 +33,14 @@ function Board({ isDialogOpen }) {
     const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
     const totalSelectedScreens = useMemo(() => screens.filter(screen => screen.isSelected).length, [screens]);
     
-    const classes = useStyles();
     const dispatch = useDispatch();
     const selectScreen = useCallback((screenId) => dispatch(screenActions.selectScreen(screenId)), [dispatch]);
     const unselectScreen = useCallback((screenId) => dispatch(screenActions.unselectScreen(screenId)), [dispatch]);
     const moveScreens = useCallback((screenIds, deltaX, deltaY) => dispatch(screenActions.moveScreens(screenIds, deltaX, deltaY)), [dispatch]);
 
     const [draggedScreenInitialStatus, setDraggedScreenInitialStatus] = useState(false);
+
+    const classes = useStyles();
 
     const dragSelect = useMemo(() => new DragSelect({
         selectorClass: classes.selector,

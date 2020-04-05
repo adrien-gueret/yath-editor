@@ -15,9 +15,6 @@ const useStyles = makeStyles(() => ({
             margin: 0,
         },
     },
-    root: {
-        paddingTop: 50,
-    }
 }), { classNamePrefix: 'App' });
 
 export function App() {
@@ -29,10 +26,10 @@ export function App() {
 
     const isDialogOpen = Boolean(editedScreenId) || isTesting || isConfiguring;
 
-    const classes = useStyles();
+    useStyles();
 
     return (
-        <div className={classes.root}>
+        <>
             <AppHeader />
             <Board isDialogOpen={isDialogOpen} />
             { isTesting && <GameTest startScreenId={startScreenId} /> }
@@ -40,7 +37,7 @@ export function App() {
             <GameConfiguration isOpen={isConfiguring} />
 
             { editedScreenId && <ScreenEdit screenId={editedScreenId} /> }
-        </div>
+        </>
     );
 }
 
