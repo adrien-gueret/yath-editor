@@ -12,8 +12,10 @@ const useStyles = makeStyles(() => ({
         display: 'block',
         position: 'relative',
         margin: 0,
-        width: '100vw',
-        height: '100vh',
+        minWidth: '100vw',
+        minHeight: '100vh',
+        width: ({ maxCoordinates }) => maxCoordinates.x + 500,
+        height: ({ maxCoordinates }) => maxCoordinates.y + 500,
         backgroundColor: '#e3e3e3',
         backgroundImage:
           `linear-gradient(white 2px, transparent 2px),
@@ -40,7 +42,12 @@ function Board({ isDialogOpen }) {
 
     const [draggedScreenInitialStatus, setDraggedScreenInitialStatus] = useState(false);
 
-    const classes = useStyles();
+    const maxCoordinates = useMemo(() => screens.reduce(({ x, y }, screen) => ({
+        x: Math.max(x, screen.x + screen.width),
+        y: Math.max(y, screen.y + screen.height),
+    }), { x: 0, y: 0 }), [screens]);
+
+    const classes = useStyles({ maxCoordinates });
 
     const dragSelect = useMemo(() => new DragSelect({
         selectorClass: classes.selector,
