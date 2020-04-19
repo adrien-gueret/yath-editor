@@ -13,6 +13,9 @@ export default {
     editScreenImage(screenId, newImage) {
         return { type: actionTypes.EDIT_SCREEN_IMAGE, payload: { screenId, newImage } };
     },
+    editScreenImageOrder(screenId, mustRenderAfterContent) {
+        return { type: actionTypes.EDIT_SCREEN_IMAGE_ORDER, payload: { screenId, mustRenderAfterContent } };
+    },
     setStartScreen(screenId) {
         return { type: actionTypes.SET_START_SCREEN, payload: { screenId } };
     },

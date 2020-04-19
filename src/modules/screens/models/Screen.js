@@ -12,6 +12,7 @@ class Screen {
         screen.width = json.width;
         screen.height = json.height;
         screen.image = json.image;
+        screen.mustRenderImageAfterContent = !!json.mustRenderImageAfterContent;
         screen.linkIds = [...(json.linkIds || [])];
         screen.logicRuleIds = [...(json.logicRuleIds || [])];
         screen.isSelected = false;
@@ -28,6 +29,7 @@ class Screen {
         this.width = 0;
         this.height = 0;
         this.image = '';
+        this.mustRenderImageAfterContent = false;
         this.isStart = isStart;
         this.linkIds = [];
         this.logicRuleIds = [];
@@ -54,6 +56,7 @@ class Screen {
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
         copiedScreen.image = this.image;
+        copiedScreen.mustRenderImageAfterContent = !!this.mustRenderImageAfterContent;
         copiedScreen.linkIds = [...this.linkIds];
         copiedScreen.logicRuleIds = [...this.logicRuleIds];
         copiedScreen.isSelected = this.isSelected;
@@ -93,8 +96,9 @@ class Screen {
 
         return `
          <section data-yath-screen="${this.id}">
-            ${htmlImage ? htmlImage : ''}
+            ${(!this.mustRenderImageAfterContent && htmlImage) ? htmlImage : ''}
             <div>${this.content}</div>
+            ${(this.mustRenderImageAfterContent && htmlImage) ? htmlImage : ''}
             <nav>${navigation}</nav>
         </section>
         `;

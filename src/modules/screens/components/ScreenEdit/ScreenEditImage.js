@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useDebounce } from 'use-debounce';
 
-import { DialogContentText, Typography, TextField, Paper, Link, Switch, FormControlLabel, IconButton, makeStyles } from '@material-ui/core';
+import {
+    DialogContentText, Typography, TextField, Paper, Link, Switch,
+    FormControlLabel, IconButton, makeStyles, Select, MenuItem,
+} from '@material-ui/core';
 
 import ErrorIcon from '@material-ui/icons/Error';
 import ResetIcon from '@material-ui/icons/Cancel';
@@ -18,7 +21,7 @@ const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles(({ palette, spacing, typography }) => ({
     fieldContainer: {
         display: 'flex',
         alignItems: 'center',
@@ -44,6 +47,12 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     switchContainer: {
         margin: spacing(2),
     },
+    imageOrderContainer: {
+        textAlign: 'center',
+    },
+    imageOrderSelector: {
+        margin: spacing(0, 1),
+    },
 }), { classNamePrefix: 'ScreenEditImage' });
 
 export default function ScreenEditImage({ screenId }) {
@@ -61,10 +70,11 @@ export default function ScreenEditImage({ screenId }) {
     const [isUploadActive, setIsUploadActive] = useState(isCloudinaryAvailable);
 
     const setImageUrl = useCallback((value) => dispatch(actions.editScreenImage(screenId, value)), [dispatch, screenId]);
+    const setImageOrder = useCallback((value) => dispatch(actions.editScreenImageOrder(screenId, value)), [dispatch, screenId]);
     const onTextFieldChange = (e) => setImageUrl(e.target.value);
     const setImageError = useCallback(() => setHasImageError(true), [setHasImageError]);
     const resetImageError = useCallback(() => setHasImageError(false), [setHasImageError]);
-    
+    console.log(screen.mustRenderImageAfterContent);
     useEffect(() => {
         if (!imageUrl) {
             resetImageError();
@@ -152,6 +162,27 @@ export default function ScreenEditImage({ screenId }) {
                     </Typography>
                 )}
             </Paper>
+
+            { canRenderImagePreview && (
+            <>
+                <Typography
+                    display="block"
+                    className={classes.imageOrderContainer}
+                    component="div"
+                >
+                    Render this image
+                    <Select
+                        className={classes.imageOrderSelector}
+                        onChange={(e) => setImageOrder(e.target.value)}
+                        value={screen.mustRenderImageAfterContent}
+                    >
+                        <MenuItem value={false}>before</MenuItem>
+                        <MenuItem value={true}>after</MenuItem>
+                    </Select>
+                    screen content.
+                </Typography>
+            </>
+            )}
         </>
     );
 }
