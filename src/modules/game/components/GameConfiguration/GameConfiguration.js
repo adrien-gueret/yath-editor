@@ -6,14 +6,15 @@ import {
     Tabs, Tab, Slide, makeStyles,
 } from '@material-ui/core';
 
-import OtherIcon from '@material-ui/icons/Build';
+import SettingsIcon from '@material-ui/icons/Build';
+import ExternalToolsIcon from '@material-ui/icons/Extension';
 import CustomCSSIcon from '@material-ui/icons/Palette';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
 
 import CSSConfiguration from './CSSConfiguration';
-import OtherParametersConfiguration from './OtherParametersConfiguration';
+import ExternalToolsConfiguration from './ExternalToolsConfiguration';
 
 const useStyles = makeStyles(({ spacing }) => ({
     tabContainer: {
@@ -41,13 +42,14 @@ function GameConfiguration({ isOpen }) {
                 indicatorColor="primary"
                 textColor="primary"
             >
+                <Tab icon={<SettingsIcon />} label="Global settings" value="global" />
                 <Tab icon={<CustomCSSIcon />} label="Custom CSS" value="css" />
-                <Tab icon={<OtherIcon />} label="Other parameters" value="other" />
+                <Tab icon={<ExternalToolsIcon />} label="External tools" value="externalTools" />
             </Tabs>
 
             <DialogContent>
                 {currentTab === 'css' && <CSSConfiguration />}
-                {currentTab === 'other' && <OtherParametersConfiguration />}
+                {currentTab === 'externalTools' && <ExternalToolsConfiguration />}
             </DialogContent>
 
             <DialogActions>

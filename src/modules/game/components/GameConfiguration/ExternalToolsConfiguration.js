@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 
-import { DialogContentText, Link, TextField, makeStyles, Typography } from '@material-ui/core';
+import { DialogContentText, Link, TextField, makeStyles, Typography, Divider } from '@material-ui/core';
 import NewTabIcon from '@material-ui/icons/OpenInNew';
 
 import actions from '../../actions';
@@ -17,9 +17,12 @@ const useStyles = makeStyles(({ spacing }) => ({
     field: {
         width: 250,
     },
-}), { classNamePrefix: 'OtherParametersConfiguration' });
+    divider: {
+        margin: spacing(4),
+    },
+}), { classNamePrefix: 'ExternalToolsConfiguration' });
 
-function OtherParametersConfiguration() {
+function ExternalToolsConfiguration() {
     const dispatch = useDispatch();
 
     const gaId = useSelector(selectors.otherParameters.getGoogleAnalyticsId);
@@ -32,9 +35,9 @@ function OtherParametersConfiguration() {
 
     return (
         <>
-            <DialogContentText>
-                You can configure here some other parameters for your game.
-            </DialogContentText>
+            <DialogContentText>You can configure here some external tools for your game.</DialogContentText>
+
+            <Divider className={classes.divider} />
             
             <Typography className={classes.title} variant="h6">Analytics</Typography>
             
@@ -52,6 +55,8 @@ function OtherParametersConfiguration() {
                     Know more about Google Analytics <NewTabIcon fontSize="small" className={classes.newTabIcon} />
                 </Link>.
             </DialogContentText>
+
+            <Divider className={classes.divider} />
 
             <Typography className={classes.title} variant="h6">Images uploads</Typography>
 
@@ -98,4 +103,4 @@ function OtherParametersConfiguration() {
     );
 }
 
-export default OtherParametersConfiguration;
+export default ExternalToolsConfiguration;

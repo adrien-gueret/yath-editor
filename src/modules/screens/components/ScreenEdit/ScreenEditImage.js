@@ -61,7 +61,7 @@ export default function ScreenEditImage({ screenId }) {
    
     const screen = useSelector(state => selectors.list.getById(state, screenId), shallowEqual);
     const cloudinary = useSelector(state => gameSelectors.otherParameters.getCloudinary(state), shallowEqual);
-    const configureGame = useCallback(() => dispatch(gameActions.configureGame('other')), [dispatch]);
+    const configureGame = useCallback(() => dispatch(gameActions.configureGame('externalTools')), [dispatch]);
     const [imageUrl] = useDebounce(screen.image, 300);
 
     const isCloudinaryAvailable = Boolean(cloudinary.name) && Boolean(cloudinary.preset);
