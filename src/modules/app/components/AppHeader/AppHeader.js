@@ -76,6 +76,10 @@ function AppHeader() {
         if (newState.game.otherParameters) {
             dispatch(gameActions.setOtherParameters(newState.game.otherParameters));
         }
+
+        if (newState.game.globalSettings) {
+            dispatch(gameActions.setGlobalSettings(newState.game.globalSettings));
+        }
     }, [dispatch]);
 
     const loadFile = useCallback((loadEvent) => {

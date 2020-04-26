@@ -2,7 +2,7 @@ import actionTypes from '../actions/types';
 
 const INITIAL_STATE = {
     isConfiguring: false,
-    defaultTab: 'css',
+    defaultTab: 'global',
 };
 
 export default function isConfiguring(state = INITIAL_STATE, action) {

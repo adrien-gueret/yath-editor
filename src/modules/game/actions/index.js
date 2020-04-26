@@ -16,7 +16,7 @@ export default {
     setCustomCSS(css) {
         return { type: actionTypes.SET_CUSTOM_CSS, payload: { css } };
     },
-    configureGame(defaultTab = 'css') {
+    configureGame(defaultTab = 'global') {
         return { type: actionTypes.CONFIGURE_GAME, payload: { defaultTab } };
     },
     finishConfigureGame() {
@@ -36,5 +36,20 @@ export default {
     },
     setConfigurationTab(tab) {
         return { type: actionTypes.SET_CONFIGURATION_TAB, payload: { tab } };
+    },
+    setGameDescription(description) {
+        return { type: actionTypes.SET_GAME_DESCRIPTION, payload: { description } };
+    },
+    setAuthor(author) {
+        return { type: actionTypes.SET_AUTHOR, payload: { author } };
+    },
+    setFavicon(favicon) {
+        return { type: actionTypes.SET_FAVICON, payload: { favicon } };
+    },
+    setThumbnail(thumbnail) {
+        return { type: actionTypes.SET_THUMBNAIL, payload: { thumbnail } };
+    },
+    setGlobalSettings(settings) {
+        return { type: actionTypes.SET_GLOBAL_SETTINGS, payload: { settings } };
     },
 };

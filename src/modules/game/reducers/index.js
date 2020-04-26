@@ -4,6 +4,7 @@ import name from './name';
 import isConfiguring from './isConfiguring';
 import isTesting from './isTesting';
 import customCSS from './customCSS';
+import globalSettings from './globalSettings';
 import otherParameters from './otherParameters';
 
 export default combineReducers({
@@ -11,5 +12,6 @@ export default combineReducers({
   isTesting,
   name,
   customCSS,
+  globalSettings,
   otherParameters,
 });
