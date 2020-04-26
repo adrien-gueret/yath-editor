@@ -31,7 +31,9 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
         margin: [[spacing(2), 'auto']],
         textAlign: 'center',
         backgroundPosition: 'center',
-        backgroundSize: 'contain',
+        backgroundSize: ({ previewSize }) => previewSize ? (
+            (typeof previewSize === 'number') ? `${previewSize}px` : `${previewSize.width}px ${previewSize.height}px`
+        ) : 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundColor: ({ canRenderImagePreview }) => canRenderImagePreview ? palette.background.paper : palette.grey[50],
         backgroundImage: ({ imageUrl, canRenderImagePreview}) => canRenderImagePreview ? `url(${imageUrl})` : 'none',
@@ -49,6 +51,7 @@ export default function ImageUpload({
     showCloudinaryHint = false,
     inputLabel = 'Image URL',
     inputPlaceholder = 'https://via.placeholder.com/300.png',
+    previewSize = null,
 }) {
     const dispatch = useDispatch();
     const [hasImageError, setHasImageError] = useState(false);
@@ -87,7 +90,7 @@ export default function ImageUpload({
         setIsUploadActive(isCloudinaryAvailable);
     }, [isCloudinaryAvailable]);
 
-    const classes = useStyles({ imageUrl: debouncedImageUrl || debouncedDefaultImageUrl, canRenderImagePreview });
+    const classes = useStyles({ imageUrl: debouncedImageUrl || debouncedDefaultImageUrl, canRenderImagePreview, previewSize });
 
     return (
         <>

@@ -28,6 +28,7 @@ function GlobalSettingsConfiguration() {
     const description = useSelector(selectors.globalSettings.getDescription);
     const thumbnail = useSelector(selectors.globalSettings.getThumbnail);
     const rawThumbnail = useSelector(selectors.globalSettings.getRawThumbnail);
+    const favicon = useSelector(selectors.globalSettings.getFavicon);
 
     const onGameNameChangeHandler = e => dispatch(actions.renameGame(e.target.value));
     const onAuthorNameChangeHandler = e => dispatch(actions.setAuthor(e.target.value));
@@ -75,12 +76,19 @@ function GlobalSettingsConfiguration() {
                 helperText="Will be used for meta data"
             />
 
-          
+            <Divider className={classes.divider} />
+
+            <Typography className={classes.title} variant="h6">Favicon</Typography>
+
+            <ImageUpload imageUrl={favicon} onChange={onFaviconChangeHandler} showCloudinaryHint previewSize={32}>
+                Image used in the browser tab, next to your game title.
+            </ImageUpload>
+
             <Divider className={classes.divider} />
 
             <Typography className={classes.title} variant="h6">Thumbnail</Typography>
 
-            <ImageUpload imageUrl={rawThumbnail} defaultImageUrl={thumbnail} onChange={onThumbnailChangeHandler}>
+            <ImageUpload imageUrl={rawThumbnail} defaultImageUrl={thumbnail} onChange={onThumbnailChangeHandler} showCloudinaryHint>
                 Image used when sharing your game on social networks. By default, it's the first image found in your game.
             </ImageUpload>
         </>
