@@ -44,6 +44,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 export default function ImageUpload({
     children,
     imageUrl,
+    defaultImageUrl,
     onChange,
     showCloudinaryHint = false,
     inputLabel = 'Image URL',
@@ -51,7 +52,7 @@ export default function ImageUpload({
 }) {
     const dispatch = useDispatch();
     const [hasImageError, setHasImageError] = useState(false);
-    const [isUploadActive, setIsUploadActive] = useState(isCloudinaryAvailable);
+
 
     const cloudinary = useSelector(state => gameSelectors.otherParameters.getCloudinary(state), shallowEqual);
     const configureGame = useCallback(() => dispatch(gameActions.configureGame('externalTools')), [dispatch]);
@@ -60,9 +61,12 @@ export default function ImageUpload({
     const resetImageError = useCallback(() => setHasImageError(false), [setHasImageError]);
 
     const [debouncedImageUrl] = useDebounce(imageUrl, 300);
+    const [debouncedDefaultImageUrl] = useDebounce(defaultImageUrl, 300);
 
     const isCloudinaryAvailable = Boolean(cloudinary.name) && Boolean(cloudinary.preset);
-    const canRenderImagePreview = Boolean(debouncedImageUrl) && !hasImageError;
+    const canRenderImagePreview = (Boolean(debouncedImageUrl) || Boolean(debouncedDefaultImageUrl)) && !hasImageError;
+
+    const [isUploadActive, setIsUploadActive] = useState(isCloudinaryAvailable);
 
     const onTextFieldChange = (e) => onChange(e.target.value);
 
@@ -83,7 +87,7 @@ export default function ImageUpload({
         setIsUploadActive(isCloudinaryAvailable);
     }, [isCloudinaryAvailable]);
 
-    const classes = useStyles({ imageUrl: debouncedImageUrl, canRenderImagePreview });
+    const classes = useStyles({ imageUrl: debouncedImageUrl || debouncedDefaultImageUrl, canRenderImagePreview });
 
     return (
         <>

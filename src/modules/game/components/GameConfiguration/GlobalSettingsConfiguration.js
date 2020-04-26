@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { DialogContentText, TextField, Typography, makeStyles, Divider } from '@material-ui/core';
 
+import { ImageUpload } from 'Modules/images';
+
 import actions from '../../actions';
 import selectors from '../../selectors';
 
@@ -25,10 +27,13 @@ function GlobalSettingsConfiguration() {
     const author = useSelector(selectors.globalSettings.getAuthor);
     const description = useSelector(selectors.globalSettings.getDescription);
     const thumbnail = useSelector(selectors.globalSettings.getThumbnail);
+    const rawThumbnail = useSelector(selectors.globalSettings.getRawThumbnail);
 
     const onGameNameChangeHandler = e => dispatch(actions.renameGame(e.target.value));
     const onAuthorNameChangeHandler = e => dispatch(actions.setAuthor(e.target.value));
     const onDescriptionChangeHandler = e => dispatch(actions.setGameDescription(e.target.value));
+    const onThumbnailChangeHandler = value => dispatch(actions.setThumbnail(value));
+    const onFaviconChangeHandler = value => dispatch(actions.setFavicon(value));
 
     const classes = useStyles();
 
@@ -70,11 +75,14 @@ function GlobalSettingsConfiguration() {
                 helperText="Will be used for meta data"
             />
 
+          
             <Divider className={classes.divider} />
 
-            <Typography className={classes.title} variant="h6">???</Typography>
+            <Typography className={classes.title} variant="h6">Thumbnail</Typography>
 
-            { thumbnail }
+            <ImageUpload imageUrl={rawThumbnail} defaultImageUrl={thumbnail} onChange={onThumbnailChangeHandler}>
+                Image used when sharing your game on social networks. By default, it's the first image found in your game.
+            </ImageUpload>
         </>
     );
 }

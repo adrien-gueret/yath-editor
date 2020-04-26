@@ -31,10 +31,16 @@ function getThumbnail(state) {
     return screenSelectors.list.getFirstImage(state);
 }
 
+function getRawThumbnail(state) {
+    const globalSettings = get(state);
+    return globalSettings.thumbnail;
+}
+
 export default {
     get,
     getAuthor,
     getDescription,
     getFavicon,
     getThumbnail,
+    getRawThumbnail,
 }
