@@ -3,6 +3,7 @@ import { default as isConfiguring } from './isConfiguring';
 import { default as isTesting } from './isTesting';
 import { default as customCSS } from './customCSS';
 import { default as otherParameters } from './otherParameters';
+import { default as globalSettings } from './globalSettings';
 
 export default {
     customCSS,
@@ -10,4 +11,5 @@ export default {
     isConfiguring,
     isTesting,
     otherParameters,
+    globalSettings,
 };

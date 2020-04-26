@@ -1,3 +1,4 @@
+import { escapeForNodeContent, escapeForAttrValue } from 'Modules//utils';
 import { getGtagUrl, getAnalyticsInitScript, getTrackScreenScript } from './googleAnalytics';
 
 function fetchYath(type) {
@@ -46,19 +47,21 @@ export function getStartGameScript(startScreenId, onScreenChangeStringified) {
     return `const g = yath(document.body${appendedOptions});g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS, otherParameters) {
-    const gaId = otherParameters.gaId;
+export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS, globalSettings, externalToolsParameters) {
+    const gaId = externalToolsParameters.gaId;
     const screensHtml = getScreensHtml(screens, links);
     const onScreenChangeStringified = getScreensStringifiedRules(screens, logic, gaId);
     const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified);
-    
+
+    const { favicon, thumbnail, description, author } = globalSettings; 
+
     return Promise.all([
         fetchYathCSS(),
         fetchYathJS(),
     ]).then((responses) => {
         const [mainCss, mainJs] = responses;
-
-        const customStyle = customCSS ? `<style data-meta="custom-css">${customCSS.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</style>` : '';
+       
+        const customStyle = customCSS ? `<style data-meta="custom-css">${escapeForNodeContent(customCSS)}</style>` : '';
 
         return `<!DOCTYPE html>
 <html>
@@ -66,8 +69,17 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
         ${gaId ? (
             `<script async src="${getGtagUrl(gaId)}"></script><script>${getAnalyticsInitScript(gaId)};${getTrackScreenScript(gaId)}</script>`
         ) : ''}
-        <meta charset="UTF-8">
-        <title>${gameName.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</title>
+        <meta charset="UTF-8" />
+        <title>${escapeForNodeContent(gameName)}</title>
+        <meta property="og:title" content="${escapeForAttrValue(gameName)}" />
+        <meta property="og:type" content="website" />
+        <meta name="generator" content="yath editor" />
+        ${description ? (
+            `<meta name="description" content="${escapeForAttrValue(description)}" /><meta property="og:description" content="${escapeForAttrValue(description)}" />`
+        ) : ''}
+        ${thumbnail ? `<meta property="og:image" content="${escapeForAttrValue(thumbnail)}" />` : ''}
+        ${author ? `<meta name="author" content="${escapeForAttrValue(author)}" />` : ''}
+        ${favicon ? `<link rel="icon" href="${escapeForAttrValue(favicon)}" />` : ''}
         <style data-meta="yath">${mainCss}</style>
         ${customStyle}
         <script>${mainJs}</script>
@@ -80,7 +92,7 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
     });
 }
 
-export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS, otherParameters) {
+export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS) {
     if (!iframe) {
         return;
     }
