@@ -17,6 +17,7 @@ function getExportableState(state) {
             name: game.name,
             customCSS: gameSelectors.customCSS.getExportable(state),
             otherParameters: gameSelectors.otherParameters.get(state),
+            globalSettings: gameSelectors.globalSettings.get(state),
         },
         screens: {
             list: removeCollectionIds(screens.list),
