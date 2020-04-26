@@ -1,3 +1,5 @@
+import { selectors as screenSelectors } from 'Modules/screens';
+
 function get(state) {
     return state.game.globalSettings;
 }
@@ -19,7 +21,14 @@ function getFavicon(state) {
 
 function getThumbnail(state) {
     const globalSettings = get(state);
-    return globalSettings.thumbnail;
+    const { thumbnail } = globalSettings;
+
+    if (thumbnail) {
+        return thumbnail;
+    }
+
+
+    return screenSelectors.list.getFirstImage(state);
 }
 
 export default {

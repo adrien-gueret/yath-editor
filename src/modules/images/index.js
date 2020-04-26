@@ -1,1 +1,1 @@
-export { default as ImageDropzone } from './components/ImageDropzone';
+export { default as ImageUpload } from './components/ImageUpload';

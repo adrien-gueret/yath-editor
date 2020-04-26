@@ -43,6 +43,13 @@ function getStart(state) {
     return startScreen[0] || null;
 }
 
+function getFirstImage(state) {
+    const screens = getAsArray(state);
+    const firstScreenWithImage = screens.find(screen => Boolean(screen.image));
+
+    return firstScreenWithImage ? firstScreenWithImage.image : null;
+}
+
 function getArrows(state) {
     const screens = getAsArray(state);
 
@@ -92,4 +99,5 @@ export default {
     getStart,
     getArrows,
     getEditedScreen,
+    getFirstImage,
 };
