@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import slugify from 'slugify';
 
-import { AppBar, IconButton, Toolbar, Tooltip, makeStyles, InputBase } from '@material-ui/core';
+import { AppBar, IconButton, Toolbar, Tooltip, makeStyles, Typography } from '@material-ui/core';
 
 import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
 import SaveIcon from '@material-ui/icons/GetApp';
@@ -33,24 +33,14 @@ const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
     inputFile: {
         display: 'none',
     },
-    inputName: {
-        background: 'rgba(255, 255, 255, .6)',
-        padding: spacing(0, 1),
-        borderRadius: shape.borderRadius,
+    gameName: {
         marginLeft: 'auto',
-        marginRight: spacing(1),
-        border: `1px solid ${palette.divider}`,
-        transition: `background ${transitions.duration.shortest}ms ${transitions.easing.sharp}`,
-    },
-    inputNameFocused: {
-        background: palette.common.white,
-        borderColor: palette.common.black,
     },
 }), { classNamePrefix: 'AppHeader' });
 
 function AppHeader() {
     const appState = useSelector(selectors.getExportableState, shallowEqual);
-    const gameName = useSelector(gameSelectors.name.get, shallowEqual);
+    const gameName = useSelector(gameSelectors.name.get);
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
     const dispatch = useDispatch();
     const loadInput = useRef(null);
@@ -128,8 +118,6 @@ function AppHeader() {
         dispatch(gameActions.downloadGame());
     }
 
-    const onGameNameChangeHandler = e => dispatch(gameActions.renameGame(e.target.value));
-
     return (
         <AppBar>
             {addScreenDialog}
@@ -167,14 +155,8 @@ function AppHeader() {
 
                 <div className={classes.separator} />
 
-                <InputBase
-                    classes={{
-                        root: classes.inputName,
-                        focused: classes.inputNameFocused,
-                    }}
-                    value={gameName}
-                    onChange={onGameNameChangeHandler}
-                />
+                <Typography className={classes.gameName} component="h1">{ gameName }</Typography>
+               
                 <Tooltip title="Configure game">
                     <IconButton
                         color="inherit"

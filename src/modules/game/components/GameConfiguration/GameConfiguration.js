@@ -14,6 +14,7 @@ import actions from '../../actions';
 import selectors from '../../selectors';
 
 import CSSConfiguration from './CSSConfiguration';
+import GlobalSettingsConfiguration from './GlobalSettingsConfiguration';
 import ExternalToolsConfiguration from './ExternalToolsConfiguration';
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -48,6 +49,7 @@ function GameConfiguration({ isOpen }) {
             </Tabs>
 
             <DialogContent>
+                {currentTab === 'global' && <GlobalSettingsConfiguration />}
                 {currentTab === 'css' && <CSSConfiguration />}
                 {currentTab === 'externalTools' && <ExternalToolsConfiguration />}
             </DialogContent>
