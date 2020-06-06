@@ -47,7 +47,7 @@ export default function ActionButtons({ screenId }) {
         <React.Fragment>
             <Tooltip title="Delete screen">
                 <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
-                    <DeleteIcon color="secondary" />
+                    <DeleteIcon color="error" />
                 </IconButton>
             </Tooltip>
             <ConfirmDialog

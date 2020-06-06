@@ -13,7 +13,7 @@ import { selectors as logicSelectors } from 'Modules/logic';
 import actions from '../../actions';
 import selectors from '../../selectors';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ palette }) => ({
     root: {
         position: 'absolute',
         zIndex: 1,
@@ -30,6 +30,21 @@ const useStyles = makeStyles(() => ({
     },
     outlined: {
         backgroundColor: ['#fff', '!important'],
+    },
+    colorSecondary: {
+        backgroundColor: palette.error.main,
+    },
+    deletableColorSecondary: {
+        '&:focus': {
+            backgroundColor: palette.error.main,
+        },
+    },
+    outlinedSecondary: {
+        color: palette.error.main,
+        borderColor: palette.error.main,
+    },
+    deleteIconOutlinedColorSecondary: {
+        color: palette.error.main,
     },
 }), { classNamePrefix: 'Screen' });
 

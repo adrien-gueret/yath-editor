@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+
 import { createStore, applyMiddleware, compose  } from 'redux'
 import { Provider } from 'react-redux'
 
@@ -16,9 +18,29 @@ const store = createStore(reducers, composeEnhancers(
     applyMiddleware(logicDeletionMiddleware, downloadGameMiddleware, moveScreensMiddleware, collisionsMiddleware)
 ));
 
-ReactDOM.render(
-    <Provider store={ store }>
-        <App />
-    </Provider>,
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#0d4bb8',
+            light: '#5b76eb',
+            dark: '#002587',
+            contrastText: '#fafafa',
+        },
+        secondary: {
+            main: '#8c6d62',
+            light: '#bd9b8f',
+            dark: '#5e4238',
+            contrastText: '#fafafa',
+        },
+    },
+});
+
+ReactDOM.render((
+        <ThemeProvider theme={theme}>
+            <Provider store={store}>
+                <App />
+            </Provider>
+        </ThemeProvider>
+    ),
     document.getElementById('app')
 );

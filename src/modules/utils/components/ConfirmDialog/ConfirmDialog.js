@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
     Dialog, DialogTitle, DialogContent, DialogContentText,
-    DialogActions, Button,
+    DialogActions, Button, makeStyles,
 } from '@material-ui/core';
 
 const propTypes = {
@@ -17,7 +17,18 @@ const defaultProps = {
     isDeletion: false,
 };
 
+const useStyles = makeStyles(({ palette }) => ({
+    dangerButton: {
+        backgroundColor: palette.error.main,
+        '&:hover': {
+            backgroundColor: palette.error.dark,
+        },
+    },
+}), { classNamePrefix: 'ConfirmDialog' });
+
 function ConfirmDialog({ children, onCancel, onAccept, isDeletion, ...otherProps }) {
+    const classes = useStyles();
+
     return (
         <Dialog {...otherProps} fullWidth>
             <DialogTitle>Confirm action?</DialogTitle>
@@ -31,6 +42,7 @@ function ConfirmDialog({ children, onCancel, onAccept, isDeletion, ...otherProps
                     variant="outlined"
                 >Cancel</Button>
                 <Button
+                    classes={{ containedSecondary: classes.dangerButton}}
                     onClick={onAccept}
                     color={isDeletion ? 'secondary' : 'primary'}
                     type="button"

@@ -146,7 +146,7 @@ function Condition({ screenId, conditionId }) {
         <>
             <Tooltip title="Delete condition">
                 <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
-                    <DeleteIcon color="secondary" />
+                    <DeleteIcon color="error" />
                 </IconButton>
             </Tooltip>
 

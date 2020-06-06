@@ -58,7 +58,7 @@ export default function Rule({ ruleId, screenId }) {
             <CardActions className={classes.actions} disableSpacing>
                 <Tooltip title="Delete rule">
                     <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
-                        <DeleteIcon color="secondary" />
+                        <DeleteIcon color="error" />
                     </IconButton>
                 </Tooltip>
             </CardActions>

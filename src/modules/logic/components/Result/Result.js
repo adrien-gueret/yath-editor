@@ -127,7 +127,7 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
         <>
             <Tooltip title="Delete event">
                 <IconButton onClick={() => toggleConfirmDialogOpen(true)}>
-                    <DeleteIcon color="secondary" />
+                    <DeleteIcon color="error" />
                 </IconButton>
             </Tooltip>
 

@@ -152,7 +152,7 @@ export default function LinkList({ screenId }) {
                                 <TableCell>
                                     <Tooltip title="Delete this link">
                                         <IconButton onClick={getOnDeleteLinkHandler(link.id)}>
-                                            <DeleteIcon color="secondary" />
+                                            <DeleteIcon color="error" />
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>

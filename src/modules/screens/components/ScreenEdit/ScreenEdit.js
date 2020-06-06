@@ -84,7 +84,7 @@ export default function ScreenEdit({ screenId }) {
                         <Badge
                             classes={{ badge: classes.badgeCounter}}
                             badgeContent={totalLogicErrors}
-                            color="secondary"
+                            color="error"
                             max={9}
                         >
                             <LogicIcon />
