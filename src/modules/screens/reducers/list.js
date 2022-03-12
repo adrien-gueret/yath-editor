@@ -5,7 +5,11 @@ import actionTypes from '../actions/types';
 import { actionTypes as linkActionTypes } from 'Modules/links';
 import { actionTypes as logicActionTypes } from 'Modules/logic';
 
-const startScreen = new ScreenModel('Start screen', 'Welcome to the <b>first screen</b> of your story!', true);
+const startScreen = new ScreenModel({
+    name: 'Start screen',
+    content: 'Welcome to the <b>first screen</b> of your story!',
+    isStart: true,
+});
 
 const INITIAL_STATE = {
     [startScreen.id]: startScreen,
@@ -41,7 +45,7 @@ export default function list(state = INITIAL_STATE, action) {
             let alreadyExisted = false;
 
             do {
-                const newSlug = new ScreenModel(newName, '', 1).getSlug();
+                const newSlug = new ScreenModel({ name: newName, id: 1 }).getSlug();
                 alreadyExisted = Object.keys(state).some(screenId => state[screenId].getSlug() === newSlug);
 
                 if (alreadyExisted) {

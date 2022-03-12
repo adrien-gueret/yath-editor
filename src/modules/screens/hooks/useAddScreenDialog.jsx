@@ -9,6 +9,7 @@ import actions from '../actions';
 export default function useAddScreenDialog() {
     const [isAddScreenDialogOpen, setIsAddScreenDialogOpen] = useState(false);
     const [submitCallback, setSubmitCallback] = useState(() => () => {});
+    const [newScreenPosition, setNewScreenPosition] = useState(null);
     const dispatch = useDispatch();
     const screens = useSelector(listSelectors.getAsArray, shallowEqual);
 
@@ -29,14 +30,23 @@ export default function useAddScreenDialog() {
         setIsAddScreenDialogOpen(false);
     }, [setIsAddScreenDialogOpen]);
 
-    const openDialog = useCallback((onSubmitCallback = () => {}) => {
-        setSubmitCallback(() => onSubmitCallback);
+    const openDialog = useCallback(({ onSubmit = () => {}, screenPosition = null} = {}) => {
+        setNewScreenPosition(screenPosition);
+        setSubmitCallback(() => onSubmit);
         setIsAddScreenDialogOpen(true);
     }, [setIsAddScreenDialogOpen]);
 
     const onAddScreenDialogSubmit = useCallback((screenName) => {
         if (screenName) {
-            const newScreen = new ScreenModel(screenName);
+            const screenOptions = { name: screenName};
+
+            if (newScreenPosition) {
+                screenOptions.x = newScreenPosition.x;
+                screenOptions.y = newScreenPosition.y;
+            }
+
+            const newScreen = new ScreenModel(screenOptions);
+
             addScreenHandler(newScreen);
             submitCallback(newScreen);
         }

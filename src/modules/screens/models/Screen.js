@@ -5,7 +5,7 @@ const DEFAULT_COORDINATE = 100;
 
 class Screen {
     static createFromJSON(json) {
-        const screen = new Screen(json.name, json.content, json.isStart, json.id);
+        const screen = new Screen(json);
 
         screen.x = json.x;
         screen.y = json.y;
@@ -20,12 +20,12 @@ class Screen {
         return screen;
     }
 
-    constructor(name = '', content = '', isStart = false, id = null) {
+    constructor({ name = '', content = '', isStart = false, id = null, x = DEFAULT_COORDINATE, y = DEFAULT_COORDINATE } = {}) {
         this.id = id || shortid.generate();
         this.name = name;
         this.content = content;
-        this.x = DEFAULT_COORDINATE + document.documentElement.scrollLeft;
-        this.y = DEFAULT_COORDINATE + document.documentElement.scrollTop;
+        this.x = x + document.documentElement.scrollLeft;
+        this.y = y + document.documentElement.scrollTop;
         this.width = 0;
         this.height = 0;
         this.image = '';
@@ -50,7 +50,7 @@ class Screen {
     }
 
     clone() {
-        const copiedScreen = new Screen(this.name, this.content, this.isStart, this.id);
+        const copiedScreen = new Screen(this);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
         copiedScreen.width = this.width;

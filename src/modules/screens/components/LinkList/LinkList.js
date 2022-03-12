@@ -85,7 +85,7 @@ export default function LinkList({ screenId }) {
         const setNewLink = targetId => dispatch(linkActions.editLinkTarget(linkId, targetId));
 
         if (newTargetId === 'create-new-screen') {
-            openAddScreenDialog(({ id }) => setNewLink(id));
+            openAddScreenDialog({ onSubmit: ({ id }) => setNewLink(id) });
             return;
         }
 

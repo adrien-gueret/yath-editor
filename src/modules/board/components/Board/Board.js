@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import DragSelect from 'dragselect';
 
-import { actions as screenActions, selectors as screenSelectors, Screen } from 'Modules/screens';
+import { actions as screenActions, selectors as screenSelectors, Screen, useAddScreenDialog } from 'Modules/screens';
 
 import ArrowsBoard from '../ArrowsBoard';
 
@@ -35,6 +35,8 @@ function Board({ isDialogOpen }) {
     const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
     const totalSelectedScreens = useMemo(() => screens.filter(screen => screen.isSelected).length, [screens]);
     
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
+
     const dispatch = useDispatch();
     const selectScreen = useCallback((screenId) => dispatch(screenActions.selectScreen(screenId)), [dispatch]);
     const unselectScreen = useCallback((screenId) => dispatch(screenActions.unselectScreen(screenId)), [dispatch]);
@@ -143,6 +145,16 @@ function Board({ isDialogOpen }) {
        
     }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens, ]);
 
+    const onDoubleClick = (e) => {
+        clearSelection();
+        openAddScreenDialog({
+            screenPosition: {
+                x: e.clientX,
+                y: e.clientY,
+            }
+        });
+    };
+
     useEffect(() => {
         if (!dragSelect || (!editedScreenId && !isDialogOpen)) {
             return;
@@ -159,7 +171,8 @@ function Board({ isDialogOpen }) {
     }, [dragSelect, editedScreenId, clearSelection, isDialogOpen]);
 
     return (
-        <section className={classes.root} onDoubleClick={clearSelection}>
+        <section className={classes.root} onDoubleClick={onDoubleClick}>
+            {addScreenDialog}
             {
                 screens.map(screen =>  (
                     <Screen

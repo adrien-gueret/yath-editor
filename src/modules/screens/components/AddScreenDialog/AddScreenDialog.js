@@ -31,7 +31,7 @@ const AddScreenDialog = ({ isOpen, onClose, onSubmit }) => {
     };
 
     return (
-        <Dialog open={isOpen} aria-labelledby="add-screen-dialog">
+        <Dialog open={isOpen} aria-labelledby="add-screen-dialog" disableScrollLock>
             <form onSubmit={onSubmitHandler}>
                 <DialogTitle id="add-screen-dialog">Add new screen</DialogTitle>
                 <DialogContent>

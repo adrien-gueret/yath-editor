@@ -60,7 +60,7 @@ export default function ScreenList({
         const { value } = e.target;
 
         if (allowCreation && value === 'create-new-screen') {
-            openAddScreenDialog(({ id }) => onChange(id));
+            openAddScreenDialog({ onSubmit: ({ id }) => onChange(id) });
             return;
         }
 
