@@ -10,7 +10,9 @@ function get(state) {
 
 function getAsArray(state) {
     const allScreens = get(state);
-    return Object.keys(allScreens).map(screenId => allScreens[screenId]);
+    return Object.keys(allScreens)
+        .map(screenId => allScreens[screenId])
+        .sort((screenA, screenB) => screenA.name.localeCompare(screenB.name));
 }
 
 function getById(state, screenId) {
