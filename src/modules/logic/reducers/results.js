@@ -1,3 +1,5 @@
+import { actionTypes as screenActionTypes } from 'Modules/screens';
+
 import ResultModel from '../models/Result';
 
 import actionTypes from '../actions/types';
@@ -78,6 +80,21 @@ export default function results(state = INITIAL_STATE, action) {
                         ...newState,
                         [result.id]: result,
                     }), {});
+        }
+
+        case screenActionTypes.DELETE_SCREEN: {
+            const { screenId } = action.payload;
+
+            return Object.keys(state).reduce((acc, resultId) => {
+                const newResult = state[resultId].clone();
+                const valueType = resultToValueType[newResult.type];
+               
+                if (valueType === 'screen' && newResult.params.screenId === screenId) {
+                    newResult.params.screenId = null;
+                }
+
+                return {...acc, [resultId]: newResult };
+            }, {});
         }
 
         default:
