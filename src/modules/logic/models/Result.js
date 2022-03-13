@@ -43,7 +43,7 @@ class Result {
             case RESET_INVENTORY:
                 return `game.inventory.reset();`;
 
-            case RESET_INVENTORY:
+            case RESET_HISTORY:
                 return `game.resetHistory();`;
 
             case REDIRECT:
