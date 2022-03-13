@@ -34,6 +34,7 @@ class Screen {
         this.linkIds = [];
         this.logicRuleIds = [];
         this.isSelected = false;
+        this.alternativeContents = [];
     }
 
     getCoordinates() {
@@ -59,6 +60,7 @@ class Screen {
         copiedScreen.mustRenderImageAfterContent = !!this.mustRenderImageAfterContent;
         copiedScreen.linkIds = [...this.linkIds];
         copiedScreen.logicRuleIds = [...this.logicRuleIds];
+        copiedScreen.alternativeContents = [...this.alternativeContents];
         copiedScreen.isSelected = this.isSelected;
 
         return copiedScreen;
@@ -87,7 +89,7 @@ class Screen {
             return '';
         }
 
-        return `if(screenName==='${this.id}'){${stringifiedRules}}`;
+        return `case '${this.id}':{${stringifiedRules}}`;
     }
 
     toHTML(allLinks) {

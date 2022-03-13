@@ -23,11 +23,8 @@ export function getScreensStringifiedRules(screens, logic, gaId) {
         analyticsLogic = `var m=${screenIdsToScreenNames};t(m[screenName].n,m[screenName].s);`;
     }
 
-    const specificScreensLogic = screens
-        .map(screen => screen.getStringifiedRules(logic))
-        .filter(stringifiedRule => !!stringifiedRule)
-        .join(' else ');
-
+    const specificScreensLogic = `switch(screenName){${screens.map(screen => screen.getStringifiedRules(logic)).filter(stringifiedRule => !!stringifiedRule).join('break;')}}`;
+  
     return analyticsLogic + specificScreensLogic;
 }
 
