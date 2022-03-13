@@ -1,3 +1,5 @@
+import { actionTypes as screenActionTypes } from 'Modules/screens';
+
 import ConditionModel from '../models/Condition';
 
 import actionTypes from '../actions/types';
@@ -75,6 +77,21 @@ export default function conditions(state = INITIAL_STATE, action) {
                         ...newState,
                         [condition.id]: condition,
                     }), {});
+        }
+
+        case screenActionTypes.DELETE_SCREEN: {
+            const { screenId } = action.payload;
+
+            return Object.keys(state).reduce((acc, conditionId) => {
+                const newCondition = state[conditionId].clone();
+                const type = conditionSubjectToValueType[newCondition.subject];
+               
+                if (type === 'screen' && newCondition.params.screenId === screenId) {
+                    newCondition.params.screenId = null;
+                }
+
+                return {...acc, [conditionId]: newCondition };
+            }, {});
         }
 
         default:
