@@ -13,7 +13,7 @@ class Condition {
         return condition;
     }
 
-    constructor(subject = PLAYER_HAS_NOT_VISITED, id = null) {
+    constructor(subject = PLAYER_HAS_VISITED, id = null) {
         this.id = id || shortid.generate();
         this.subject = subject;
         this.params = {};

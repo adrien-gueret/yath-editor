@@ -42,6 +42,10 @@ export default function results(state = INITIAL_STATE, action) {
                         newResult.params = { itemId: null, total: 1 };
                     break;
 
+                    case 'screenContent':
+                        newResult.params = { alternativeContentId: null };
+                    break;
+
                     default:
                         newResult.params = {};
                         break;
@@ -91,6 +95,21 @@ export default function results(state = INITIAL_STATE, action) {
                
                 if (valueType === 'screen' && newResult.params.screenId === screenId) {
                     newResult.params.screenId = null;
+                }
+
+                return {...acc, [resultId]: newResult };
+            }, {});
+        }
+
+        case screenActionTypes.DELETE_ALTERNATIVE_SCREEN_CONTENT: {
+            const { contentId } = action.payload;
+            
+            return Object.keys(state).reduce((acc, resultId) => {
+                const newResult = state[resultId].clone();
+                const valueType = resultToValueType[newResult.type];
+                
+                if (valueType === 'screenContent' && newResult.params.alternativeContentId === contentId) {
+                    newResult.params.alternativeContentId = null;
                 }
 
                 return {...acc, [resultId]: newResult };
