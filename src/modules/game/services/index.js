@@ -38,7 +38,7 @@ export function fetchYathJS() {
 }
 
 export function getStartGameScript(startScreenId, onScreenChangeStringified) {
-    const optionsStringified = onScreenChangeStringified ? `{onScreenChange:function(o){var game=o.game,screenName=o.screenName;${onScreenChangeStringified}}}` : null;
+    const optionsStringified = onScreenChangeStringified ? `{onScreenChange:function(o){var game=o.game,screenName=o.screenName,screen=o.screen;${onScreenChangeStringified}}}` : null;
     const appendedOptions = optionsStringified ? `, ${optionsStringified}` : '';
 
     return `const g = yath(document.body${appendedOptions});g.goToScreen('${startScreenId}');`;

@@ -86,11 +86,15 @@ class Screen {
             .filter(stringifiedRule => !!stringifiedRule)
             .join('');
 
-        if (!stringifiedRules) {
+        const switchToDefaultContentRule = this.alternativeContents.length > 0
+            ? `screen.querySelector('[data-yath-main-content]').style.display="block";for(let c of screen.querySelectorAll('[data-yath-alt-content]')){c.style.display="none";}`
+            : '';
+
+        if (!stringifiedRules && !switchToDefaultContentRule) {
             return '';
         }
 
-        return `case '${this.id}':{${stringifiedRules}}`;
+        return `case '${this.id}':{${switchToDefaultContentRule}${stringifiedRules}}`;
     }
 
     toHTML(allLinks) {

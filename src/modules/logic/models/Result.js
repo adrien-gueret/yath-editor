@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 
-import { ADD_ITEM, REDIRECT, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY } from '../constants/results';
+import { ADD_ITEM, REDIRECT, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY, SWITCH_SCREEN_CONTENT } from '../constants/results';
 import resultToValueType from '../constants/resultToValueType';
 
 class Result {
@@ -28,8 +28,9 @@ class Result {
         const valueType = resultToValueType[this.type];
         const hasScreenError = valueType === 'screen' && !this.params.screenId;
         const hasItemError = valueType === 'item' && (!this.params.itemId || !this.params.total);
+        const hasScreenContentError = valueType === 'screenContent' && !this.params.alternativeContentId;
 
-        return hasScreenError || hasItemError;
+        return hasScreenError || hasItemError || hasScreenContentError;
     }
 
     toString() {
@@ -48,6 +49,9 @@ class Result {
 
             case REDIRECT:
                 return `game.goToScreen('${this.params.screenId}');return false;`;
+
+            case SWITCH_SCREEN_CONTENT:
+                return `screen.querySelector('[data-yath-main-content]').style.display="none";screen.querySelector('[data-yath-alt-content="${this.params.alternativeContentId}"]').style.display="block";`;
         }
     }
 }
