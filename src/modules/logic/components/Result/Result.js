@@ -16,7 +16,7 @@ import { ItemList } from 'Modules/inventory';
 import { ConfirmDialog } from 'Modules/utils';
 
 import {
-    REDIRECT, ADD_ITEM, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY
+    REDIRECT, ADD_ITEM, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY, SWITCH_SCREEN_CONTENT,
 } from '../../constants/results';
 import RESULT_TO_VALUE_TYPE from '../../constants/resultToValueType';
 
@@ -26,12 +26,8 @@ import selectors from '../../selectors';
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     resultId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-    disableRedirectToScreen: PropTypes.bool,
 };
 
-const defaultProps = {
-    disableRedirectToScreen: false,
-};
 
 const useStyles = makeStyles(({ spacing }) => ({
     select: {
@@ -45,13 +41,16 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
 }), { classNamePrefix: 'Result' });
 
-function Result({ screenId, resultId, disableRedirectToScreen }) {
+function Result({ screenId, resultId }) {
     const [isConfirmDialogOpen, toggleConfirmDialogOpen] = useState(false);
 
     const result = useSelector(state => selectors.results.getById(state, resultId), shallowEqual) || [];
     const otherScreens = useSelector(state => (
         screenSelectors.list.getAllExceptOne(state, screenId)
     ));
+    const alternativeContents = useSelector(state => (
+        screenSelectors.list.getById(state, screenId).alternativeContents
+    ), shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -81,6 +80,12 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
         dispatch(actions.updateResultParams(resultId, {
             itemId,
             total: result.params.total,
+        }));
+    }, [dispatch, result, resultId]);
+
+    const onChangeAlternativeContentId = useCallback(({ target }) => {
+        dispatch(actions.updateResultParams(resultId, {
+            alternativeContentId: target.value,
         }));
     }, [dispatch, result, resultId]);
 
@@ -121,6 +126,18 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
                 />
             </>
         ),
+        screenContent: (
+            <Select
+                error={!result.params.alternativeContentId}
+                onChange={onChangeAlternativeContentId}
+                className={classes.select}
+                value={result.params.alternativeContentId || ''}
+            >
+                { alternativeContents.map(({ id }, index) => (
+                    <MenuItem key={id} value={id}>n° { index + 1}</MenuItem>
+                ))}
+            </Select>
+        ),
     };
 
     return (
@@ -143,12 +160,16 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
             <Select value={type} onChange={onChangeType} className={classes.select}>
                 <MenuItem value={ADD_ITEM}>Add into inventory</MenuItem>
                 <MenuItem value={REMOVE_ITEM}>Remove from inventory</MenuItem>
-                <MenuItem value={RESET_HISTORY}>Reset screens history</MenuItem>
-                <MenuItem value={RESET_INVENTORY}>Reset inventory</MenuItem>
                 <MenuItem
                     value={REDIRECT}
-                    disabled={disableRedirectToScreen || otherScreens.length === 0}
+                    disabled={otherScreens.length === 0}
                 >Redirect player to</MenuItem>
+                <MenuItem
+                    value={SWITCH_SCREEN_CONTENT}
+                    disabled={alternativeContents.length === 0}
+                >Display alternative content</MenuItem>
+                <MenuItem value={RESET_HISTORY}>Reset screens history</MenuItem>
+                <MenuItem value={RESET_INVENTORY}>Reset inventory</MenuItem>
             </Select>
            
             { selectableValues[RESULT_TO_VALUE_TYPE[type]] }
@@ -157,6 +178,5 @@ function Result({ screenId, resultId, disableRedirectToScreen }) {
 }
 
 Result.propTypes = propTypes;
-Result.defaultProps = defaultProps;
 
 export default Result;

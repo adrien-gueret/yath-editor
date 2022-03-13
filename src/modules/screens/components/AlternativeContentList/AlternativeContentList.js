@@ -13,7 +13,6 @@ import { selectors, actions } from 'Modules/screens';
 import { ConfirmDialog } from 'Modules/utils';
 
 import Wysiwyg from '../Wysiwyg';
-import { LastPageSharp } from '@material-ui/icons';
 
 const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,

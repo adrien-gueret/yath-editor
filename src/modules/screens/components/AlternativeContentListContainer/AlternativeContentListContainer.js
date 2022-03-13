@@ -15,28 +15,25 @@ const propTypes = {
     screenId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-const useStyles = makeStyles(({ spacing, shadows, palette, typography }) => {
-    console.log(typography);
-    return {
-        root: {
-            marginTop: spacing(2),
-        },
-        iconAdd: {
-            marginLeft: spacing(1),
-        },
-        iconHelp: {
-            verticalAlign: 'middle',
-            cursor: 'help',
-            marginLeft: spacing(0.5),
-        },
-        helpTooltip: {
-            ...typography.body2,
-            color: palette.text.primary,
-            backgroundColor: palette.background.paper,
-            boxShadow: shadows[1],
-        }
-    };
-}, { classNamePrefix: 'AlternativeContentListContainer' });
+const useStyles = makeStyles(({ spacing, shadows, palette, typography }) => ({
+    root: {
+        marginTop: spacing(2),
+    },
+    iconAdd: {
+        marginLeft: spacing(1),
+    },
+    iconHelp: {
+        verticalAlign: 'middle',
+        cursor: 'help',
+        marginLeft: spacing(0.5),
+    },
+    helpTooltip: {
+        ...typography.body2,
+        color: palette.text.primary,
+        backgroundColor: palette.background.paper,
+        boxShadow: shadows[1],
+    }
+}), { classNamePrefix: 'AlternativeContentListContainer' });
 
 export default function AlternativeContentListContainer({ screenId }) {
     const dispatch = useDispatch();

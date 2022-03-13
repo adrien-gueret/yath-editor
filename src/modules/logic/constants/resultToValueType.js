@@ -6,5 +6,5 @@ export default {
     [REDIRECT]: 'screen',
     [ADD_ITEM]: 'item',
     [REMOVE_ITEM]: 'item',
-    [SWITCH_SCREEN_CONTENT]: 'screen-content',
+    [SWITCH_SCREEN_CONTENT]: 'screenContent',
 };
