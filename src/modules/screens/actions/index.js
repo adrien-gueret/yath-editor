@@ -10,6 +10,15 @@ export default {
     editScreenContent(screenId, newContent) {
         return { type: actionTypes.EDIT_SCREEN_CONTENT, payload: { screenId, newContent } };
     },
+    addAlternativeScreenContent(screenId) {
+        return { type: actionTypes.ADD_ALTERNATIVE_SCREEN_CONTENT, payload: { screenId } };
+    },
+    editAlternativeScreenContent(screenId, contentId, newContent) {
+        return { type: actionTypes.EDIT_ALTERNATIVE_SCREEN_CONTENT, payload: { screenId, newContent, contentId } };
+    },
+    deleteAlternativeScreenContent(screenId, contentId) {
+        return { type: actionTypes.DELETE_ALTERNATIVE_SCREEN_CONTENT, payload: { screenId, contentId } };
+    },
     editScreenImage(screenId, newImage) {
         return { type: actionTypes.EDIT_SCREEN_IMAGE, payload: { screenId, newImage } };
     },

@@ -15,6 +15,7 @@ class Screen {
         screen.mustRenderImageAfterContent = !!json.mustRenderImageAfterContent;
         screen.linkIds = [...(json.linkIds || [])];
         screen.logicRuleIds = [...(json.logicRuleIds || [])];
+        screen.alternativeContents = [...(json.alternativeContents || [])];
         screen.isSelected = false;
 
         return screen;
@@ -99,7 +100,8 @@ class Screen {
         return `
          <section data-yath-screen="${this.id}">
             ${(!this.mustRenderImageAfterContent && htmlImage) ? htmlImage : ''}
-            <div>${this.content}</div>
+            <div data-yath-main-content>${this.content}</div>
+            ${this.alternativeContents.map(({ id, value }) => `<div data-yath-alt-content="${id}">${value}</div>`).join('')}
             ${(this.mustRenderImageAfterContent && htmlImage) ? htmlImage : ''}
             <nav>${navigation}</nav>
         </section>

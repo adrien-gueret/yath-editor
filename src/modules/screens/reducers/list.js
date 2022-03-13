@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 import ScreenModel from '../models/Screen';
 
 import actionTypes from '../actions/types';
@@ -65,6 +67,47 @@ export default function list(state = INITIAL_STATE, action) {
         case actionTypes.EDIT_SCREEN_CONTENT: {
             const newScreen = state[action.payload.screenId].clone();
             newScreen.content = action.payload.newContent === '<p></p>' ? '' : action.payload.newContent;
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case actionTypes.ADD_ALTERNATIVE_SCREEN_CONTENT: {
+            const newScreen = state[action.payload.screenId].clone();
+            newScreen.alternativeContents = [...newScreen.alternativeContents, { id: shortid.generate(), value: '' }];
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case actionTypes.EDIT_ALTERNATIVE_SCREEN_CONTENT: {
+            const newScreen = state[action.payload.screenId].clone();
+
+            const alternativeContent = newScreen.alternativeContents.find(({ id }) => id === action.payload.contentId);
+
+            if (!alternativeContent) {
+                return state;
+            }
+
+            const newValue = action.payload.newContent === '<p></p>' ? '' : action.payload.newContent;
+
+            newScreen.alternativeContents = newScreen.alternativeContents.map(({ id, value }) => (
+                id !== action.payload.contentId ? { id, value } : { id, value: newValue }
+            ));
+
+            return {
+                ...state,
+                [action.payload.screenId]: newScreen,
+            };
+        }
+
+        case actionTypes.DELETE_ALTERNATIVE_SCREEN_CONTENT: {
+            const newScreen = state[action.payload.screenId].clone();
+            newScreen.alternativeContents = newScreen.alternativeContents.filter(({ id }) => id !== action.payload.contentId);
 
             return {
                 ...state,

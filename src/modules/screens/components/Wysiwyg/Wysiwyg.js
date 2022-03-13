@@ -19,11 +19,13 @@ const propTypes = {
     label: Proptypes.string.isRequired,
     defaultValue: Proptypes.string,
     onChange: Proptypes.func,
+    toolbarButtons: Proptypes.node,
 };
 
 const defaultProps = {
     defaultValue: undefined,
     onChange() {},
+    toolbarButtons: null,
 };
 
 const stateToHTML = convertToHTML({});
@@ -78,7 +80,7 @@ const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
     },
 }), { classNamePrefix: 'Wysiwyg' });
 
-const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
+const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons }) => {
     const [labelWidth, setLabelWidth] = useState(0);
     const labelRef = useRef(null);
    
@@ -191,6 +193,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label }) => {
                     
                     <Toolbar className={classes.toolbar} variant="dense" disableGutters>
                         <div className={classes.horizontalMargins}>
+                            { toolbarButtons }
                             <Tooltip title="Bold (Ctrl + B)">
                                 <IconButton
                                     onClick={applyBold}
