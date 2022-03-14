@@ -95,6 +95,11 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
         resizeScreen(width, height);
     }, [screen.name]);
 
+    const onDoubleClick = (e) => {
+        e.stopPropagation();
+        editScreen();
+    };
+
     const classes = useStyles();
     const position = screen.getCoordinates();
 
@@ -141,6 +146,7 @@ function Screen({ screenId, onDragStart, onDrag, onDragStop }, ref) {
                     label={screen.name}
                     deleteIcon={<EditIcon />}
                     onDelete={editScreen}
+                    onDoubleClick={onDoubleClick}
                     variant={screen.isSelected ? 'outlined' : 'default'}
                     ref={domRef}
                 />
