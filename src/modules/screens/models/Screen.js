@@ -81,8 +81,12 @@ class Screen {
     }
 
     getStringifiedRules(logic) {
-        const stringifiedRules = this.logicRuleIds
-            .map(ruleId => logic.rules[ruleId].toString(logic.results, logic.conditions))
+        const rules = this.logicRuleIds.map(ruleId => logic.rules[ruleId]);
+        const results = rules.flatMap(rule => rule.resultIds.map(resultId => logic.results[resultId]));
+        const hasHideLinkLogic = results.some(result => result.type === 'hide-link');
+
+        const stringifiedRules = rules
+            .map(rule => rule.toString(logic.results, logic.conditions))
             .filter(stringifiedRule => !!stringifiedRule)
             .join('');
 
@@ -90,11 +94,15 @@ class Screen {
             ? `screen.querySelector('[data-yath-main-content]').style.display="block";for(let c of screen.querySelectorAll('[data-yath-alt-content]')){c.style.display="none";}`
             : '';
 
-        if (!stringifiedRules && !switchToDefaultContentRule) {
+        const hideLinkRule = hasHideLinkLogic
+            ? `for(let c of screen.querySelectorAll('[data-yath-link]')){c.style.removeProperty('display');}`
+            : '';
+
+        if (!stringifiedRules && !switchToDefaultContentRule && !hideLinkRule) {
             return '';
         }
 
-        return `case '${this.id}':{${switchToDefaultContentRule}${stringifiedRules}}`;
+        return `case '${this.id}':${hideLinkRule}{${switchToDefaultContentRule}${stringifiedRules}}`;
     }
 
     toHTML(allLinks) {

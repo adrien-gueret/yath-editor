@@ -12,6 +12,6 @@ export default class Link {
     }
 
     toHTML() {
-        return `<button data-yath-go-to="${this.targetScreenId}">${this.label}</button>`;
+        return `<button data-yath-link="${this.id}" data-yath-go-to="${this.targetScreenId}">${this.label}</button>`;
     }
 }

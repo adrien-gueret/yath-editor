@@ -1,6 +1,9 @@
 import shortid from 'shortid';
 
-import { ADD_ITEM, REDIRECT, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY, SWITCH_SCREEN_CONTENT } from '../constants/results';
+import { 
+    ADD_ITEM, REDIRECT, REMOVE_ITEM, RESET_INVENTORY,
+    RESET_HISTORY, SWITCH_SCREEN_CONTENT, HIDE_LINK,
+} from '../constants/results';
 import resultToValueType from '../constants/resultToValueType';
 
 class Result {
@@ -53,6 +56,9 @@ class Result {
 
             case SWITCH_SCREEN_CONTENT:
                 return `screen.querySelector('[data-yath-main-content]').style.display="none";screen.querySelector('[data-yath-alt-content="${this.params.alternativeContentId}"]').style.display="block";`;
+            
+            case HIDE_LINK:
+                return `screen.querySelector('[data-yath-link="${this.params.linkId}"]').style.display="none";`;
         }
     }
 }
