@@ -73,13 +73,19 @@ function getArrows(state) {
         const rules = logicSelectors.rules.getByScreenId(state, sourceScreen.id);
 
         const logicArrows = rules.reduce((arrows, rule) => {
-            const resultsWithScreenRedirect = logicSelectors.results.getByRuleId(state, rule.id).filter(result => !!result.params.screenId);
+            const resultsWithScreenRedirect = logicSelectors.results.getByRuleId(state, rule.id)
+                .filter(result => !!result.params.screenId || !!result.params.linkId);
+
+            const targerScreenIds = resultsWithScreenRedirect.map(result => (
+                result.params.screenId ? result.params.screenId : linkSelectors.list.getById(state, result.params.linkId).targetScreenId
+            ));
+                
             const isLogic = true;
 
             return [
                 ...arrows,
-                ...resultsWithScreenRedirect
-                    .map(({ params }) => getScreenArrow(params.screenId, isLogic))
+                ...targerScreenIds
+                    .map((targetScreenId) => getScreenArrow(targetScreenId, isLogic))
             ];
         }, []);
 
