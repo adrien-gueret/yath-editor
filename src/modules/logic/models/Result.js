@@ -29,8 +29,9 @@ class Result {
         const hasScreenError = valueType === 'screen' && !this.params.screenId;
         const hasItemError = valueType === 'item' && (!this.params.itemId || !this.params.total);
         const hasScreenContentError = valueType === 'screenContent' && !this.params.alternativeContentId;
+        const hasLinkError = valueType === 'link' && !this.params.linkId;
 
-        return hasScreenError || hasItemError || hasScreenContentError;
+        return hasScreenError || hasItemError || hasScreenContentError || hasLinkError;
     }
 
     toString() {

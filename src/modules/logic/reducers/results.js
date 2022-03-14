@@ -1,3 +1,4 @@
+import { actionTypes as linkActionTypes } from 'Modules/links';
 import { actionTypes as screenActionTypes } from 'Modules/screens';
 
 import ResultModel from '../models/Result';
@@ -110,6 +111,21 @@ export default function results(state = INITIAL_STATE, action) {
                 
                 if (valueType === 'screenContent' && newResult.params.alternativeContentId === contentId) {
                     newResult.params.alternativeContentId = null;
+                }
+
+                return {...acc, [resultId]: newResult };
+            }, {});
+        }
+
+        case linkActionTypes.DELETE_LINK: {
+            const { linkId } = action.payload;
+            
+            return Object.keys(state).reduce((acc, resultId) => {
+                const newResult = state[resultId].clone();
+                const valueType = resultToValueType[newResult.type];
+                
+                if (valueType === 'link' && newResult.params.linkId === linkId) {
+                    newResult.params.linkId = null;
                 }
 
                 return {...acc, [resultId]: newResult };

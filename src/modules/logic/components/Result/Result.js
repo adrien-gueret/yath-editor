@@ -13,10 +13,11 @@ import TimesIcon from '@material-ui/icons/Close';
 
 import { ScreenList, selectors as screenSelectors } from 'Modules/screens';
 import { ItemList } from 'Modules/inventory';
+import { selectors as linkSelectors } from 'Modules/links';
 import { ConfirmDialog } from 'Modules/utils';
 
 import {
-    REDIRECT, ADD_ITEM, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY, SWITCH_SCREEN_CONTENT,
+    REDIRECT, ADD_ITEM, REMOVE_ITEM, RESET_INVENTORY, RESET_HISTORY, SWITCH_SCREEN_CONTENT, HIDE_LINK,
 } from '../../constants/results';
 import RESULT_TO_VALUE_TYPE from '../../constants/resultToValueType';
 
@@ -50,6 +51,9 @@ function Result({ screenId, resultId }) {
     ));
     const alternativeContents = useSelector(state => (
         screenSelectors.list.getById(state, screenId).alternativeContents
+    ), shallowEqual);
+    const links = useSelector(state => (
+        linkSelectors.list.getByScreenId(state, screenId)
     ), shallowEqual);
 
     const dispatch = useDispatch();
@@ -86,6 +90,12 @@ function Result({ screenId, resultId }) {
     const onChangeAlternativeContentId = useCallback(({ target }) => {
         dispatch(actions.updateResultParams(resultId, {
             alternativeContentId: target.value,
+        }));
+    }, [dispatch, result, resultId]);
+
+    const onChangeLinkId = useCallback(({ target }) => {
+        dispatch(actions.updateResultParams(resultId, {
+            linkId: target.value,
         }));
     }, [dispatch, result, resultId]);
 
@@ -138,6 +148,18 @@ function Result({ screenId, resultId }) {
                 ))}
             </Select>
         ),
+        link: (
+            <Select
+                error={!result.params.linkId}
+                onChange={onChangeLinkId}
+                className={classes.select}
+                value={result.params.linkId || ''}
+            >
+                { links.map(({ id, label }) => (
+                    <MenuItem key={id} value={id}>{ label }</MenuItem>
+                ))}
+            </Select>
+        ),
     };
 
     return (
@@ -163,11 +185,19 @@ function Result({ screenId, resultId }) {
                 <MenuItem
                     value={REDIRECT}
                     disabled={otherScreens.length === 0}
-                >Redirect player to</MenuItem>
+                >
+                    Redirect player to</MenuItem>
                 <MenuItem
                     value={SWITCH_SCREEN_CONTENT}
                     disabled={alternativeContents.length === 0}
-                >Display alternative content</MenuItem>
+                >
+                    Display alternative content</MenuItem>
+                <MenuItem
+                    value={HIDE_LINK}
+                    disabled={links.length === 0}
+                >
+                    Hide link
+                </MenuItem>
                 <MenuItem value={RESET_HISTORY}>Reset screens history</MenuItem>
                 <MenuItem value={RESET_INVENTORY}>Reset inventory</MenuItem>
             </Select>
