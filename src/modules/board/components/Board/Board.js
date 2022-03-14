@@ -145,8 +145,15 @@ function Board({ isDialogOpen }) {
        
     }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens, ]);
 
+    const onClick = (e) => {
+        const { x, y } = dragSelect.getCursorPositionDifference();
+        
+        if (!e.shiftKey && x === 0 && y === 0) {
+            clearSelection();
+        }
+    };
+
     const onDoubleClick = (e) => {
-        clearSelection();
         openAddScreenDialog({
             screenPosition: {
                 x: e.clientX,
@@ -171,7 +178,7 @@ function Board({ isDialogOpen }) {
     }, [dragSelect, editedScreenId, clearSelection, isDialogOpen]);
 
     return (
-        <section className={classes.root} onDoubleClick={onDoubleClick}>
+        <section className={classes.root} onClick={onClick} onDoubleClick={onDoubleClick}>
             {addScreenDialog}
             {
                 screens.map(screen =>  (
