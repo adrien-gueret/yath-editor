@@ -27,8 +27,10 @@ const useStyles = makeStyles(({ palette }) => ({
     },
     logicArrow: {
         stroke: palette.primary.main,
-        strokeDasharray: 8,
         markerEnd: 'url(#logic-arrow)',
+    },
+    hideableArrow: {
+        strokeDasharray: 8,
     },
 }), { classNamePrefix: 'ArrowsBoard' });
 
@@ -40,8 +42,17 @@ function ArrowMarker({ id, className }) {
     );
 }
 
+function getClassnameFromType(classes, arrowType) {
+    switch (arrowType) {
+        case 'logic': return classes.logicArrow;
+        case 'hideable': return classes.hideableArrow;
+        case 'logic-hideable': return classes.logicArrow + ' ' + classes.hideableArrow;
+        default: return '';
+    }
+}
+
 function ArrowsBoard () {
-    const arrows = useSelector(screenSelectors.list.getArrows, shallowEqual);
+    const arrows = useSelector(screenSelectors.list.getArrows, (a, b) => JSON.stringify(a) === JSON.stringify(b));
     const classes = useStyles();
 
     return (
@@ -55,7 +66,7 @@ function ArrowsBoard () {
                     <path
                         key={index}
                         d={`M${arrow.start.x},${arrow.start.y} L${arrow.end.x},${arrow.end.y}`}
-                        className={`${classes.arrow} ${arrow.isLogic ? classes.logicArrow : ''}`}
+                        className={`${classes.arrow} ${getClassnameFromType(classes, arrow.type)}`}
                      />
                 ))
             }

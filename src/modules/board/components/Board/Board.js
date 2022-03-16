@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useEffect, useRef } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
-import DragSelect from 'dragselect';
 
-import { actions as screenActions, selectors as screenSelectors, Screen, useAddScreenDialog } from 'Modules/screens';
+import { selectors as screenSelectors, useAddScreenDialog } from 'Modules/screens';
 
+import ScreensBoard from '../ScreensBoard';
 import ArrowsBoard from '../ArrowsBoard';
 
 const useStyles = makeStyles(() => ({
@@ -32,124 +32,19 @@ const useStyles = makeStyles(() => ({
 
 function Board({ isDialogOpen }) {
     const editedScreenId = useSelector(screenSelectors.editedScreenId.get);
-    const screens = useSelector(screenSelectors.list.getAsArray, shallowEqual);
-    const totalSelectedScreens = useMemo(() => screens.filter(screen => screen.isSelected).length, [screens]);
+    const dragSelectRef = useRef(null);
     
+    const maxCoordinates = useSelector(screenSelectors.list.getMaxCoordinates, shallowEqual);
+
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
-
-    const dispatch = useDispatch();
-    const selectScreen = useCallback((screenId) => dispatch(screenActions.selectScreen(screenId)), [dispatch]);
-    const unselectScreen = useCallback((screenId) => dispatch(screenActions.unselectScreen(screenId)), [dispatch]);
-    const moveScreens = useCallback((screenIds, deltaX, deltaY) => dispatch(screenActions.moveScreens(screenIds, deltaX, deltaY)), [dispatch]);
-
-    const [draggedScreenInitialStatus, setDraggedScreenInitialStatus] = useState(false);
-
-    const maxCoordinates = useMemo(() => screens.reduce(({ x, y }, screen) => ({
-        x: Math.max(x, screen.x + screen.width),
-        y: Math.max(y, screen.y + screen.height),
-    }), { x: 0, y: 0 }), [screens]);
 
     const classes = useStyles({ maxCoordinates });
 
-    const dragSelect = useMemo(() => new DragSelect({
-        selectorClass: classes.selector,
-        multiSelectMode: true,
-        multiSelectKeys: [],
-        onElementSelect(domElement) {
-            selectScreen(domElementToScreenIdMap.get(domElement));
-        },
-        onElementUnselect(domElement) {
-            unselectScreen(domElementToScreenIdMap.get(domElement));
-        },
-    }), []);
-
-    const [domElementToScreenIdMap] = useState(new Map());
-    const [screenIdToDomElementMap] = useState(new Map());
-
-    const forceSelectScreen = useCallback((screenId) => {
-        if (isDialogOpen) {
-            return;
-        }
-        
-        const domElement = screenIdToDomElementMap.get(screenId);
-
-        if (dragSelect.getSelectables().indexOf(domElement) === -1)  {
-            return;
-        }
-
-        dragSelect.addSelection(domElement);
-    }, [dragSelect, isDialogOpen]);
-
-    const forceUnselectScreen = useCallback((screenId) => {
-        dragSelect.removeSelection(screenIdToDomElementMap.get(screenId));
-    }, [dragSelect]);
-
-    const clearSelection = useCallback(() => {
-        dragSelect.clearSelection();
-    }, [dragSelect]);
-
-    const getScreenRef = useCallback((screenId) => (domElement) => {
-        if (!domElement || !dragSelect) {
-            return;
-        }
-
-        domElementToScreenIdMap.set(domElement, screenId);
-        screenIdToDomElementMap.set(screenId, domElement);
-        dragSelect.addSelectables(domElement);
-    }, [dragSelect]);
-
-    const onScreenDragStartHandler = useCallback((screenId, isSelected) => {
-        if (!dragSelect) {
-            return;
-        }
-
-        if (!isSelected) {
-            forceSelectScreen(screenId);
-        }
-        
-        setDraggedScreenInitialStatus(isSelected);
-        
-        dragSelect.break();
-    }, [dragSelect, forceSelectScreen]);
-
-    const onScreenDragHandler = useCallback((screenId, deltaX, deltaY) => {
-        const otherSelectedScreens = screens.filter(screen => screen.isSelected && screen.id !== screenId);
-
-        if (otherSelectedScreens.length === 0) {
-            return;
-        }
-
-        moveScreens(otherSelectedScreens.map(screen => screen.id), deltaX, deltaY);
-    }, [screens]);
-
-    const onScreenDragStopHandler = useCallback((screenId, deltaX, deltaY) => {
-        if (!dragSelect) {
-            return;
-        }
-
-        dragSelect.start();
-
-        if (deltaX !== 0 || deltaY !== 0) {
-            if (totalSelectedScreens > 1) {
-                window.setTimeout(() => forceSelectScreen(screenId), 0);
-            }
-        } else {
-            window.setTimeout(() => {
-                if (draggedScreenInitialStatus) {
-                    forceUnselectScreen(screenId);
-                } else {
-                    forceSelectScreen(screenId);
-                }
-            }, 0);
-        }
-       
-    }, [forceSelectScreen, forceUnselectScreen, dragSelect, draggedScreenInitialStatus, totalSelectedScreens, ]);
-
     const onClick = (e) => {
-        const { x, y } = dragSelect.getCursorPositionDifference();
+        const { x, y } = dragSelectRef.current.getCursorPositionDifference();
         
         if (!e.shiftKey && x === 0 && y === 0) {
-            clearSelection();
+            dragSelectRef.current.clearSelection();
         }
     };
 
@@ -163,35 +58,20 @@ function Board({ isDialogOpen }) {
     };
 
     useEffect(() => {
-        if (!dragSelect || (!editedScreenId && !isDialogOpen)) {
+        if (!dragSelectRef.current || (!editedScreenId && !isDialogOpen)) {
             return;
         }
 
-        const domElement = screenIdToDomElementMap.get(editedScreenId);
+        dragSelectRef.current.clearSelection();
+        dragSelectRef.current.stop(false);
 
-        clearSelection();
-
-        dragSelect.removeSelectables(domElement);
-        dragSelect.stop(false);
-
-        return () => { dragSelect.start(); dragSelect.addSelectables(domElement);};
-    }, [dragSelect, editedScreenId, clearSelection, isDialogOpen]);
+        return () => { dragSelectRef.current.start();};
+    }, [dragSelectRef.current, editedScreenId, isDialogOpen]);
 
     return (
         <section className={classes.root} onClick={onClick} onDoubleClick={onDoubleClick}>
             {addScreenDialog}
-            {
-                screens.map(screen =>  (
-                    <Screen
-                        key={screen.id}
-                        screenId={screen.id}
-                        ref={getScreenRef(screen.id)}
-                        onDragStart={onScreenDragStartHandler}
-                        onDrag={onScreenDragHandler}
-                        onDragStop={onScreenDragStopHandler}
-                    />
-                ))
-            }
+            <ScreensBoard disableForceSelect={isDialogOpen} dragSelectRef={dragSelectRef} />
             <ArrowsBoard />
         </section>
     );

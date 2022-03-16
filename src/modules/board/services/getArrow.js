@@ -1,6 +1,6 @@
 import { geometry } from 'Modules/maths';
 
-export default function getArrow(fromScreen, targetScreen, isLogic = false) {
+export default function getArrow(fromScreen, targetScreen) {
     const fromScreenPosition = fromScreen.getCoordinates();
     const start = { x: fromScreenPosition.x + fromScreen.width/2, y: fromScreenPosition.y + fromScreen.height/2 };
 
@@ -33,5 +33,5 @@ export default function getArrow(fromScreen, targetScreen, isLogic = false) {
         geometry.getSegmentsIntersectionPoint(arrow, segment) || finalEnd
     ), targetCenter);
 
-    return { start, end, isLogic };
+    return { start, end };
 }

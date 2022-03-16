@@ -11,11 +11,11 @@ export default function useAddScreenDialog() {
     const [submitCallback, setSubmitCallback] = useState(() => () => {});
     const [newScreenPosition, setNewScreenPosition] = useState(null);
     const dispatch = useDispatch();
-    const screens = useSelector(listSelectors.getAsArray, shallowEqual);
+    const screenSlugs = useSelector(listSelectors.getAllSlugs, shallowEqual);
 
     const addScreenHandler = useCallback((newScreen) => {
         const newSlug = newScreen.getSlug();
-        const nameAlreadyUsed = screens.some(screen => screen.getSlug() === newSlug);
+        const nameAlreadyUsed = screenSlugs.some(slug => slug === newSlug);
 
         if (nameAlreadyUsed) {
             alert(`Slug "${newSlug}" is already used in this project.`);
@@ -24,7 +24,7 @@ export default function useAddScreenDialog() {
 
         dispatch(actions.addScreen(newScreen));
         dispatch(actions.setEditScreen(newScreen.id));
-    }, [dispatch, screens]);
+    }, [dispatch, screenSlugs]);
 
     const onAddScreenDialogClose = useCallback(() => {
         setIsAddScreenDialogOpen(false);
