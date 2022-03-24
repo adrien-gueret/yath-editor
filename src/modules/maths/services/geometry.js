@@ -29,8 +29,8 @@ function getLinesIntersectionPoint(line1, lineZ) {
     ) / divisor;
 
     return {
-        x: lineZStart.x + (m * deltaLine2.x),
-        y: lineZStart.y + (m * deltaLine2.y),
+        x: Math.round(lineZStart.x + (m * deltaLine2.x)),
+        y: Math.round(lineZStart.y + (m * deltaLine2.y)),
     };
 }
 

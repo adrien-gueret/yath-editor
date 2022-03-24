@@ -2,10 +2,10 @@ import { geometry } from 'Modules/maths';
 
 export default function getArrow(fromScreen, targetScreen) {
     const fromScreenPosition = fromScreen.getCoordinates();
-    const start = { x: fromScreenPosition.x + fromScreen.width/2, y: fromScreenPosition.y + fromScreen.height/2 };
+    const start = { x: Math.round(fromScreenPosition.x + fromScreen.width/2), y: Math.round(fromScreenPosition.y + fromScreen.height/2) };
 
     const targetPosition = targetScreen.getCoordinates();
-    const targetCenter = { x: targetPosition.x + targetScreen.width/2, y: targetPosition.y + targetScreen.height/2 };
+    const targetCenter = { x: Math.round(targetPosition.x + targetScreen.width/2), y: Math.round(targetPosition.y + targetScreen.height/2) };
 
     const topSegment = {
         start: { x: targetPosition.x, y: targetPosition.y },

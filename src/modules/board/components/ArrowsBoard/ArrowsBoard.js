@@ -1,38 +1,41 @@
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core';
 
 import { selectors as screenSelectors } from 'Modules/screens';
 
-const useStyles = makeStyles(({ palette }) => ({
-    root: {
-        pointerEvents: 'none',
-        zIndex: 0,
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-    },
-    marker: {
-        fill: palette.common.black,
-        stroke: palette.common.white,
-    },
-    logicMarker: {
-        fill: palette.primary.main,
-    },
-    arrow: {
-        stroke: 'rgba(0, 0, 0, .4)',
-        strokeWidth: '2px',
-        markerEnd: 'url(#arrow)',
-    },
-    logicArrow: {
-        stroke: palette.primary.main,
-        markerEnd: 'url(#logic-arrow)',
-    },
-    hideableArrow: {
-        strokeDasharray: 8,
-    },
-}), { classNamePrefix: 'ArrowsBoard' });
+const useStyles = makeStyles(({ palette }) => {
+    console.log(palette);
+    return {
+        root: {
+            pointerEvents: 'none',
+            zIndex: 0,
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+        },
+        marker: {
+            fill: palette.common.black,
+            stroke: palette.common.white,
+        },
+        logicMarker: {
+            fill: palette.primary.main,
+        },
+        arrow: {
+            stroke: 'black',
+            strokeWidth: '2px',
+            markerEnd: 'url(#arrow)',
+        },
+        logicArrow: {
+            stroke: palette.primary.main,
+            markerEnd: 'url(#logic-arrow)',
+        },
+        hideableArrow: {
+            strokeDasharray: 8,
+        },
+    };
+}, { classNamePrefix: 'ArrowsBoard' });
 
 function ArrowMarker({ id, className }) {
     return (
@@ -44,9 +47,9 @@ function ArrowMarker({ id, className }) {
 
 function getClassnameFromType(classes, arrowType) {
     switch (arrowType) {
+        case 'normal': return classes.normalArrow;
         case 'logic': return classes.logicArrow;
         case 'hideable': return classes.hideableArrow;
-        case 'logic-hideable': return classes.logicArrow + ' ' + classes.hideableArrow;
         default: return '';
     }
 }

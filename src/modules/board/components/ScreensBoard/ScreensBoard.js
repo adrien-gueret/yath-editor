@@ -31,10 +31,14 @@ function ScreensBoard({ disableForceSelect, dragSelectRef }) {
         multiSelectMode: true,
         multiSelectKeys: [],
         onElementSelect(domElement) {
-            selectScreen(domElementToScreenIdMap.get(domElement));
+            if (domElementToScreenIdMap.has(domElement)) {
+                selectScreen(domElementToScreenIdMap.get(domElement));
+            }
         },
         onElementUnselect(domElement) {
-            unselectScreen(domElementToScreenIdMap.get(domElement));
+            if (domElementToScreenIdMap.has(domElement)) {
+                unselectScreen(domElementToScreenIdMap.get(domElement));
+            }
         },
     }), []);
 

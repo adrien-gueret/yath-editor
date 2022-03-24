@@ -57,6 +57,13 @@ function getFirstImage(state) {
     return firstScreenWithImage ? firstScreenWithImage.image : null;
 }
 
+function areArrowsEqual(arrowA, arrowB) {
+    return (
+        arrowA.start.x === arrowB.start.x && arrowA.start.y === arrowB.start.y &&
+        arrowA.end.x === arrowB.end.x && arrowA.end.y === arrowB.end.y
+    );
+}
+
 function getArrows(state) {
     const screens = getAsArray(state);
 
@@ -78,7 +85,7 @@ function getArrows(state) {
         }
 
         const linksArrows = screenLinks.map(link => {
-            const arrowType = screenResults.some(result => result.params.linkId === link.id) ? 'hideable' : '';
+            const arrowType = screenResults.some(result => result.params.linkId === link.id) ? 'hideable' : 'normal';
             const arrow = getScreenArrow(link.targetScreenId, arrowType);
 
             return arrow;
@@ -104,18 +111,43 @@ function getArrows(state) {
         ];
     }, []);
 
-    return allArrows;
-    
-    /*
-    .filter((arrowToFilter, arrowIndex, allArrows) => {
-        const { x: startX, y: startY } = arrowToFilter.start;
-        const { x: endX, y: endY } = arrowToFilter.end;
+    const uniqArrows = allArrows.filter((arrowToFilter, arrowIndex, allArrows) => (
+        allArrows.findIndex((arrow) => (
+            areArrowsEqual(arrow, arrowToFilter)
+        )) === arrowIndex
+    ));
 
-        return allArrows.findIndex((arrow) => (
-            arrow.start.x === startX && arrow.start.y === startY &&
-            arrow.end.x === endX && arrow.end.y === endY
-        )) === arrowIndex;
-    });*/
+    if (uniqArrows.length === allArrows.length) {
+        return allArrows;
+    }
+
+    const dupplicatedArrows = allArrows.filter((arrowToFilter, arrowIndex, allArrows) => (
+        allArrows.findIndex((arrow) => (
+            areArrowsEqual(arrow, arrowToFilter)
+        )) !== arrowIndex
+    ));
+
+    const deltasX = [-20, 20, 0];
+
+    return uniqArrows.flatMap((arrow) => {
+        const dupplicated = dupplicatedArrows.filter((dupplicatedArrow) => areArrowsEqual(dupplicatedArrow, arrow));
+
+        if (dupplicated.length === 0) {
+            return arrow;
+        }
+
+        const allTypes = [arrow.type].concat(dupplicated.map(({ type }) => type))
+            .filter((type, index, types) => types.indexOf(type) === index);
+
+        return allTypes.map((arrowType, index) => ({
+            ...arrow,
+            type: arrowType,
+            end: {
+                ...arrow.end,
+                x: arrow.end.x + deltasX[index],
+            },
+        }));
+    });
 }
 
 function getMaxCoordinates(state) {
