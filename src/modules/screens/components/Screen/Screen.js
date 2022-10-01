@@ -13,13 +13,14 @@ import { selectors as logicSelectors } from 'Modules/logic';
 import actions from '../../actions';
 import selectors from '../../selectors';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
     root: {
         position: 'absolute',
         zIndex: 1,
         cursor: 'move',
-        height: 40,
         userSelect: 'none',
+        height: 'auto',
+        padding: spacing(1, 0),
     },
     label: {
         display: 'block',
@@ -27,6 +28,7 @@ const useStyles = makeStyles(({ palette }) => ({
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         pointerEvents: 'none',
+        whiteSpace: 'break-spaces',
     },
     outlined: {
         backgroundColor: ['#fff', '!important'],
