@@ -63,6 +63,10 @@ function AppHeader() {
             dispatch(gameActions.setCustomCSS(newState.game.customCSS));
         }
 
+        if (newState.game.customJS) {
+            dispatch(gameActions.setCustomJS(newState.game.customJS));
+        }
+
         if (newState.game.otherParameters) {
             dispatch(gameActions.setOtherParameters(newState.game.otherParameters));
         }

@@ -37,18 +37,19 @@ export function fetchYathJS() {
    return fetchYath('js');
 }
 
-export function getStartGameScript(startScreenId, onScreenChangeStringified) {
-    const optionsStringified = onScreenChangeStringified ? `{onScreenChange:function(o){var game=o.game,screenName=o.screenName,screen=o.screen;${onScreenChangeStringified}}}` : null;
+export function getStartGameScript(startScreenId, onScreenChangeStringified, customJS) {
+    const finalCustomJS = customJS ? `if((() => {${customJS}})()===false){return false;}` : '';
+    const optionsStringified = (onScreenChangeStringified || finalCustomJS) ? `{onScreenChange:function(o){var game=o.game,screenName=o.screenName,screen=o.screen;${finalCustomJS}${onScreenChangeStringified}}}` : null;
     const appendedOptions = optionsStringified ? `, ${optionsStringified}` : '';
 
     return `const g = yath(document.body${appendedOptions});g.goToScreen('${startScreenId}');`;
 }
 
-export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS, globalSettings, externalToolsParameters) {
+export function getFullHtml(gameName, screens, links, logic, startScreen, customCSS, customJS, globalSettings, externalToolsParameters) {
     const gaId = externalToolsParameters.gaId;
     const screensHtml = getScreensHtml(screens, links);
     const onScreenChangeStringified = getScreensStringifiedRules(screens, logic, gaId);
-    const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified);
+    const startGame = getStartGameScript(startScreen.id, onScreenChangeStringified, customJS);
 
     const { favicon, thumbnail, description, author } = globalSettings; 
 
@@ -89,7 +90,7 @@ export function getFullHtml(gameName, screens, links, logic, startScreen, custom
     });
 }
 
-export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS) {
+export function injectGameIntoIframe(iframe, screens, links, logic, startScreenId, customCSS, customJS) {
     if (!iframe) {
         return;
     }
@@ -121,7 +122,7 @@ export function injectGameIntoIframe(iframe, screens, links, logic, startScreenI
 
         const onScreenChangeStringified = getScreensStringifiedRules(screens, logic);
 
-        const gameContent = getStartGameScript(startScreenId, onScreenChangeStringified);
+        const gameContent = getStartGameScript(startScreenId, onScreenChangeStringified, customJS);
         const gameScript = document.createElement('script');
         gameScript.appendChild(document.createTextNode(gameContent));
 

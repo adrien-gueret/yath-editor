@@ -16,6 +16,9 @@ export default {
     setCustomCSS(css) {
         return { type: actionTypes.SET_CUSTOM_CSS, payload: { css } };
     },
+    setCustomJS(js) {
+        return { type: actionTypes.SET_CUSTOM_JS, payload: { js } };
+    },
     configureGame(defaultTab = 'global') {
         return { type: actionTypes.CONFIGURE_GAME, payload: { defaultTab } };
     },

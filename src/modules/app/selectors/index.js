@@ -16,6 +16,7 @@ function getExportableState(state) {
         game: {
             name: game.name,
             customCSS: gameSelectors.customCSS.getExportable(state),
+            customJS: gameSelectors.customJS.getExportable(state),
             otherParameters: gameSelectors.otherParameters.get(state),
             globalSettings: gameSelectors.globalSettings.get(state),
         },

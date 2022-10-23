@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core';
 import { selectors as screenSelectors } from 'Modules/screens';
 
 const useStyles = makeStyles(({ palette }) => {
-    console.log(palette);
     return {
         root: {
             pointerEvents: 'none',

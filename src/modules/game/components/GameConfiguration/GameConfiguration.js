@@ -9,11 +9,13 @@ import {
 import SettingsIcon from '@material-ui/icons/Build';
 import ExternalToolsIcon from '@material-ui/icons/Extension';
 import CustomCSSIcon from '@material-ui/icons/Palette';
+import CustomJSIcon from '@material-ui/icons/Code';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
 
 import CSSConfiguration from './CSSConfiguration';
+import JSConfiguration from './JSConfiguration';
 import GlobalSettingsConfiguration from './GlobalSettingsConfiguration';
 import ExternalToolsConfiguration from './ExternalToolsConfiguration';
 
@@ -45,12 +47,14 @@ function GameConfiguration({ isOpen }) {
             >
                 <Tab icon={<SettingsIcon />} label="Global settings" value="global" />
                 <Tab icon={<CustomCSSIcon />} label="Custom CSS" value="css" />
+                <Tab icon={<CustomJSIcon />} label="Custom JS" value="js" />
                 <Tab icon={<ExternalToolsIcon />} label="External tools" value="externalTools" />
             </Tabs>
 
             <DialogContent>
                 {currentTab === 'global' && <GlobalSettingsConfiguration />}
                 {currentTab === 'css' && <CSSConfiguration />}
+                {currentTab === 'js' && <JSConfiguration />}
                 {currentTab === 'externalTools' && <ExternalToolsConfiguration />}
             </DialogContent>
 
