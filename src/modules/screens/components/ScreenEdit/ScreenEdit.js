@@ -6,6 +6,7 @@ import {
     Dialog, DialogTitle, DialogContent,
     DialogActions, Button, TextField,
     makeStyles, Tabs, Tab, Badge,
+    InputLabel,
 } from '@material-ui/core';
 
 import LogicIcon from '@material-ui/icons/AccountTree';
@@ -28,6 +29,10 @@ const propTypes = {
 };
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
+    screenNameAndId: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     actionButtonContainer: {
         marginRight: 'auto',
     },
@@ -58,17 +63,20 @@ export default function ScreenEdit({ screenId }) {
 
     return (
         <Dialog open aria-labelledby="edit-screen-dialog" fullScreen>
-            <DialogTitle id="edit-screen-dialog">Screen configuration</DialogTitle>
+            <DialogTitle id="edit-screen-dialog">
+                Screen configuration
+                <InputLabel component="div">ID: { screenId }</InputLabel>
+            </DialogTitle>
 
             <DialogContent key={screenId} dividers>
                 <TextField
                     margin="dense"
                     label="Screen name"
                     type="text"
-                    fullWidth
                     onChange={onChangeNameHandler}
                     defaultValue={screen.name}
                     variant="outlined"
+                    fullWidth
                 />
 
                 <Tabs

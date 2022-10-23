@@ -9,8 +9,6 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-coy.css';
 
-console.log(languages);
-
 import actions from '../../actions';
 import selectors from '../../selectors';
 

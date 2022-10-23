@@ -20,10 +20,10 @@ export function getScreensStringifiedRules(screens, logic, gaId) {
             ...acc,
             [screen.id]: { n: screen.name, s: '/' + screen.getSlug() },
         }), {}));
-        analyticsLogic = `var m=${screenIdsToScreenNames};t(m[screenName].n,m[screenName].s);`;
+        analyticsLogic = `var m=${screenIdsToScreenNames};t(m[screenId].n,m[screenId].s);`;
     }
 
-    const specificScreensLogic = `switch(screenName){${screens.map(screen => screen.getStringifiedRules(logic)).filter(stringifiedRule => !!stringifiedRule).join('break;')}}`;
+    const specificScreensLogic = `switch(screenId){${screens.map(screen => screen.getStringifiedRules(logic)).filter(stringifiedRule => !!stringifiedRule).join('break;')}}`;
   
     return analyticsLogic + specificScreensLogic;
 }
@@ -38,8 +38,8 @@ export function fetchYathJS() {
 }
 
 export function getStartGameScript(startScreenId, onScreenChangeStringified, customJS) {
-    const finalCustomJS = customJS ? `if((() => {${customJS}})()===false){return false;}` : '';
-    const optionsStringified = (onScreenChangeStringified || finalCustomJS) ? `{onScreenChange:function(o){var game=o.game,screenName=o.screenName,screen=o.screen;${finalCustomJS}${onScreenChangeStringified}}}` : null;
+    const finalCustomJS = customJS ? `if((()=>{${customJS}})()===false){return false;}` : '';
+    const optionsStringified = (onScreenChangeStringified || finalCustomJS) ? `{onScreenChange:function(o){var game=o.game,screenId=o.screenName,screen=o.screen;${finalCustomJS}${onScreenChangeStringified}}}` : null;
     const appendedOptions = optionsStringified ? `, ${optionsStringified}` : '';
 
     return `const g = yath(document.body${appendedOptions});g.goToScreen('${startScreenId}');`;

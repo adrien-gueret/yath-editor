@@ -5,16 +5,16 @@ export const INITIAL_STATE = `/*
     You can access these constants:
 
     - screen: DOM element representing the target screen the user will move to;
-    - screenName: string containing the name of the screen the user will move to;
+    - screenId: string containing the id of the screen the user will move to;
     - game: the global game object containing some helpers you can use in your script:
         {
-            goToScreen(screenName: string),
+            goToScreen(screenId: string),
                 // Redirect player to given screen
 
-            getScreenVisits(screenName: string): number,
+            getScreenVisits(screenId: string): number,
                 // Returns total of times player has visited given screen
 
-            hasVisitedScreen(screenName: string): boolean,
+            hasVisitedScreen(screenId: string): boolean,
                 // Returns true if player has visited given screen at least once
 
             resetHistory(),
