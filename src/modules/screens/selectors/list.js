@@ -91,6 +91,23 @@ function getArrows(state) {
             return arrow;
         });
 
+        const hasAlternativeContents = sourceScreen.alternativeContents.length > 0;
+
+        const contentArrows = [];
+
+        const datasetYathGoToRegExp = /data-yath-go-to="([0-9a-zA-Z]+)"/gi;
+        
+        let match = null;
+        while ((match = datasetYathGoToRegExp.exec(sourceScreen.content)) !== null) {
+            contentArrows.push(getScreenArrow(match[1], hasAlternativeContents ? 'hideable' : 'normal'));
+        }
+
+        sourceScreen.alternativeContents.forEach((alternativeContent) => {
+            while ((match = datasetYathGoToRegExp.exec(alternativeContent.value)) !== null) {
+                contentArrows.push(getScreenArrow(match[1], 'hideable'));
+            }
+        });
+
         const logicArrows = screenRules.reduce((arrows, rule) => {
             const resultsWithScreenRedirect = logicSelectors.results.getByRuleId(state, rule.id)
                 .filter(result => !!result.params.screenId);
@@ -108,6 +125,7 @@ function getArrows(state) {
             ...allArrows,
             ...linksArrows.filter(arrow => !!arrow),
             ...logicArrows.filter(arrow => !!arrow),
+            ...contentArrows.filter(arrow => !!arrow),
         ];
     }, []);
 
