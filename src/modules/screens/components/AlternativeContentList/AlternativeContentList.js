@@ -59,6 +59,7 @@ export default function AlternativeContentList({ screenId }) {
             {alternativeContents.map(({ id, value }, index) => (
                 <div key={id} className={classes.root}>
                     <Wysiwyg
+                        screenId={screenId}
                         id={`alt-screen-content-${id}`}
                         defaultValue={value}
                         label={`Alternative content n° ${index + 1}`}

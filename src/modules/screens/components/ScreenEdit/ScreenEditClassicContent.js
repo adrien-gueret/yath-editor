@@ -25,6 +25,7 @@ export default function ScreenEditClassicContent({ screenId }) {
         <React.Fragment>
             <Wysiwyg
                 id="screen-content"
+                screenId={screenId}
                 defaultValue={screen.content}
                 label="Screen content"
                 onChange={onChangeContentHandler}
