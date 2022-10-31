@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+
+import { useSelector } from 'react-redux';
 import ReactDOM from 'react-dom';
 
 import { InputLabel, makeStyles, Toolbar, Tooltip, IconButton } from '@material-ui/core';
@@ -14,6 +16,8 @@ import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 import { Editor, EditorState, RichUtils, CompositeDecorator } from 'draft-js';
 
 import { convertFromHTML, convertToHTML } from 'draft-convert';
+
+import selectors from '../../selectors';
 
 import WysiwyContext from './WysiwyContext';
 import YathLink from './YathLink';
@@ -133,6 +137,11 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
 
     const currentInlineStyle = editorState.getCurrentInlineStyle();
     const currentSelection = editorState.getSelection();
+
+    const otherScreens = useSelector(state => (
+        selectors.list.getAllExceptOne(state, screenId)
+    ));
+    const canShowLinkButton = otherScreens.length > 0;
 
     useEffect(() => {
         const labelNode = ReactDOM.findDOMNode(labelRef.current);
@@ -307,14 +316,16 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
                                 </IconButton>
                             </Tooltip>
 
-                            <Tooltip title="Link">
-                                <IconButton
-                                    onClick={applyLink}
-                                    color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
-                                >
-                                    <LinkIcon />
-                                </IconButton>
-                            </Tooltip>
+                            { canShowLinkButton && (
+                                 <Tooltip title="Link">
+                                    <IconButton
+                                        onClick={applyLink}
+                                        color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
+                                    >
+                                        <LinkIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
 
                             <Tooltip title="Soft breakline (Shift + Enter)">
                                 <IconButton onClick={applySoftBreakline} disabled={!currentSelection.isCollapsed()}>
