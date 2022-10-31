@@ -2,11 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
-import {
-    InputLabel, makeStyles, Toolbar, Tooltip, IconButton,
-    Dialog, DialogTitle, DialogContent, DialogContentText,
-    DialogActions, Button,
-} from '@material-ui/core';
+import { InputLabel, makeStyles, Toolbar, Tooltip, IconButton } from '@material-ui/core';
 
 import NotchedOutline from '@material-ui/core/OutlinedInput/NotchedOutline';
 import FormatBold from '@material-ui/icons/FormatBold';
@@ -19,7 +15,9 @@ import { Editor, EditorState, RichUtils, CompositeDecorator } from 'draft-js';
 
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 
-import ScreenList from '../ScreenList';
+import WysiwyContext from './WysiwyContext';
+import YathLink from './YathLink';
+import YathLinkDialog from './YathLinkDialog';
 
 const propTypes = {
     id: PropTypes.string.isRequired,
@@ -71,12 +69,7 @@ const customLinkDecorator = new CompositeDecorator([{
           callback
         );
     },
-    component(props) {
-        const { screenId } = props.contentState.getEntity(props.entityKey).getData();
-        return (
-            <a data-yath-go-to={screenId}>{ props.children }</a>
-        );
-    },
+    component: YathLink,
 }]);
 
 const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
@@ -99,11 +92,6 @@ const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
     horizontalMargins: {
         paddingLeft: 14,
         paddingRight: 14,
-        '& [data-yath-go-to]': {
-            color: palette.primary.main,
-            textDecoration: 'underline',
-            textUnderlineOffset: '3px',
-        },
     },
     toolbar: {
         backgroundColor: palette.grey[100],
@@ -240,15 +228,14 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
         }
     }, [classes]);
 
-    const onCustomLinkSubmit = useCallback((e) => {
-        e.preventDefault();
+    const onCustomLinkSubmit = useCallback((selectedScreenId) => {
         setShowCustomLinkDialog(false);
 
         const contentState = editorState.getCurrentContent();
         const contentStateWithEntity = contentState.createEntity(
           'YATH_LINK',
           'MUTABLE',
-          {screenId: customLinkTargetScreenId}
+          {screenId: selectedScreenId}
         );
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
         const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
@@ -260,7 +247,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
         ));
 
         setCustomLinkTargetScreenId(null);
-    }, [editorState, customLinkTargetScreenId]);
+    }, [editorState]);
 
     return (
         <div className={classes.root}>
@@ -276,16 +263,18 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
             <div className={classes.childrenContainer}>
                 <div id={id} className={classes.content}>
                     <div className={classes.horizontalMargins}>
-                        <Editor
-                            editorState={editorState}
-                            handleKeyCommand={handleKeyCommand}
-                            handleReturn={handleReturn}
-                            blockStyleFn={blockStyleFn}
-                            spellCheck
-                            onChange={onChangeHandler}
-                            onFocus={onFocusHandler}
-                            onBlur={onBlurHandler}
-                        />
+                        <WysiwyContext.Provider value={{ editorState, screenId, updateEditorState: onChangeHandler }}>
+                            <Editor
+                                editorState={editorState}
+                                handleKeyCommand={handleKeyCommand}
+                                handleReturn={handleReturn}
+                                blockStyleFn={blockStyleFn}
+                                spellCheck
+                                onChange={onChangeHandler}
+                                onFocus={onFocusHandler}
+                                onBlur={onBlurHandler}
+                            />
+                        </WysiwyContext.Provider>
                     </div>
                     
                     <Toolbar className={classes.toolbar} variant="dense" disableGutters>
@@ -343,31 +332,13 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
                 </div>
             </div>
 
-            <Dialog open={showCustomLinkDialog} aria-labelledby="custom-link-dialog">
-                <form onSubmit={onCustomLinkSubmit}>
-                    <DialogTitle id="custom-link-dialog">Configure link</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>Select the screen to redirect the user to.</DialogContentText>
-                        <ScreenList
-                            excludedScreenId={screenId}
-                            selectedScreenId={customLinkTargetScreenId}
-                            onChange={setCustomLinkTargetScreenId}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button type="button" onClick={() => {
-                            setShowCustomLinkDialog(false);
-                            setCustomLinkTargetScreenId(null);
-                        }} variant="outlined">Cancel</Button>
-                        <Button
-                            type="submit"
-                            color="primary"
-                            variant="contained"
-                            disabled={customLinkTargetScreenId === null}
-                        >Confirm</Button>
-                    </DialogActions>
-                </form>
-            </Dialog>
+            <YathLinkDialog
+                isOpen={showCustomLinkDialog}
+                excludedScreenId={screenId}
+                defaultSelectedScreenId={customLinkTargetScreenId}
+                onSubmit={onCustomLinkSubmit}
+                onClose={() => setShowCustomLinkDialog(false)}
+            />
         </div>
     );
 };
