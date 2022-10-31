@@ -1,9 +1,13 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/core';
+import { useSelector, shallowEqual } from 'react-redux';
+
+import { makeStyles, Tooltip } from '@material-ui/core';
 
 import { EditorState, SelectionState } from 'draft-js';
+
+import screenSelectors from '../../selectors';
 
 import YathLinkDialog from './YathLinkDialog';
 import WysiwyContext from './WysiwyContext';
@@ -40,6 +44,8 @@ const YathLink = ({
 
     const { screenId: targetScreenId } = contentState.getEntity(entityKey).getData();
 
+    const targetScreen = useSelector(state => screenSelectors.list.getById(state, targetScreenId), shallowEqual) || {};
+
     const onScreenChange = (newScreenId) => {
         contentState.replaceEntityData(entityKey, {
             screenId: newScreenId,
@@ -56,11 +62,13 @@ const YathLink = ({
 
     return (
         <>
-            <a
-                className={classes.root}
-                data-yath-go-to={targetScreenId}
-                onClick={() => setShowDialog(true)}
-            >{ children }</a>
+            <Tooltip title={`Redirect to "${targetScreen.name}"`}>
+                <a
+                    className={classes.root}
+                    data-yath-go-to={targetScreenId}
+                    onClick={() => setShowDialog(true)}
+                >{ children }</a>
+            </Tooltip>
 
             <YathLinkDialog
                 isOpen={showDialog}
