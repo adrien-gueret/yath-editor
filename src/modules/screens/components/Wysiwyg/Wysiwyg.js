@@ -13,7 +13,10 @@ import FormatUnderline from '@material-ui/icons/FormatUnderlined';
 import LinkIcon from '@material-ui/icons/Link';
 import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 
-import { Editor, EditorState, RichUtils, CompositeDecorator } from 'draft-js';
+import {
+    Editor, EditorState, RichUtils, CompositeDecorator,
+    getDefaultKeyBinding, KeyBindingUtil,
+} from 'draft-js';
 
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 
@@ -162,6 +165,11 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
     const classes = useStyles();
 
     const handleKeyCommand = useCallback((command, currentEditorState) => {
+        if (command === 'insert-yath-link') {
+            applyLink();
+            return 'handled';
+        }
+
         const newState = RichUtils.handleKeyCommand(currentEditorState, command);
 
         if (newState) {
@@ -171,6 +179,14 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
 
         return 'not-handled';
     }, [onChangeHandler]);
+
+    const keyBindingFn = useCallback((e) => {
+        if (e.key === 'k' && KeyBindingUtil.hasCommandModifier(e)) {
+            return 'insert-yath-link';
+          }
+
+          return getDefaultKeyBinding(e);
+    }, []);
 
     const forceReselect = useCallback((editorStateToReslect) => {
         onChangeHandler(EditorState.forceSelection(editorStateToReslect, editorStateToReslect.getSelection()));
@@ -190,8 +206,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
     }, [editorState, forceReselect]);
 
     const applyLink = useCallback(() => {
-        const selection = editorState.getSelection();
-        if (selection.isCollapsed()) {
+        if (!canShowLinkButton) {
             return;
         }
 
@@ -207,7 +222,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
         }
 
         setShowCustomLinkDialog(true);
-    }, [editorState, forceReselect]);
+    }, [editorState, forceReselect, canShowLinkButton]);
 
     const applySoftBreakline = useCallback(() => {
         if (!currentSelection.isCollapsed()) {
@@ -277,6 +292,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
                                 editorState={editorState}
                                 handleKeyCommand={handleKeyCommand}
                                 handleReturn={handleReturn}
+                                keyBindingFn={keyBindingFn}
                                 blockStyleFn={blockStyleFn}
                                 spellCheck
                                 onChange={onChangeHandler}
@@ -317,7 +333,7 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
                             </Tooltip>
 
                             { canShowLinkButton && (
-                                 <Tooltip title="Link">
+                                 <Tooltip title="Link (Ctrl + K)">
                                     <IconButton
                                         onClick={applyLink}
                                         color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
@@ -343,13 +359,15 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
                 </div>
             </div>
 
-            <YathLinkDialog
-                isOpen={showCustomLinkDialog}
-                excludedScreenId={screenId}
-                defaultSelectedScreenId={customLinkTargetScreenId}
-                onSubmit={onCustomLinkSubmit}
-                onClose={() => setShowCustomLinkDialog(false)}
-            />
+            { showCustomLinkDialog && (
+                <YathLinkDialog
+                    isOpen
+                    excludedScreenId={screenId}
+                    defaultSelectedScreenId={customLinkTargetScreenId}
+                    onSubmit={onCustomLinkSubmit}
+                    onClose={() => { setShowCustomLinkDialog(false); setCustomLinkTargetScreenId(null); }}
+                />
+            )}
         </div>
     );
 };
