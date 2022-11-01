@@ -50,9 +50,7 @@ export default function list(state = INITIAL_STATE, action) {
                 const customLinkRegExp = new RegExp(`<a data-yath-go-to="${action.payload.screenId}">(.+?)</a>`, 'gi')
 
                 Object.keys(newScreens).forEach((screenId) => {
-                    console.log('before', newScreens[screenId].content);
                     newScreens[screenId].content = newScreens[screenId].content.replace(customLinkRegExp, '$1');
-                    console.log('after', newScreens[screenId].content);
                     newScreens[screenId].alternativeContents = newScreens[screenId]
                         .alternativeContents.map(({ id, value }) => ({ id, value: value.replace(customLinkRegExp, '$1') }));
                 });

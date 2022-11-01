@@ -21,12 +21,18 @@ const propTypes = {
     blockKey: PropTypes.string.isRequired,
 };
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, typography, shadows }) => ({
     root: {
         cursor: 'pointer',
         color: palette.primary.main,
         textDecoration: 'underline',
         textUnderlineOffset: '3px',
+    },
+    tooltip: {
+        ...typography.body2,
+        color: palette.text.primary,
+        backgroundColor: palette.background.paper,
+        boxShadow: shadows[1],
     },
 }), { classNamePrefix: 'YathLink' });
 
@@ -62,7 +68,12 @@ const YathLink = ({
 
     return (
         <>
-            <Tooltip title={`Redirect to "${targetScreen.name}"`}>
+            <Tooltip
+                arrow
+                placement="top"
+                title={`Redirect to "${targetScreen.name}"`}
+                classes={{ tooltip: classes.tooltip}}
+            >
                 <a
                     className={classes.root}
                     data-yath-go-to={targetScreenId}
