@@ -7,6 +7,9 @@ export default {
     editScreenName(screenId, newName) {
         return { type: actionTypes.EDIT_SCREEN_NAME, payload: { screenId, newName } };
     },
+    setScreenAsHTML(screenId) {
+        return { type: actionTypes.SET_SCREEN_AS_HTML, payload: { screenId } };
+    },
     editScreenContent(screenId, newContent) {
         return { type: actionTypes.EDIT_SCREEN_CONTENT, payload: { screenId, newContent } };
     },
@@ -15,6 +18,9 @@ export default {
     },
     editAlternativeScreenContent(screenId, contentId, newContent) {
         return { type: actionTypes.EDIT_ALTERNATIVE_SCREEN_CONTENT, payload: { screenId, newContent, contentId } };
+    },
+    setAlternativeScreenContentAsHTML(screenId, contentId) {
+        return { type: actionTypes.SET_ALTERNATIVE_SCREEN_CONTENT_AS_HTML, payload: { screenId, contentId } };
     },
     deleteAlternativeScreenContent(screenId, contentId) {
         return { type: actionTypes.DELETE_ALTERNATIVE_SCREEN_CONTENT, payload: { screenId, contentId } };

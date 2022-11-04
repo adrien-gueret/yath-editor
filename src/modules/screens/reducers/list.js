@@ -93,10 +93,20 @@ export default function list(state = INITIAL_STATE, action) {
                     [action.payload.screenId]: newScreen,
                 };
             }
+
+            case actionTypes.SET_SCREEN_AS_HTML: {
+                const newScreen = getScreenCloneByPayloadScreenId();
+                newScreen.isHTML = true;
+    
+                return {
+                    ...state,
+                    [action.payload.screenId]: newScreen,
+                };
+            }
     
             case actionTypes.ADD_ALTERNATIVE_SCREEN_CONTENT: {
                 const newScreen = getScreenCloneByPayloadScreenId();
-                newScreen.alternativeContents = [...newScreen.alternativeContents, { id: shortid.generate(), value: '' }];
+                newScreen.alternativeContents = [...newScreen.alternativeContents, { id: shortid.generate(), value: '', isHTML: false }];
     
                 return {
                     ...state,
@@ -115,8 +125,27 @@ export default function list(state = INITIAL_STATE, action) {
     
                 const newValue = action.payload.newContent === '<p></p>' ? '' : action.payload.newContent;
     
-                newScreen.alternativeContents = newScreen.alternativeContents.map(({ id, value }) => (
-                    id !== action.payload.contentId ? { id, value } : { id, value: newValue }
+                newScreen.alternativeContents = newScreen.alternativeContents.map(({ id, value, isHTML }) => (
+                    id !== action.payload.contentId ? { id, value } : { id, value: newValue, isHTML }
+                ));
+    
+                return {
+                    ...state,
+                    [action.payload.screenId]: newScreen,
+                };
+            }
+
+            case actionTypes.SET_ALTERNATIVE_SCREEN_CONTENT_AS_HTML: {
+                const newScreen = getScreenCloneByPayloadScreenId();
+    
+                const alternativeContent = newScreen.alternativeContents.find(({ id }) => id === action.payload.contentId);
+    
+                if (!alternativeContent) {
+                    return state;
+                }
+    
+                newScreen.alternativeContents = newScreen.alternativeContents.map(({ id, value, isHTML }) => (
+                    id !== action.payload.contentId ? { id, value, isHTML } : { id, value, isHTML: true }
                 ));
     
                 return {

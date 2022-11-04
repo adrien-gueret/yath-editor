@@ -21,6 +21,10 @@ export default function ScreenEditClassicContent({ screenId }) {
         dispatch(actions.editScreenContent(screenId, newContent));
     }, [dispatch, screenId]);
 
+    const onSwitchToHTML = useCallback(() => {
+        dispatch(actions.setScreenAsHTML(screenId));
+    }, [dispatch, screenId]);
+
     return (
         <React.Fragment>
             <Wysiwyg
@@ -29,6 +33,8 @@ export default function ScreenEditClassicContent({ screenId }) {
                 defaultValue={screen.content}
                 label="Screen content"
                 onChange={onChangeContentHandler}
+                onSwitchToHTML={onSwitchToHTML}
+                shouldShowHTML={screen.isHTML}
             />
             
             <AlternativeContentListContainer screenId={screenId} />

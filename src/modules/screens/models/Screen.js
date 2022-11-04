@@ -9,6 +9,7 @@ class Screen {
 
         screen.x = json.x;
         screen.y = json.y;
+        screen.isHTML = json.isHTML || false;
         screen.width = json.width;
         screen.height = json.height;
         screen.image = json.image;
@@ -21,12 +22,21 @@ class Screen {
         return screen;
     }
 
-    constructor({ name = '', content = '', isStart = false, id = null, x = DEFAULT_COORDINATE, y = DEFAULT_COORDINATE } = {}) {
+    constructor({
+        name = '',
+        content = '',
+        isStart = false,
+        id = null,
+        x = DEFAULT_COORDINATE,
+        y = DEFAULT_COORDINATE,
+        isHTML = false,
+    } = {}) {
         this.id = id || shortid.generate();
         this.name = name;
         this.content = content;
         this.x = x + document.documentElement.scrollLeft;
         this.y = y + document.documentElement.scrollTop;
+        this.isHTML = isHTML;
         this.width = 0;
         this.height = 0;
         this.image = '';
@@ -55,6 +65,7 @@ class Screen {
         const copiedScreen = new Screen(this);
         copiedScreen.x = this.x;
         copiedScreen.y = this.y;
+        copiedScreen.isHTML = this.isHTML;
         copiedScreen.width = this.width;
         copiedScreen.height = this.height;
         copiedScreen.image = this.image;

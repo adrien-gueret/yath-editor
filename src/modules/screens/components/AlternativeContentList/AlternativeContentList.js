@@ -48,22 +48,29 @@ export default function AlternativeContentList({ screenId }) {
         dispatch(actions.editAlternativeScreenContent(screenId, contentId, newContent));
     }, [dispatch, screenId]);
 
+    const onSwitchAlternativeContentToHTMLHandler = useCallback((contentId) => {
+        dispatch(actions.setAlternativeScreenContentAsHTML(screenId, contentId));
+    }, [dispatch, screenId]);
+
     const classes = useStyles();
 
     if (!alternativeContents.length) {
         return <Typography variant="caption">This screen has no alternative content yet.</Typography>;
     }
+    console.log(alternativeContents);
 
     return (
         <React.Fragment>
-            {alternativeContents.map(({ id, value }, index) => (
+            {alternativeContents.map(({ id, value, isHTML }, index) => (
                 <div key={id} className={classes.root}>
                     <Wysiwyg
                         screenId={screenId}
+                        shouldShowHTML={isHTML}
                         id={`alt-screen-content-${id}`}
                         defaultValue={value}
                         label={`Alternative content n° ${index + 1}`}
                         onChange={(newContent) => onChangeAlternativeContentHandler(id, newContent)}
+                        onSwitchToHTML={() => onSwitchAlternativeContentToHTMLHandler(id)}
                         toolbarButtons={(
                             <Tooltip title="Delete this alternative content">
                                 <IconButton onClick={getOnDeleteAlternativeContentHandler(id)}>

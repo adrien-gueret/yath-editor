@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import ReactDOM from 'react-dom';
 
-import { InputLabel, makeStyles, Toolbar, Tooltip, IconButton } from '@material-ui/core';
+import {
+    InputLabel, makeStyles, Toolbar, Tooltip, IconButton,
+    Dialog, DialogTitle, DialogContent, DialogContentText,
+    DialogActions, Button,
+} from '@material-ui/core';
 
 import NotchedOutline from '@material-ui/core/OutlinedInput/NotchedOutline';
 import FormatBold from '@material-ui/icons/FormatBold';
@@ -12,6 +16,7 @@ import FormatItalic from '@material-ui/icons/FormatItalic';
 import FormatUnderline from '@material-ui/icons/FormatUnderlined';
 import LinkIcon from '@material-ui/icons/Link';
 import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
+import CodeIcon from '@material-ui/icons/Code';
 
 import {
     Editor, EditorState, RichUtils, CompositeDecorator,
@@ -22,6 +27,7 @@ import { convertFromHTML, convertToHTML } from 'draft-convert';
 
 import selectors from '../../selectors';
 
+import HTMLEditor from '../HTMLEditor';
 import WysiwyContext from './WysiwyContext';
 import YathLink from './YathLink';
 import YathLinkDialog from './YathLinkDialog';
@@ -33,12 +39,16 @@ const propTypes = {
     defaultValue: PropTypes.string,
     onChange: PropTypes.func,
     toolbarButtons: PropTypes.node,
+    shouldShowHTML: PropTypes.bool,
+    onSwitchToHTML: PropTypes.func,
 };
 
 const defaultProps = {
     defaultValue: undefined,
     onChange() {},
+    onSwitchToHTML() {},
     toolbarButtons: null,
+    shouldShowHTML: false,
 };
 
 const stateToHTML = convertToHTML({
@@ -102,7 +112,6 @@ const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
     },
     toolbar: {
         backgroundColor: palette.grey[100],
-        marginTop: 18.5,
         padding: spacing(1, 0),
         position: 'sticky',
         left: 0,
@@ -125,15 +134,42 @@ const useStyles = makeStyles(({ palette, shape, spacing, typography }) => ({
         borderColor: [palette.primary.main, '!important'],
         borderWidth: 2,
     },
+    editorContainer: {
+        paddingBottom: 18.5,
+    },
+    buttonContainer: {
+        display: 'flex',
+        width: '100%',
+    },
+    htmlButton: {
+        marginLeft: 'auto',
+    },
+    buttonDanger: {
+        backgroundColor: palette.error.main,
+        '&:hover': {
+            backgroundColor: palette.error.dark,
+        },
+    },
 }), { classNamePrefix: 'Wysiwyg' });
 
-const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }) => {
+const Wysiwyg = ({
+    id,
+    defaultValue,
+    onChange,
+    onSwitchToHTML,
+    label,
+    toolbarButtons,
+    screenId,
+    shouldShowHTML,
+}) => {
     const [labelWidth, setLabelWidth] = useState(0);
     const labelRef = useRef(null);
    
     const contentState = htmlToState(defaultValue);
     const [editorState, setEditorState] = useState(EditorState.createWithContent(contentState, customLinkDecorator));
     const [isFocus, setIsFocus] = useState(false);
+
+    const [showHTMLWarning, setShowHTMLWarning] = useState(false);
 
     const [showCustomLinkDialog, setShowCustomLinkDialog] = useState(false);
     const [customLinkTargetScreenId, setCustomLinkTargetScreenId] = useState(null);
@@ -155,12 +191,12 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
         const newContentState = newEditorState.getCurrentContent();
         const newContent = stateToHTML(newContentState);
 
-        onChange(newContent);
         setEditorState(newEditorState);
-    }, [onChange, setEditorState]);
+        onChange(newContent);
+    }, [onChange]);
 
-    const onFocusHandler = useCallback(() => setIsFocus(true), [setIsFocus]);
-    const onBlurHandler = useCallback(() => setIsFocus(false), [setIsFocus]);
+    const onFocusHandler = useCallback(() => setIsFocus(true));
+    const onBlurHandler = useCallback(() => setIsFocus(false));
 
     const classes = useStyles();
 
@@ -188,8 +224,8 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
           return getDefaultKeyBinding(e);
     }, []);
 
-    const forceReselect = useCallback((editorStateToReslect) => {
-        onChangeHandler(EditorState.forceSelection(editorStateToReslect, editorStateToReslect.getSelection()));
+    const forceReselect = useCallback((editorStateToReselect) => {
+        onChangeHandler(EditorState.forceSelection(editorStateToReselect, editorStateToReselect.getSelection()));
         onFocusHandler();
     }, [onChangeHandler, onFocusHandler]);
 
@@ -286,70 +322,96 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
             </InputLabel>
             <div className={classes.childrenContainer}>
                 <div id={id} className={classes.content}>
-                    <div className={classes.horizontalMargins}>
-                        <WysiwyContext.Provider value={{ editorState, screenId, updateEditorState: onChangeHandler }}>
-                            <Editor
-                                editorState={editorState}
-                                handleKeyCommand={handleKeyCommand}
-                                handleReturn={handleReturn}
-                                keyBindingFn={keyBindingFn}
-                                blockStyleFn={blockStyleFn}
-                                spellCheck
-                                onChange={onChangeHandler}
+                    <div className={`${classes.horizontalMargins} ${classes.editorContainer}`}>
+                        { shouldShowHTML ? (
+                            <HTMLEditor
+                                value={defaultValue}
+                                onChange={onChange}
                                 onFocus={onFocusHandler}
                                 onBlur={onBlurHandler}
                             />
-                        </WysiwyContext.Provider>
+                        ) : (
+                             <WysiwyContext.Provider value={{ editorState, screenId, updateEditorState: onChangeHandler }}>
+                             <Editor
+                                 editorState={editorState}
+                                 handleKeyCommand={handleKeyCommand}
+                                 handleReturn={handleReturn}
+                                 keyBindingFn={keyBindingFn}
+                                 blockStyleFn={blockStyleFn}
+                                 spellCheck
+                                 onChange={onChangeHandler}
+                                 onFocus={onFocusHandler}
+                                 onBlur={onBlurHandler}
+                             />
+                         </WysiwyContext.Provider>
+                        )}
                     </div>
+
+                    { (Boolean(toolbarButtons) || !shouldShowHTML) && (
+                        <Toolbar className={classes.toolbar} variant="dense" disableGutters>
+                            <div className={`${classes.buttonContainer} ${classes.horizontalMargins}`}>
+                                { toolbarButtons }
+
+                                { !shouldShowHTML && (
+                                    <>
+                                        <Tooltip title="Bold (Ctrl + B)">
+                                            <IconButton
+                                                onClick={applyBold}
+                                                color={ isFocus && currentInlineStyle.has('BOLD') ? 'primary' : 'default' }
+                                            >
+                                                <FormatBold />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        <Tooltip title="Italic (Ctrl + I)">
+                                            <IconButton
+                                                onClick={applyItalic}
+                                                color={ isFocus && currentInlineStyle.has('ITALIC') ? 'primary' : 'default' }
+                                            >
+                                                <FormatItalic />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        <Tooltip title="Underline (Ctrl + U)">
+                                            <IconButton
+                                                onClick={(applyUnderline)}
+                                                color={ isFocus && currentInlineStyle.has('UNDERLINE') ? 'primary' : 'default' }
+                                            >
+                                                <FormatUnderline />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        { canShowLinkButton && (
+                                            <Tooltip title="Link (Ctrl + K)">
+                                                <IconButton
+                                                    onClick={applyLink}
+                                                    color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
+                                                >
+                                                    <LinkIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+
+                                        <Tooltip title="Soft breakline (Shift + Enter)">
+                                            <IconButton onClick={applySoftBreakline} disabled={!currentSelection.isCollapsed()}>
+                                                <KeyboardReturn />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        <Tooltip title="Switching to HTML mode (advanced)">
+                                            <IconButton className={classes.htmlButton} onClick={() => {
+                                                setShowHTMLWarning(true);
+                                            }}>
+                                                <CodeIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </>
+                                )}
+                                
+                            </div>
+                        </Toolbar>
+                    )}
                     
-                    <Toolbar className={classes.toolbar} variant="dense" disableGutters>
-                        <div className={classes.horizontalMargins}>
-                            { toolbarButtons }
-                            <Tooltip title="Bold (Ctrl + B)">
-                                <IconButton
-                                    onClick={applyBold}
-                                    color={ isFocus && currentInlineStyle.has('BOLD') ? 'primary' : 'default' }
-                                >
-                                    <FormatBold />
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Italic (Ctrl + I)">
-                                <IconButton
-                                    onClick={applyItalic}
-                                    color={ isFocus && currentInlineStyle.has('ITALIC') ? 'primary' : 'default' }
-                                >
-                                    <FormatItalic />
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Underline (Ctrl + U)">
-                                <IconButton
-                                    onClick={(applyUnderline)}
-                                    color={ isFocus && currentInlineStyle.has('UNDERLINE') ? 'primary' : 'default' }
-                                >
-                                    <FormatUnderline />
-                                </IconButton>
-                            </Tooltip>
-
-                            { canShowLinkButton && (
-                                 <Tooltip title="Link (Ctrl + K)">
-                                    <IconButton
-                                        onClick={applyLink}
-                                        color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
-                                    >
-                                        <LinkIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
-
-                            <Tooltip title="Soft breakline (Shift + Enter)">
-                                <IconButton onClick={applySoftBreakline} disabled={!currentSelection.isCollapsed()}>
-                                    <KeyboardReturn />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                    </Toolbar>
                     
                     <NotchedOutline
                         className={`${classes.borders} ${isFocus ? classes.focused : ''}`}
@@ -368,6 +430,28 @@ const Wysiwyg = ({ id, defaultValue, onChange, label, toolbarButtons, screenId }
                     onClose={() => { setShowCustomLinkDialog(false); setCustomLinkTargetScreenId(null); }}
                 />
             )}
+
+            <Dialog open={showHTMLWarning} aria-labelledby="html-warning-dialog">
+                <DialogTitle id="html-warning-dialog">Switching to HTML mode</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        By switching to HTML mode, you won't be able to go back. Are you sure?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button type="button" onClick={() => setShowHTMLWarning(false)} variant="outlined">Cancel</Button>
+                    <Button
+                        type="button"
+                        className={classes.buttonDanger}
+                        onClick={() => {
+                            onSwitchToHTML();
+                            setShowHTMLWarning(false);
+                        }}
+                        color="secondary"
+                        variant="contained"
+                    >Confirm</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };
