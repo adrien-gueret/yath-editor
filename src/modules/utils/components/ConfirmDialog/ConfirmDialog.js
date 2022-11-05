@@ -34,21 +34,22 @@ function ConfirmDialog({ children, onCancel, onAccept, isDeletion, ...otherProps
             <DialogTitle>Confirm action?</DialogTitle>
             <DialogContent>
                 <DialogContentText>{ children }</DialogContentText>
+
+                <DialogActions>
+                    <Button
+                        onClick={onCancel}
+                        type="button"
+                        variant="outlined"
+                    >Cancel</Button>
+                    <Button
+                        classes={{ containedSecondary: classes.dangerButton}}
+                        onClick={onAccept}
+                        color={isDeletion ? 'secondary' : 'primary'}
+                        type="button"
+                        variant="contained"
+                    >{isDeletion ? 'Delete' : 'Confirm'}</Button>
+                </DialogActions>
             </DialogContent>
-            <DialogActions>
-                <Button
-                    onClick={onCancel}
-                    type="button"
-                    variant="outlined"
-                >Cancel</Button>
-                <Button
-                    classes={{ containedSecondary: classes.dangerButton}}
-                    onClick={onAccept}
-                    color={isDeletion ? 'secondary' : 'primary'}
-                    type="button"
-                    variant="contained"
-                >{isDeletion ? 'Delete' : 'Confirm'}</Button>
-            </DialogActions>
         </Dialog>
     );
 }

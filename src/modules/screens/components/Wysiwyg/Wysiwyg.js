@@ -437,20 +437,20 @@ const Wysiwyg = ({
                     <DialogContentText>
                         By switching to HTML mode, you won't be able to go back. Are you sure?
                     </DialogContentText>
+                    <DialogActions>
+                        <Button type="button" onClick={() => setShowHTMLWarning(false)} variant="outlined">Cancel</Button>
+                        <Button
+                            type="button"
+                            className={classes.buttonDanger}
+                            onClick={() => {
+                                onSwitchToHTML();
+                                setShowHTMLWarning(false);
+                            }}
+                            color="secondary"
+                            variant="contained"
+                        >Confirm</Button>
+                    </DialogActions>
                 </DialogContent>
-                <DialogActions>
-                    <Button type="button" onClick={() => setShowHTMLWarning(false)} variant="outlined">Cancel</Button>
-                    <Button
-                        type="button"
-                        className={classes.buttonDanger}
-                        onClick={() => {
-                            onSwitchToHTML();
-                            setShowHTMLWarning(false);
-                        }}
-                        color="secondary"
-                        variant="contained"
-                    >Confirm</Button>
-                </DialogActions>
             </Dialog>
         </div>
     );

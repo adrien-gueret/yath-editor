@@ -56,18 +56,18 @@ function GameConfiguration({ isOpen }) {
                 {currentTab === 'css' && <CSSConfiguration />}
                 {currentTab === 'js' && <JSConfiguration />}
                 {currentTab === 'externalTools' && <ExternalToolsConfiguration />}
+            
+                <DialogActions>
+                    <Button
+                        onClick={finishConfigureGame}
+                        color="primary"
+                        type="button"
+                        variant="contained"
+                    >
+                        Close
+                    </Button>
+                </DialogActions>
             </DialogContent>
-
-            <DialogActions>
-                <Button
-                    onClick={finishConfigureGame}
-                    color="primary"
-                    type="button"
-                    variant="contained"
-                >
-                    Close
-                </Button>
-            </DialogActions>
         </Dialog>
     );
 }

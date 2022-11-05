@@ -46,16 +46,17 @@ const YathLinkDialog = ({
                         selectedScreenId={selectedScreenId}
                         onChange={setSelectedScreenId}
                     />
+
+                    <DialogActions>
+                        <Button type="button" onClick={onClose} variant="outlined">Cancel</Button>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            variant="contained"
+                            disabled={selectedScreenId === null}
+                        >Confirm</Button>
+                    </DialogActions>
                 </DialogContent>
-                <DialogActions>
-                    <Button type="button" onClick={onClose} variant="outlined">Cancel</Button>
-                    <Button
-                        type="submit"
-                        color="primary"
-                        variant="contained"
-                        disabled={selectedScreenId === null}
-                    >Confirm</Button>
-                </DialogActions>
             </form>
         </Dialog>
     );

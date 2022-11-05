@@ -58,24 +58,25 @@ function GameTest({ startScreenId }) {
         >
             <DialogContent>
                 <iframe ref={initIframe} className={classes.iframe} key={iframeKey} />
+            
+                <DialogActions>
+                    <Button
+                        onClick={restartGame}
+                        type="button"
+                        variant="outlined"
+                    >
+                        Restart
+                    </Button>
+                    <Button
+                        onClick={finishTestGame}
+                        color="primary"
+                        type="button"
+                        variant="contained"
+                    >
+                        Close
+                    </Button>
+                </DialogActions>
             </DialogContent>
-            <DialogActions>
-                <Button
-                    onClick={restartGame}
-                    type="button"
-                    variant="outlined"
-                >
-                    Restart
-                </Button>
-                <Button
-                    onClick={finishTestGame}
-                    color="primary"
-                    type="button"
-                    variant="contained"
-                >
-                    Close
-                </Button>
-            </DialogActions>
         </Dialog>
     );
 }

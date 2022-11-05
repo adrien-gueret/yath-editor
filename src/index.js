@@ -33,6 +33,13 @@ const theme = createMuiTheme({
             contrastText: '#fafafa',
         },
     },
+    overrides: {
+        MuiDialogActions: {
+            root: {
+                padding: '8px 0',
+            },
+        },
+    },
 });
 
 ReactDOM.render((

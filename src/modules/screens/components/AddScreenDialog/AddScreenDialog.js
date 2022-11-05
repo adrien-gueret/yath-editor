@@ -46,11 +46,12 @@ const AddScreenDialog = ({ isOpen, onClose, onSubmit }) => {
                         value={screenName}
                         variant="outlined"
                     />
+
+                    <DialogActions>
+                        <Button type="button" onClick={onClose} variant="outlined">Cancel</Button>
+                        <Button type="submit" color="primary" variant="contained">Create</Button>
+                    </DialogActions>
                 </DialogContent>
-                <DialogActions>
-                    <Button type="button" onClick={onClose} variant="outlined">Cancel</Button>
-                    <Button type="submit" color="primary" variant="contained">Create</Button>
-                </DialogActions>
             </form>
         </Dialog>
     );
