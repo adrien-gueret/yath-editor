@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import { InputLabel, IconButton, Tooltip, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Create';
-import HelpIcon from '@material-ui/icons/Help';
+import HelpIcon from '@material-ui/icons/Info';
 
 import actions from '../../actions';
 

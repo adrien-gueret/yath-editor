@@ -11,6 +11,7 @@ import LoadIcon from '@material-ui/icons/Publish';
 import DownloadGameIcon from '@material-ui/icons/PublicOutlined';
 import TestGameIcon from '@material-ui/icons/SportsEsportsOutlined';
 import ConfigureGameIcon from '@material-ui/icons/SettingsOutlined';
+import HelpIcon from '@material-ui/icons/HelpOutlined';
 
 import { actions as gameActions, selectors as gameSelectors } from 'Modules/game';
 import { downloadJson } from 'Modules/utils';
@@ -35,6 +36,9 @@ const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
     },
     gameName: {
         marginLeft: 'auto',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
 }), { classNamePrefix: 'AppHeader' });
 
@@ -188,6 +192,20 @@ function AppHeader() {
                         onClick={testGame}
                     >
                         <TestGameIcon fontSize="large" />
+                    </IconButton>
+                </Tooltip>
+
+                <div className={classes.separator} />
+
+                <Tooltip title="Go to wiki">
+                    <IconButton 
+                        color="inherit"
+                        aria-label="Go to wiki"
+                        component="a"
+                        target="_blank"
+                        href="https://github.com/adrien-gueret/yath-editor/wiki"
+                    >
+                        <HelpIcon fontSize="large" />
                     </IconButton>
                 </Tooltip>
             </Toolbar>

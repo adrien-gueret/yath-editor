@@ -33,6 +33,9 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
         display: 'flex',
         alignItems: 'center',
     },
+    actions: {
+        paddingRight: spacing(1),  
+    },
     actionButtonContainer: {
         marginRight: 'auto',
     },
@@ -106,7 +109,7 @@ export default function ScreenEdit({ screenId }) {
 
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions className={classes.actions}>
                 <span className={classes.actionButtonContainer}>
                     <ActionButtons screenId={screenId} />
                 </span>
