@@ -57,7 +57,6 @@ export default function AlternativeContentList({ screenId }) {
     if (!alternativeContents.length) {
         return <Typography variant="caption">This screen has no alternative content yet.</Typography>;
     }
-    console.log(alternativeContents);
 
     return (
         <React.Fragment>
