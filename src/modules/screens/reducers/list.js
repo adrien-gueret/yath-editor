@@ -10,7 +10,7 @@ import { actionTypes as logicActionTypes } from 'Modules/logic';
 
 const startScreen = new ScreenModel({
     name: 'Start screen',
-    content: 'Welcome to the <b>first screen</b> of your story!',
+    content: '<p>Welcome to the <b>first screen</b> of your story!</p>',
     isStart: true,
 });
 

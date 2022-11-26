@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
     },
 }), { classNamePrefix: 'App' });
 
-export function App() {
+export function App({ fileToLoad = null }) {
     const editedScreenId = useSelector(screenSelectors.editedScreenId.get);
     const isTesting = useSelector(gameSelectors.isTesting.get);
     const isConfiguring = useSelector(gameSelectors.isConfiguring.isConfiguring);
@@ -30,7 +30,7 @@ export function App() {
 
     return (
         <>
-            <AppHeader />
+            <AppHeader fileToLoad={fileToLoad} />
             <Board isDialogOpen={isDialogOpen} />
             { isTesting && <GameTest startScreenId={startScreenId} /> }
 

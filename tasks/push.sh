@@ -21,6 +21,7 @@ git checkout -b gh-pages
 git rm -r *
 cd ../
 yarn build:prod
+cp -r ./demos ./dist/demos
 cd ./dist
 git add .
 set +e

@@ -42,10 +42,23 @@ const theme = createMuiTheme({
     },
 });
 
+/*
+const response = await fetch('/api/names');
+  const names = await response.json();
+  */
+
+const queryString = window.location.search;
+let fileToLoad = null;
+
+if (queryString) {
+    const urlParams = new URLSearchParams(queryString);
+    fileToLoad = urlParams.get('file');
+}
+
 ReactDOM.render((
         <ThemeProvider theme={theme}>
             <Provider store={store}>
-                <App />
+                <App fileToLoad={fileToLoad} />
             </Provider>
         </ThemeProvider>
     ),

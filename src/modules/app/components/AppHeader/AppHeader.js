@@ -1,9 +1,13 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import slugify from 'slugify';
 
-import { AppBar, IconButton, Toolbar, Tooltip, makeStyles, Typography } from '@material-ui/core';
+import {
+    AppBar, IconButton, Toolbar, Tooltip, makeStyles, Typography,
+    Dialog, DialogTitle, DialogContent, DialogContentText,
+    DialogActions, Button, CircularProgress,
+} from '@material-ui/core';
 
 import AddScreenIcon from '@material-ui/icons/AddToQueueOutlined';
 import SaveIcon from '@material-ui/icons/GetApp';
@@ -12,6 +16,7 @@ import DownloadGameIcon from '@material-ui/icons/PublicOutlined';
 import TestGameIcon from '@material-ui/icons/SportsEsportsOutlined';
 import ConfigureGameIcon from '@material-ui/icons/SettingsOutlined';
 import HelpIcon from '@material-ui/icons/HelpOutlined';
+import WarningIcon from '@material-ui/icons/Warning';
 
 import { actions as gameActions, selectors as gameSelectors } from 'Modules/game';
 import { downloadJson } from 'Modules/utils';
@@ -22,7 +27,7 @@ import { actions as logicActions } from 'Modules/logic';
 
 import selectors from '../../selectors';
 
-const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
+const useStyles = makeStyles(({ spacing, palette }) => ({
     separator: {
         margin: spacing(0, 2),
         height: 32,
@@ -40,9 +45,25 @@ const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
         overflow: 'hidden',
         textOverflow: 'ellipsis'
     },
+    loadingDialog: {
+        minWidth: 330,
+    },
+    loadingProgress: {
+        display: 'block',
+        margin: 'auto',
+        marginBottom: spacing(3),
+    },
+    warningIcon: {
+        color: palette.error.main,
+        verticalAlign: 'middle',
+        marginRight: spacing(1),
+    }
 }), { classNamePrefix: 'AppHeader' });
 
-function AppHeader() {
+function AppHeader({ fileToLoad = null }) {
+    const [isLoadingFileDialogOpen, setIsLoadingFileDialogOpen] = useState(false);
+    const [loadingFileDialogError, setLoadingFileDialogError] = useState('');
+
     const appState = useSelector(selectors.getExportableState, shallowEqual);
     const gameName = useSelector(gameSelectors.name.get);
     const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog(true);
@@ -86,11 +107,11 @@ function AppHeader() {
         try {
             const newStoreState = JSON.parse(loadEvent.target.result);
             loadState(newStoreState);
-        } catch (error) {
-            alert(`The file you want to load is malformed: ${error.message}`);
-            console.error(error);
-        }
 
+            setIsLoadingFileDialogOpen(false);
+        } catch (error) {
+            setLoadingFileDialogError(`The file you want to load is malformed: ${error.message}`);
+        }
     }, [loadInput.current]);
 
     const askForFile = useCallback(() => {
@@ -98,11 +119,36 @@ function AppHeader() {
     }, [loadInput.current]);
 
     useEffect(() => {
+        if (!fileToLoad) {
+            return;
+        }
+
+        setLoadingFileDialogError('');
+        setIsLoadingFileDialogOpen(true);
+
+        (async () => {
+            try {
+                const response = await fetch(fileToLoad);
+                const state = await response.json();
+
+                loadState(state);
+
+                setIsLoadingFileDialogOpen(false);
+            } catch(e) {
+                setLoadingFileDialogError(`Can't load file "${fileToLoad}".`);
+            }
+        })();
+    }, [fileToLoad, loadState]);
+
+    useEffect(() => {
         if (!loadInput.current) {
             return;
         }
 
         const onChange = () => {
+            setLoadingFileDialogError('');
+            setIsLoadingFileDialogOpen(true);
+
             const file = loadInput.current.files[0];
             const reader = new FileReader();
 
@@ -129,6 +175,7 @@ function AppHeader() {
     return (
         <AppBar>
             {addScreenDialog}
+
             <Toolbar>
                 <Tooltip title="Add screen">
                     <IconButton
@@ -209,7 +256,26 @@ function AppHeader() {
                     </IconButton>
                 </Tooltip>
             </Toolbar>
+            
             <input ref={loadInput} className={classes.inputFile} type="file" />
+    
+            <Dialog classes={{ paper: classes.loadingDialog }} open={isLoadingFileDialogOpen} aria-labelledby="file-is-loading-dialog">
+                <DialogTitle id="file-is-loading-dialog">File loading</DialogTitle>
+
+                <DialogContent>
+                    { Boolean(loadingFileDialogError) ? (
+                        <>
+                            <DialogContentText>
+                                <WarningIcon className={classes.warningIcon} />
+                                { loadingFileDialogError }
+                            </DialogContentText>
+                            <DialogActions>
+                                <Button type="button" onClick={() => { setIsLoadingFileDialogOpen(false); }} color="primary" variant="contained">Close</Button>
+                            </DialogActions>
+                        </>
+                    ): <CircularProgress className={classes.loadingProgress} />}
+                </DialogContent>
+            </Dialog>        
         </AppBar>
     );
 }
