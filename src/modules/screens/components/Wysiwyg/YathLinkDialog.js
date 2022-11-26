@@ -35,6 +35,7 @@ const YathLinkDialog = ({
         <Dialog open={isOpen} aria-labelledby="custom-link-dialog">
             <form onSubmit={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 onSubmit(selectedScreenId);
                 onClose();
             }}>
@@ -42,6 +43,7 @@ const YathLinkDialog = ({
                 <DialogContent>
                     <DialogContentText>Select the screen to redirect the user to.</DialogContentText>
                     <ScreenList
+                        allowCreation
                         excludedScreenId={excludedScreenId}
                         selectedScreenId={selectedScreenId}
                         onChange={setSelectedScreenId}

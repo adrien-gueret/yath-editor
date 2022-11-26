@@ -26,6 +26,7 @@ const AddScreenDialog = ({ isOpen, onClose, onSubmit }) => {
 
     function onSubmitHandler(e) {
         e.preventDefault();
+        e.stopPropagation();
         onSubmit(screenName);
         setScreenName('');
     };

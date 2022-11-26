@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
 import ReactDOM from 'react-dom';
 
 import {
@@ -163,6 +162,7 @@ const Wysiwyg = ({
     shouldShowHTML,
 }) => {
     const [labelWidth, setLabelWidth] = useState(0);
+    const [isEditorReadonly, toggleReadonly] = useState(false);
     const labelRef = useRef(null);
    
     const contentState = htmlToState(defaultValue);
@@ -176,11 +176,6 @@ const Wysiwyg = ({
 
     const currentInlineStyle = editorState.getCurrentInlineStyle();
     const currentSelection = editorState.getSelection();
-
-    const otherScreens = useSelector(state => (
-        selectors.list.getAllExceptOne(state, screenId)
-    ));
-    const canShowLinkButton = otherScreens.length > 0;
 
     useEffect(() => {
         const labelNode = ReactDOM.findDOMNode(labelRef.current);
@@ -242,10 +237,6 @@ const Wysiwyg = ({
     }, [editorState, forceReselect]);
 
     const applyLink = useCallback(() => {
-        if (!canShowLinkButton) {
-            return;
-        }
-
         const contentState = editorState.getCurrentContent();
         const startKey = editorState.getSelection().getStartKey();
         const startOffset = editorState.getSelection().getStartOffset();
@@ -258,7 +249,7 @@ const Wysiwyg = ({
         }
 
         setShowCustomLinkDialog(true);
-    }, [editorState, forceReselect, canShowLinkButton]);
+    }, [editorState, forceReselect]);
 
     const applySoftBreakline = useCallback(() => {
         if (!currentSelection.isCollapsed()) {
@@ -331,17 +322,18 @@ const Wysiwyg = ({
                                 onBlur={onBlurHandler}
                             />
                         ) : (
-                             <WysiwyContext.Provider value={{ editorState, screenId, updateEditorState: onChangeHandler }}>
+                        <WysiwyContext.Provider value={{ toggleReadonly, editorState, screenId, updateEditorState: onChangeHandler }}>
                              <Editor
-                                 editorState={editorState}
-                                 handleKeyCommand={handleKeyCommand}
-                                 handleReturn={handleReturn}
-                                 keyBindingFn={keyBindingFn}
-                                 blockStyleFn={blockStyleFn}
-                                 spellCheck
-                                 onChange={onChangeHandler}
-                                 onFocus={onFocusHandler}
-                                 onBlur={onBlurHandler}
+                                editorState={editorState}
+                                handleKeyCommand={handleKeyCommand}
+                                handleReturn={handleReturn}
+                                keyBindingFn={keyBindingFn}
+                                blockStyleFn={blockStyleFn}
+                                spellCheck
+                                readOnly={isEditorReadonly}
+                                onChange={onChangeHandler}
+                                onFocus={onFocusHandler}
+                                onBlur={onBlurHandler}
                              />
                          </WysiwyContext.Provider>
                         )}
@@ -381,17 +373,15 @@ const Wysiwyg = ({
                                             </IconButton>
                                         </Tooltip>
 
-                                        { canShowLinkButton && (
-                                            <Tooltip title="Link (Ctrl + K)">
-                                                <IconButton
-                                                    onClick={applyLink}
-                                                    color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
-                                                >
-                                                    <LinkIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )}
-
+                                        <Tooltip title="Link (Ctrl + K)">
+                                            <IconButton
+                                                onClick={applyLink}
+                                                color={ isFocus && currentInlineStyle.has('YATH_LINK') ? 'primary' : 'default' }
+                                            >
+                                                <LinkIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                     
                                         <Tooltip title="Soft breakline (Shift + Enter)">
                                             <IconButton onClick={applySoftBreakline} disabled={!currentSelection.isCollapsed()}>
                                                 <KeyboardReturn />

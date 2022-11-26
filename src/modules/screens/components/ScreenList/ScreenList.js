@@ -48,7 +48,7 @@ export default function ScreenList({
 }) {
     const [isOpen, setIsOpen] = useState(false);
 
-    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog(false);
 
     const dispatch = useDispatch();
   
@@ -93,6 +93,13 @@ export default function ScreenList({
                 onOpen={onOpenHandler}
                 onClose={onCloseHandler}
                 displayEmpty
+                renderValue={(value) => {
+                    if (!value) {
+                        return 'Select a screen';
+                    }
+
+                    return otherScreens.find(({ id }) => id === value).name;
+                }}
                 {...otherProps}
             >
                 { allowCreation && (

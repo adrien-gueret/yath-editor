@@ -36,7 +36,7 @@ function Board({ isDialogOpen }) {
     
     const maxCoordinates = useSelector(screenSelectors.list.getMaxCoordinates, shallowEqual);
 
-    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog(true);
 
     const classes = useStyles({ maxCoordinates });
 

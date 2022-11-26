@@ -46,7 +46,7 @@ const YathLink = ({
 }) => {
     const classes = useStyles();
     const [showDialog, setShowDialog] = useState(false);
-    const { updateEditorState, editorState, screenId } = useContext(WysiwyContext);
+    const { toggleReadonly, updateEditorState, editorState, screenId } = useContext(WysiwyContext);
 
     const { screenId: targetScreenId } = contentState.getEntity(entityKey).getData();
 
@@ -77,7 +77,7 @@ const YathLink = ({
                 <a
                     className={classes.root}
                     data-yath-go-to={targetScreenId}
-                    onClick={() => setShowDialog(true)}
+                    onClick={() =>  { toggleReadonly(true); setShowDialog(true); }}
                 >{ children }</a>
             </Tooltip>
 
@@ -86,7 +86,7 @@ const YathLink = ({
                 excludedScreenId={screenId}
                 defaultSelectedScreenId={targetScreenId}
                 onSubmit={onScreenChange}
-                onClose={() => setShowDialog(false)}
+                onClose={() => { toggleReadonly(false); setShowDialog(false); }}
             />
         </>
     );

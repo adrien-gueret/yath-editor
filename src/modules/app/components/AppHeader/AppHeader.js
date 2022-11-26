@@ -45,7 +45,7 @@ const useStyles = makeStyles(({ spacing, palette, shape, transitions }) => ({
 function AppHeader() {
     const appState = useSelector(selectors.getExportableState, shallowEqual);
     const gameName = useSelector(gameSelectors.name.get);
-    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog();
+    const { openAddScreenDialog, addScreenDialog } = useAddScreenDialog(true);
     const dispatch = useDispatch();
     const loadInput = useRef(null);
     const testGame = useCallback(() => dispatch(gameActions.testGame()), [dispatch]);

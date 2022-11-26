@@ -6,7 +6,7 @@ import ScreenModel from '../models/Screen';
 import listSelectors from '../selectors/list';
 import actions from '../actions';
 
-export default function useAddScreenDialog() {
+export default function useAddScreenDialog(shouldRedirectToNewScreen = false) {
     const [isAddScreenDialogOpen, setIsAddScreenDialogOpen] = useState(false);
     const [submitCallback, setSubmitCallback] = useState(() => () => {});
     const [newScreenPosition, setNewScreenPosition] = useState(null);
@@ -23,8 +23,11 @@ export default function useAddScreenDialog() {
         }
 
         dispatch(actions.addScreen(newScreen));
-        dispatch(actions.setEditScreen(newScreen.id));
-    }, [dispatch, screenSlugs]);
+        
+        if (shouldRedirectToNewScreen) {
+            dispatch(actions.setEditScreen(newScreen.id));
+        }
+    }, [dispatch, screenSlugs, shouldRedirectToNewScreen]);
 
     const onAddScreenDialogClose = useCallback(() => {
         setIsAddScreenDialogOpen(false);
